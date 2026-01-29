@@ -28,7 +28,8 @@ export const useRegisterForm = () => {
     } = useAvailability({ formData, setErrors });
 
     const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-        let { name, value } = e.target;
+        const { name } = e.target;
+        let { value } = e.target;
 
         if (name === 'personNumber') {
             value = formatPersonNumber(value);
@@ -141,8 +142,6 @@ export const useRegisterForm = () => {
         try {
             await registerApplicant(formData);
             navigate('/');
-        } catch (error) {
-            setErrors(prev => ({ ...prev, submit: 'Failed to register. Please try again.' }));
         } finally {
             setIsSubmitting(false);
         }
