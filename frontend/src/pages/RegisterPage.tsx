@@ -1,107 +1,26 @@
-import React, { useState } from 'react';
 import Layout from '../components/Layout';
 import Card, { CardHeader, CardTitle, CardDescription, CardContent, CardFooter } from '../components/ui/Card';
 import Input from '../components/ui/Input';
 import Button from '../components/ui/Button';
-import { Link, useNavigate } from 'react-router-dom';
-import { registerApplicant, checkUsernameAvailability } from '../services/authService';
-import { validateEmail, getPasswordErrors, formatPasswordErrorMessage } from '../utils/validation';
-import { formatPersonNumber } from '../utils/formatters';
+import { Link } from 'react-router-dom';
+import RequirementChecklist from '../components/ui/RequirementChecklist';
+import { Eye, EyeOff } from '../components/ui/Icons';
+import { passwordRequirements, usernameRequirements, validateEmail } from '../utils/validation';
+import { useRegisterForm } from '../hooks/useRegisterForm';
 
 const RegisterPage = () => {
-    const navigate = useNavigate();
-    const [formData, setFormData] = useState({
-        firstName: '',
-        lastName: '',
-        email: '',
-        personNumber: '',
-        username: '',
-        password: '',
-        confirmPassword: ''
-    });
-    const [errors, setErrors] = useState<Record<string, string>>({});
-    const [isSubmitting, setIsSubmitting] = useState(false);
-
-    // Person number formatting
-    const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-        let { name, value } = e.target;
-
-        if (name === 'personNumber') {
-            value = formatPersonNumber(value);
-        }
-
-        setFormData(prev => ({ ...prev, [name]: value }));
-        // Clear error when user types
-        if (errors[name]) {
-            setErrors(prev => {
-                const newErrors = { ...prev };
-                delete newErrors[name];
-                return newErrors;
-            });
-        }
-    };
-
-    // Validation of input fields
-    const validate = () => {
-        const newErrors: Record<string, string> = {};
-        if (!formData.firstName) newErrors.firstName = 'First name is required';
-        if (!formData.lastName) newErrors.lastName = 'Last name is required';
-        if (!formData.email) {
-            newErrors.email = 'Email address is required';
-        } else if (!validateEmail(formData.email)) {
-            newErrors.email = 'Email is invalid';
-        }
-
-        if (!formData.personNumber) {
-            newErrors.personNumber = 'Person number is required';
-        }
-
-        if (!formData.username) newErrors.username = 'Username is required';
-
-        if (!formData.password) {
-            newErrors.password = 'Password is required';
-        } else {
-            const passwordReqs = getPasswordErrors(formData.password);
-            if (passwordReqs.length > 0) {
-                newErrors.password = formatPasswordErrorMessage(passwordReqs);
-            }
-        }
-
-        if (formData.password !== formData.confirmPassword) {
-            const mismatchError = 'Passwords do not match';
-            newErrors.password = newErrors.password ? `${newErrors.password}. ${mismatchError}` : mismatchError;
-            newErrors.confirmPassword = mismatchError;
-        }
-
-        setErrors(newErrors);
-        return Object.keys(newErrors).length === 0;
-    };
-
-    // Submit handler
-    const handleSubmit = async () => {
-        if (!validate()) return;
-
-        setIsSubmitting(true);
-        try {
-            // Check username availability
-            const isAvailable = await checkUsernameAvailability(formData.username);
-            if (!isAvailable) {
-                setErrors(prev => ({ ...prev, username: 'Username already exists' }));
-                setIsSubmitting(false);
-                return;
-            }
-
-            // Sends the password, not the confirmPassword
-            const { confirmPassword, ...registerData } = formData;
-            await registerApplicant(registerData);
-            // On success, redirect to landing page (currently)
-            navigate('/');
-        } catch (error) {
-            setErrors({ submit: 'Failed to register. Please try again.' });
-        } finally {
-            setIsSubmitting(false);
-        }
-    };
+    const {
+        formData,
+        errors,
+        isSubmitting,
+        isCheckingUsername,
+        isCheckingEmail,
+        checkedValues,
+        handleChange,
+        handleSubmit,
+        showPassword,
+        setShowPassword
+    } = useRegisterForm();
 
     return (
         <Layout>
@@ -121,7 +40,7 @@ const RegisterPage = () => {
                             <Input
                                 label="First Name"
                                 name="firstName"
-                                placeholder="John"
+                                placeholder="Anita"
                                 value={formData.firstName}
                                 onChange={handleChange}
                                 error={errors.firstName}
@@ -129,21 +48,29 @@ const RegisterPage = () => {
                             <Input
                                 label="Last Name"
                                 name="lastName"
-                                placeholder="Doe"
+                                placeholder="Drink"
                                 value={formData.lastName}
                                 onChange={handleChange}
                                 error={errors.lastName}
                             />
                         </div>
-                        <Input
-                            label="Email Address"
-                            name="email"
-                            type="email"
-                            placeholder="john.doe@example.com"
-                            value={formData.email}
-                            onChange={handleChange}
-                            error={errors.email}
-                        />
+                        <div className="relative">
+                            <Input
+                                label="Email Address"
+                                name="email"
+                                type="email"
+                                placeholder="anita.drink@example.com"
+                                value={formData.email}
+                                onChange={handleChange}
+                                error={errors.email}
+                            />
+                            {isCheckingEmail && formData.email && !errors.email && (
+                                <div className="absolute right-3 top-[38px] text-[10px] text-blue-500 animate-pulse">Checking...</div>
+                            )}
+                            {!isCheckingEmail && formData.email && checkedValues.email === formData.email && !errors.email && validateEmail(formData.email) && (
+                                <div className="absolute right-3 top-[38px] text-green-500 font-bold" title="Email is available">✓</div>
+                            )}
+                        </div>
                         <Input
                             label="Person Number"
                             name="personNumber"
@@ -152,38 +79,59 @@ const RegisterPage = () => {
                             onChange={handleChange}
                             error={errors.personNumber}
                         />
-                        <Input
-                            label="Username"
-                            name="username"
-                            placeholder="johndoe"
-                            value={formData.username}
-                            onChange={handleChange}
-                            error={errors.username}
-                        />
-                        <Input
-                            label="Password"
-                            name="password"
-                            type="password"
-                            placeholder="••••••••"
-                            value={formData.password}
-                            onChange={handleChange}
-                            error={errors.password}
-                        />
-                        <Input
-                            label="Confirm Password"
-                            name="confirmPassword"
-                            type="password"
-                            placeholder="••••••••"
-                            value={formData.confirmPassword}
-                            onChange={handleChange}
-                            error={errors.confirmPassword}
-                        />
+                        <div className="relative">
+                            <Input
+                                label="Username"
+                                name="username"
+                                placeholder="anitadrink"
+                                value={formData.username}
+                                onChange={handleChange}
+                                error={errors.username}
+                            />
+                            {isCheckingUsername && formData.username && !errors.username && (
+                                <div className="absolute right-3 top-[38px] text-[10px] text-blue-500 animate-pulse">Checking...</div>
+                            )}
+                            {!isCheckingUsername && formData.username && checkedValues.username === formData.username && !errors.username && formData.username.length > 0 && (
+                                <div className="absolute right-3 top-[38px] text-green-500 font-bold" title="Username is available">✓</div>
+                            )}
+                            <RequirementChecklist
+                                title="Username requirements"
+                                value={formData.username}
+                                requirements={usernameRequirements}
+                            />
+                        </div>
+                        <div className="space-y-1">
+                            <Input
+                                label="Password"
+                                name="password"
+                                type={showPassword ? 'text' : 'password'}
+                                placeholder="••••••••"
+                                value={formData.password}
+                                onChange={handleChange}
+                                error={errors.password}
+                                rightElement={
+                                    <button
+                                        type="button"
+                                        onClick={() => setShowPassword(!showPassword)}
+                                        className="text-gray-500 hover:text-gray-700 focus:outline-none focus:text-blue-600 transition-colors p-1"
+                                        title={showPassword ? 'Hide password' : 'Show password'}
+                                    >
+                                        {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
+                                    </button>
+                                }
+                            />
+                            <RequirementChecklist
+                                title="Password requirements"
+                                value={formData.password}
+                                requirements={passwordRequirements}
+                            />
+                        </div>
                     </CardContent>
                     <CardFooter className="flex flex-col gap-4">
                         <Button
                             fullWidth
                             onClick={handleSubmit}
-                            disabled={isSubmitting}
+                            disabled={isSubmitting || isCheckingUsername || isCheckingEmail}
                         >
                             {isSubmitting ? 'Creating...' : 'Create Account'}
                         </Button>
