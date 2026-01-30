@@ -1,40 +1,60 @@
-export interface RegisterData {
-    firstName: string;
-    lastName: string;
-    email: string;
-    personNumber: string;
-    username: string;
-    password?: string;
+import { apiClient } from './api';
+import { API_ENDPOINTS } from '../types/api';
+import type { RegisterData, AvailabilityCheckRequest, AvailabilityStatus } from '../types/auth';
+import { validateUsername } from '../utils/validation';
+
+/**
+ * Authentication service for handling auth-related operations
+ */
+export class AuthService {
+    /**
+     * Check if username or email is already taken
+     */
+    async checkAvailability(params: AvailabilityCheckRequest): Promise<AvailabilityStatus> {
+        try {
+            return await apiClient.get<AvailabilityStatus>(API_ENDPOINTS.CHECK_AVAILABILITY, params);
+        } catch (error) {
+            throw new Error(`Failed to check availability: ${(error as Error).message}`);
+        }
+    }
+
+    /**
+     * Register a new applicant
+     */
+    async register(data: RegisterData): Promise<void> {
+        // Validate username before sending to backend
+        const validation = validateUsername(data.username);
+        if (!validation.isValid) {
+            throw new Error(validation.error);
+        }
+
+        try {
+            await apiClient.post<void>(API_ENDPOINTS.REGISTER, data);
+        } catch (error) {
+            throw new Error(`Registration failed: ${(error as Error).message}`);
+        }
+    }
+
+    /**
+     * Login user
+     */
+    async login(username: string, password: string): Promise<void> {
+        // Validate credentials
+        if (!username || !password) {
+            throw new Error('Username and password are required');
+        }
+
+        try {
+            await apiClient.post<void>(API_ENDPOINTS.LOGIN, { username, password });
+        } catch (error) {
+            throw new Error(`Login failed: ${(error as Error).message}`);
+        }
+    }
 }
 
-export interface AvailabilityCheckRequest {
-    username?: string;
-    email?: string;
-}
+// Export singleton instance
+export const authService = new AuthService();
 
-export interface AvailabilityStatus {
-    usernameTaken: boolean;
-    emailTaken: boolean;
-}
-
-export const checkAvailability = async (req: AvailabilityCheckRequest): Promise<AvailabilityStatus> => {
-    // Will call the backend in the future
-    console.log('Checking availability for:', req);
-
-    // Current mock test
-    const takenUsernames = ['admin123', 'user123', 'test123'];
-    const takenEmails = ['admin@example.com', 'user@example.com', 'test@example.com'];
-
-    return new Promise((resolve) => {
-        setTimeout(() => {
-            resolve({
-                usernameTaken: req.username ? takenUsernames.includes(req.username.toLowerCase()) : false,
-                emailTaken: req.email ? takenEmails.includes(req.email.toLowerCase()) : false
-            });
-        }, 500);
-    });
-};
-
-export const registerApplicant = async (data: RegisterData) => {
-    console.log('Registering applicant:', data);
-};
+// Also export the named functions for backward compatibility
+export const checkAvailability = (req: AvailabilityCheckRequest) => authService.checkAvailability(req);
+export const registerApplicant = (data: RegisterData) => authService.register(data);
