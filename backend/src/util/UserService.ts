@@ -1,4 +1,4 @@
-import { User } from "../models/UserModel";
+import { User } from "../model/UserModel";
 
 export const fetchUsers = async (): Promise<User[]> => {
   // Fake data for now
