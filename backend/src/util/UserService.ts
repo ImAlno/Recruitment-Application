@@ -1,6 +1,6 @@
-import { User } from "../model/UserModel";
+import { Applicant } from "../model/Applicant";
 
-export const fetchUsers = async (): Promise<User[]> => {
+export const fetchUsers = async (): Promise<Applicant[]> => {
   // Fake data for now
   return [
     { id: 1, name: "Alice", email: "alice@example.com" },

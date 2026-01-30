@@ -3,7 +3,6 @@
 //const Validators = require('../util/Validators');  // ? fix later if implemented
 import { DAO } from 'integration/DAO';
 import { ApplicantDTO } from 'model/ApplicantDTO';
-import { promises } from 'node:dns';
 
 /**
  * The application's controller. No other class shall call the model or
@@ -31,5 +30,6 @@ export class Controller {
     return contr;
   }
 
+  // TODO Add methods like: registerUser, findUser, login etc to handle bussiness logic and make calls to integration layer
 }
 export default Controller;
