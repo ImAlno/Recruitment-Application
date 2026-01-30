@@ -1,9 +1,23 @@
 import { User } from "../models/UserModel";
+import pool from "../config/db";
+
+export const createUser = async (userData: User): Promise<User> => {
+  const {name, email, password} = userData;
+
+  const query = `
+    INSERT INTO users (name, email, password)
+    VALUES ($1, $2, $3)
+    RETURNING *;
+  `;
+
+  const values = [name, email, password];
+
+  const result = await pool.query(query, values);
+
+  return result.rows[0];
+};
 
 export const fetchUsers = async (): Promise<User[]> => {
-  // Fake data for now
-  return [
-    { id: 1, name: "Alice", email: "alice@example.com" },
-    { id: 2, name: "Bob", email: "bob@example.com" },
-  ];
+  const result = await pool.query("SELECT * FROM users");
+  return result.rows;
 };
