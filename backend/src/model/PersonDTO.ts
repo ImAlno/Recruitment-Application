@@ -3,16 +3,17 @@
 /**
 * DTO for a applicant of the recruitment platform 
 */
-class ApplicantDTO {
+class PersonDTO {
     /**
     * Creates a new instance.
-    * @param {number} id The database id PK
-    * @param {string} firstName Applicants first name
-    * @param {string} lastName Applicants last name
-    * @param {string} username Applicants username
-    * @param {string} password Applicants password
-    * @param {string} email Applicants email
-    * @param {string} personNumber Applicants person number
+    * @param {number} personId The database id PK
+    * @param {string} name Persons first name
+    * @param {string} surname Persons last name
+    * @param {string} pnr Persons personal registration number
+    * @param {string} email Persons email
+    * @param {string} password Persons password
+    * @param {number} roleId Persons role id representing if they are a recruiter or applicant
+    * @param {string} username Persons username
 
     * This is a dto = immutable object = use readonly
     */
@@ -35,4 +36,4 @@ class ApplicantDTO {
     }
 }
 
-export default ApplicantDTO;
+export default PersonDTO;

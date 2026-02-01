@@ -1,11 +1,10 @@
 'use strict';
 /**
-  const cls = require('cls-hooked'); // TODO fix these imports when implemented (cls is for Sequelize)
   const WError = require('verror').WError;
   const Validators = require('../util/Validators');
  */
 
-import { ApplicantDTO } from "../model/ApplicantDTO";
+import { PersonDTO } from "../model/PersonDTO";
 
 /**
  * This class is responsible for all calls to the database. There shall not // ! Need to look into DrizzleORM and see how to convert from sequlize -> DrizzleORM
