@@ -1,4 +1,4 @@
-import { Application } from 'express';
+import { Application, Router } from 'express';
 import AuthApi from "./AuthApi";
 import RequestHandler from "./RequestHandler";
 
@@ -26,12 +26,12 @@ class RequestHandlerLoader {
 
   /**
    * Makes all request handlers available in the specified express
-   * Application object.
+   * Application or Router object.
    *
-   * @param {Application} app The express application hosting the
+   * @param {any} app The express application or router hosting the
    *                          request handlers.
    */
-  async loadHandlers(app: Application) {
+  async loadHandlers(app: any) {
     await Promise.all(this.requestHandlers.map(async (requestHandler) => {
       await requestHandler.registerHandler();
       app.use(requestHandler.path, requestHandler.router);

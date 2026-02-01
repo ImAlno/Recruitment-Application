@@ -42,12 +42,33 @@ class AuthApi extends RequestHandler {
                             this.sendHttpResponse(response, 200, "Registration successful");
                         }
                     } catch (error) {
-                        // TODO: Handle errors with next()
+                        console.error("Registration error:", error);
+                        this.sendHttpResponse(response, 500, "Internal Server Error");
+                    }
+                }
+            )
+
+            /*
+                Check if username or email is available.
+            */
+            this.router.get(
+                "/availability",
+                async (request: Request, response: Response, next: NextFunction) => {
+                    try {
+                        const { username, email } = request.query;
+                        const status = await this.controller?.isAvailable(
+                            username as string,
+                            email as string
+                        );
+                        this.sendHttpResponse(response, 200, status);
+                    } catch (error) {
+                        console.error("Availability check error:", error);
+                        this.sendHttpResponse(response, 500, "Internal Server Error");
                     }
                 }
             )
         } catch (error) {
-            // TODO: Handle errors with next()
+            console.error("AuthApi initialization error:", error);
         }
     }
 }

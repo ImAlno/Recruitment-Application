@@ -1,19 +1,21 @@
 import DAO from '../integration/DAO';
 import PersonDTO from '../model/PersonDTO';
+import db, { Database } from '../db';
+import { RegisterRequest } from '../model/RegisterRequest';
 
 /**
  * The application's controller. No other class shall call the model or
  * integration layer.
  */
 export class Controller {
-  /**
-   * Creates a new instance.
-   */
   protected dao: DAO;
-  protected transactionManager: DAO.getTransactionManager; // TODO Maybe need to change to a type later??
+  protected database: Database;
+  /**
+  * Creates a new instance.
+  */
   constructor() {
     this.dao = new DAO();
-    this.transactionManager = this.dao.getTransactionMgr();
+    this.database = this.dao.getTransactionManager();
   }
 
   /**
@@ -23,8 +25,18 @@ export class Controller {
    */
   static async createController(): Promise<Controller> {
     const contr = new Controller();
-    await contr.dao.createTables(); // TODO Not sure how we will handle table creation
     return contr;
+  }
+
+  async register(userBody: RegisterRequest): Promise<PersonDTO> {
+    return this.database.transaction(async (transactionObj) => {
+      let registeredUser = await this.dao.registerUser(userBody, transactionObj);
+      return registeredUser;
+    });
+  }
+
+  async isAvailable(username?: string, email?: string) {
+    return await this.dao.checkUserExistence(username, email);
   }
 
   // TODO Add methods like: registerUser, findUser, login etc to handle bussiness logic and make calls to integration layer

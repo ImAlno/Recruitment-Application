@@ -1,23 +1,40 @@
-import { config } from "dotenv";
 import express from "express";
 import cors from "cors";
-import userRoutes from "./api/UserRoutes";
+import loader from "./api";
+import dotenv from "dotenv";
+
+// Load environment variables immediately
+dotenv.config();
 
 const app = express();
 
 // Middleware
-app.use(cors());
+app.use(cors({
+  origin: "http://localhost:5173", // Standard Vite port, or use true to allow all
+  credentials: true
+}));
 app.use(express.json());
 
-// Routes
-app.use("/api/users", userRoutes);
+/**
+ * Initialize and load all API handlers.
+ * We wrap this in an async function to ensure routes are loaded
+ * before the server starts listening.
+ */
+const startServer = async () => {
+  const apiRouter = express.Router();
+  await loader.loadHandlers(apiRouter);
 
-config();
+  // Mount all handlers under the /api prefix to match frontend config
+  app.use("/api", apiRouter);
 
-const PORT = process.env.PORT || 4000;
+  const PORT = process.env.PORT || 3000;
+  app.listen(PORT, () => {
+    console.log(`Server running on http://localhost:${PORT}`);
+  });
+};
 
-const server =app.listen(PORT, () => {
-  console.log(`Server running on http://localhost:${PORT}`);
+startServer().catch(err => {
+  console.error("Failed to start server:", err);
 });
 
-export default server;
+export default app;
