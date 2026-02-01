@@ -1,10 +1,9 @@
-'use strict';
 /**
   const WError = require('verror').WError;
   const Validators = require('../util/Validators');
  */
 
-import { PersonDTO } from "../model/PersonDTO";
+import PersonDTO from "../model/PersonDTO";
 
 /**
  * This class is responsible for all calls to the database. There shall not // ! Need to look into DrizzleORM and see how to convert from sequlize -> DrizzleORM
@@ -111,7 +110,6 @@ class DAO {
     }
   }
 
-  // eslint-disable-next-line require-jsdoc
   createUserDto(userModel) {
     return new UserDTO(
         userModel.id,

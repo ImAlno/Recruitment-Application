@@ -1,25 +1,29 @@
-'use strict';
-
 import express, { Router, Request, Response, NextFunction } from 'express';
 import { Controller } from '../controller/Controller';
-//import { Logger } from '../util/Logger';
-//import { Validators } from '../util/Validators';
 
 /**
  * Superclass for all request handlers.
  */
-class RequestHandler {
-  /**
-   * Constructs a new instance, and also creates router and logger
-   * for use by subclasses.
-   */
-    protected router: Router;
-    protected contr?: Controller;
-    //protected logger: Logger; un comment if logging is implemented
+abstract class RequestHandler {
+    /**
+     * Constructs a new instance, and also creates router and logger
+     * for use by subclasses.
+     */
+    public router: Router;
+    protected controller?: Controller;
     constructor() {
-        this.router = express.Router(); // eslint-disable-line new-cap
-        //this.logger = new Logger();
+        this.router = express.Router();
     }
+
+    /**
+     * The URL paths handled by this request handler.
+     */
+    abstract get path(): string;
+
+    /**
+     * Registers the request handler's routes.
+     */
+    abstract registerHandler(): Promise<void>;
 
     /**
     * Protocol part (http) of a URL.
@@ -32,7 +36,7 @@ class RequestHandler {
     * Creates the controller, which shall be used by subclasses.
     */
     async retrieveController() {
-        this.contr = await Controller.createController();
+        this.controller = await Controller.createController();
     }
 
     /**
@@ -41,8 +45,7 @@ class RequestHandler {
     * @param {number} status The status code of the response.
     * @param {any} body The body of the response.
     */
-    sendHttpResponse(res: Response, status: number, body: JSON): void {
-        //Validators.isIntegerBetween(status, 200, 501); uncomment if validation is implemented
+    sendHttpResponse(res: Response, status: number, body: any): void {
         if (body === undefined) {
             res.status(status).end();
             return;
@@ -53,7 +56,7 @@ class RequestHandler {
         } else {
             errOrSucc = 'error';
         }
-        res.status(status).json({[errOrSucc]: body});
+        res.status(status).json({ [errOrSucc]: body });
     }
 }
 

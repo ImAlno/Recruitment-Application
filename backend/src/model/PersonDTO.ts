@@ -1,5 +1,3 @@
-'use strict'
-
 /**
 * DTO for a applicant of the recruitment platform 
 */

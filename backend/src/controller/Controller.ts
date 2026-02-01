@@ -1,8 +1,5 @@
-'use strict';
-
-//const Validators = require('../util/Validators');  // ? fix later if implemented
-import { DAO } from 'integration/DAO';
-import { ApplicantDTO } from 'model/ApplicantDTO';
+import DAO from '../integration/DAO';
+import PersonDTO from '../model/PersonDTO';
 
 /**
  * The application's controller. No other class shall call the model or
