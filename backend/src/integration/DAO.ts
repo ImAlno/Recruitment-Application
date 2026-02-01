@@ -5,7 +5,6 @@
   const Validators = require('../util/Validators');
  */
 
-import { Applicant } from "../model/Applicant";
 import { ApplicantDTO } from "../model/ApplicantDTO";
 
 /**
@@ -17,33 +16,33 @@ class DAO {
    * Creates a new instance and connects to the database.
    */
   constructor() {
-   /** // TODO need to replace Sequelize with DrizzleORM, env variables can probably stay the same
-    const namespace = cls.createNamespace('chat-db');
-    Sequelize.useCLS(namespace);
-    
-    // Determine database host based on environment
-    const isDocker = process.env.DOCKER_DB === 'true';
-    const host = isDocker ? 'postgres' : process.env.DB_HOST;
-    
-    this.database = new Sequelize(
-        process.env.DB_NAME,
-        process.env.DB_USER,
-        process.env.DB_PASS,
-        {
-          host: host, 
-          dialect: process.env.DB_DIALECT,
-          logging: process.env.NODE_ENV === 'development' ? console.log : false,
-          pool: {
-            max: 5,
-            min: 0,
-            acquire: 30000,
-            idle: 10000
-          }
-        },
-    );
-    User.createModel(this.database); // TODO Sequlize models from model layer, need to create new models and connect with DrizzleORM
-    Msg.createModel(this.database);
-     */
+    /** // TODO need to replace Sequelize with DrizzleORM, env variables can probably stay the same
+     const namespace = cls.createNamespace('chat-db');
+     Sequelize.useCLS(namespace);
+     
+     // Determine database host based on environment
+     const isDocker = process.env.DOCKER_DB === 'true';
+     const host = isDocker ? 'postgres' : process.env.DB_HOST;
+     
+     this.database = new Sequelize(
+         process.env.DB_NAME,
+         process.env.DB_USER,
+         process.env.DB_PASS,
+         {
+           host: host, 
+           dialect: process.env.DB_DIALECT,
+           logging: process.env.NODE_ENV === 'development' ? console.log : false,
+           pool: {
+             max: 5,
+             min: 0,
+             acquire: 30000,
+             idle: 10000
+           }
+         },
+     );
+     User.createModel(this.database); // TODO Sequlize models from model layer, need to create new models and connect with DrizzleORM
+     Msg.createModel(this.database);
+      */
   }
 
   /** // TODO Drizzle update required
@@ -65,14 +64,14 @@ class DAO {
   async createTables() {
     try {
       await this.database.authenticate();
-      await this.database.sync({alter: false, force: false}); // ? How does sync work?
+      await this.database.sync({ alter: false, force: false }); // ? How does sync work?
     } catch (err) {
       throw new WError(
-          {
-            cause: err,
-            info: {ChatDAO: 'Failed to call authenticate and sync.'},
-          },
-          'Could not connect to database.',
+        {
+          cause: err,
+          info: { ChatDAO: 'Failed to call authenticate and sync.' },
+        },
+        'Could not connect to database.',
       );
     }
   }
