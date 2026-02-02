@@ -54,6 +54,14 @@ Apply the changes to the database:
 npm run db:migrate
 ```
 
+### 3. Seed the Database
+Populate the database with initial required data (like roles):
+
+```bash
+npm run db:seed
+```
+*Note: This only needs to be run once during initial setup or after resetting the database.*
+
 ## Development
 
 ### Start the Server
@@ -83,3 +91,4 @@ The `package.json` includes several helper scripts for database management:
 | `npm run db:generate` | Generate migration files |
 | `npm run db:migrate` | Run pending migrations |
 | `npm run db:studio` | Open Drizzle Studio |
+| `npm run db:seed` | Populate database with default data |
