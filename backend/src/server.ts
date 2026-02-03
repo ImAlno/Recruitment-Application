@@ -1,6 +1,6 @@
 import express from "express";
 import cors from "cors";
-import loader from "./api";
+import loader from "./api/index";
 import dotenv from "dotenv";
 
 // Load environment variables immediately

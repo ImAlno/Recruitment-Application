@@ -20,3 +20,5 @@ yarn-error.log*
 
 # Database data
 db-data/
+
+Dockerfile
