@@ -1,6 +1,6 @@
 import { apiClient } from './api';
 import { API_ENDPOINTS } from '../types/api';
-import type { RegisterData, AvailabilityCheckRequest, AvailabilityStatus } from '../types/auth';
+import type { RegisterData, AvailabilityCheckRequest, AvailabilityStatus, LoginResponse } from '../types/auth';
 import { validateUsername } from '../utils/validation';
 
 /**
@@ -38,14 +38,15 @@ export class AuthService {
     /**
      * Login user
      */
-    async login(username: string, password: string): Promise<void> {
+    async login(username: string, password: string): Promise<LoginResponse> {
         // Validate credentials
         if (!username || !password) {
             throw new Error('Username and password are required');
         }
 
         try {
-            await apiClient.post<void>(API_ENDPOINTS.LOGIN, { username, password });
+            const response = await apiClient.post<LoginResponse>(API_ENDPOINTS.LOGIN, { username, password });
+            return response;
         } catch (error) {
             throw new Error(`Login failed: ${(error as Error).message}`);
         }

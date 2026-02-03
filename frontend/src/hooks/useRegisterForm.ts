@@ -1,12 +1,10 @@
 import { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
 import { registerApplicant } from '../services/authService';
 import { validateEmail, getPasswordErrors, formatPasswordErrorMessage, validateUsername } from '../utils/validation';
 import { formatPersonNumber } from '../utils/formatters';
 import { useAvailability } from './useAvailability';
 
 export const useRegisterForm = () => {
-    const navigate = useNavigate();
     const [formData, setFormData] = useState({
         firstName: '',
         lastName: '',
@@ -18,6 +16,8 @@ export const useRegisterForm = () => {
     const [errors, setErrors] = useState<Record<string, string>>({});
     const [isSubmitting, setIsSubmitting] = useState(false);
     const [showPassword, setShowPassword] = useState(false);
+
+    const [success, setSuccess] = useState<string | null>(null);
 
     const {
         isCheckingUsername,
@@ -71,6 +71,15 @@ export const useRegisterForm = () => {
             setErrors(prev => {
                 const newErrors = { ...prev };
                 delete newErrors[name];
+                return newErrors;
+            });
+        }
+
+        // Clear global errors on any change
+        if (errors.submit) {
+            setErrors(prev => {
+                const newErrors = { ...prev };
+                delete newErrors.submit;
                 return newErrors;
             });
         }
@@ -131,6 +140,18 @@ export const useRegisterForm = () => {
         return newErrors;
     };
 
+    const clearErrors = (key?: string) => {
+        if (key) {
+            setErrors(prev => {
+                const newErrors = { ...prev };
+                delete newErrors[key];
+                return newErrors;
+            });
+        } else {
+            setErrors({});
+        }
+    };
+
     const handleSubmit = async () => {
         const formatErrors = validate();
         const hasFormatErrors = Object.keys(formatErrors).length > 0;
@@ -139,10 +160,20 @@ export const useRegisterForm = () => {
         if (hasFormatErrors || hasAsyncErrors) return;
 
         setIsSubmitting(true);
+        setErrors(prev => {
+            const newErrors = { ...prev };
+            delete newErrors.submit;
+            return newErrors;
+        });
+
         try {
             await registerApplicant(formData);
-            navigate('/');
-        } finally {
+            setSuccess('Account created successfully! You can now login.');
+        } catch (error) {
+            setErrors(prev => ({
+                ...prev,
+                submit: error instanceof Error ? error.message : 'Registration failed. Please try again.'
+            }));
             setIsSubmitting(false);
         }
     };
@@ -158,6 +189,8 @@ export const useRegisterForm = () => {
         handleSubmit,
         setErrors,
         showPassword,
-        setShowPassword
+        setShowPassword,
+        success,
+        clearErrors,
     };
 };
