@@ -86,6 +86,7 @@ class DAO {
 }
 
   private createPersonDTO(personTableDBrow: InferSelectModel<typeof personTable>): PersonDTO {
+    const roleName = personTableDBrow.roleId === 1 ? 'recruiter' : 'applicant';
     return new PersonDTO(
       personTableDBrow.personId,
       personTableDBrow.name || "",
@@ -93,7 +94,7 @@ class DAO {
       personTableDBrow.username || "",
       personTableDBrow.email || "",
       personTableDBrow.pnr || "",
-      personTableDBrow.roleId || 2,
+      roleName,
       personTableDBrow.password || "",
     );
   }

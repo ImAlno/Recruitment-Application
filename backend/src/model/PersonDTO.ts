@@ -12,7 +12,7 @@ class PersonDTO {
     * @param {string} password Persons password
     * @param {number} roleId Persons role id representing if they are a recruiter or applicant
     * @param {string} username Persons username
-    * @param {number} role The role ID (1 for recruiter, 2 for applicant)
+    * @param {string} role The role of the person is either recruiter or applicant
 
     * This is a dto = immutable object = use readonly
     */
@@ -23,7 +23,7 @@ class PersonDTO {
         public readonly username: string,
         public readonly email: string,
         public readonly personNumber: string,
-        public readonly role: number,
+        public readonly role: string,
         public readonly password?: string,
     ) {
         this.id = id;

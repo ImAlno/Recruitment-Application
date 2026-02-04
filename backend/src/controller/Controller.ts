@@ -68,15 +68,8 @@ export class Controller {
         if (!user || user.password !== password) {
           return null;
         }
-        return {
-          id: user.id,
-          firstName: user.firstName,
-          lastName: user.lastName,
-          username: user.username,
-          email: user.email,
-          personNumber: user.personNumber,
-          role: user.role
-        };
+        
+        return new PersonDTO(user.id, user.firstName, user.lastName,user.username, user.email, user.personNumber, user.role);
     });
   }
 

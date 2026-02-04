@@ -114,19 +114,7 @@ class AuthApi extends RequestHandler {
                         const user = await this.controller?.login(username, password);
                         if (user) {
                             //Authorization.sendAuthCookie(user, response);
-                            const roleName = user.role === 1 ? 'recruiter' : 'applicant';
-                            const responseBody = {
-                                user: {
-                                    id: user.id,
-                                    username: user.username,
-                                    role: roleName,
-                                    firstName: user.firstName,
-                                    lastName: user.lastName,
-                                    email: user.email,
-                                    personNumber: user.personNumber
-                                }
-                            };
-                            this.sendHttpResponse(response, 200, responseBody);
+                            this.sendHttpResponse(response, 200, user);
                         } else {
                             this.sendHttpResponse(response, 401, "Invalid credentials");
                         }
