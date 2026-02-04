@@ -26,6 +26,7 @@ export const API_ENDPOINTS = {
     REGISTER: '/auth/register',
     LOGIN: '/auth/login',
     CHECK_AVAILABILITY: '/auth/availability',
+    LOGOUT: '/auth/logout',
 
     // Application endpoints
     SUBMIT_APPLICATION: '/applications',

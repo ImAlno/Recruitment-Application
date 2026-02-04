@@ -51,6 +51,18 @@ export class AuthService {
             throw new Error(`Login failed: ${(error as Error).message}`);
         }
     }
+
+    /**
+     * Logout user
+     */
+    async logout(): Promise<void> {
+        try {
+            await apiClient.post<void>(API_ENDPOINTS.LOGOUT, {});
+        } catch (error) {
+            console.error('Logout API call failed:', error);
+            // Even if API fails, we usually want to clear local state
+        }
+    }
 }
 
 // Export singleton instance

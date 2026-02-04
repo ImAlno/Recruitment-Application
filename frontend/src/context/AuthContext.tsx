@@ -2,6 +2,7 @@
 import React, { createContext, useContext, useState, useEffect, type ReactNode } from 'react';
 
 import type { User } from '../types/auth';
+import { authService } from '../services/authService';
 
 interface AuthContextType {
     user: User | null;
@@ -37,10 +38,13 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
         localStorage.setItem('user', JSON.stringify(userData));
     };
 
-    const logout = () => {
-        setUser(null);
-        localStorage.removeItem('user');
-        // Ideally also call an API endpoint to clear the cookie
+    const logout = async () => {
+        try {
+            await authService.logout();
+        } finally {
+            setUser(null);
+            localStorage.removeItem('user');
+        }
     };
 
     return (
