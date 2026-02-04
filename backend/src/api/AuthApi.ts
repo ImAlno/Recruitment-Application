@@ -72,40 +72,6 @@ class AuthApi extends RequestHandler {
             /*
                 User login. When user tries to log in to the web service a request will be sent here.
             */
-
-/*             this.router.post(
-                "/login",
-                async (request: Request, response: Response, next: NextFunction) => {
-                    try {
-                        const { username, password } = request.body;
-                        const result = await this.controller?.login(username, password);
-                        if (result) {
-                            const roleName = result.user.role === 1 ? 'recruiter' : 'applicant';
-                            response.cookie('Authorization', result.token, {
-                                httpOnly: true,
-                                secure: false,
-                                sameSite: 'lax',
-                                maxAge: 3600000
-                            });
-                            const responseBody = {
-                                token: result.token,
-                                user: {
-                                    id: result.user.id,
-                                    username: result.user.username,
-                                    role: roleName
-                                }
-                            };
-                            this.sendHttpResponse(response, 200, responseBody);
-                        } else {
-                            this.sendHttpResponse(response, 401, "Invalid credentials");
-                        }
-                    } catch (error) {
-                        console.error("Login error:", error);
-                        this.sendHttpResponse(response, 500, "Internal Server Error");
-                    }
-                }
-            ); */
-
             this.router.post(
                 "/login",
                 async (request: Request, response: Response) => {
@@ -113,7 +79,7 @@ class AuthApi extends RequestHandler {
                         const { username, password } = request.body;
                         const user = await this.controller?.login(username, password);
                         if (user) {
-                            //Authorization.sendAuthCookie(user, response);
+                            Authorization.sendAuthCookie(user, response);
                             this.sendHttpResponse(response, 200, user);
                         } else {
                             this.sendHttpResponse(response, 401, "Invalid credentials");

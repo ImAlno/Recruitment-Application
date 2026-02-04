@@ -40,28 +40,6 @@ export class Controller {
     return await this.dao.checkUserExistence(username, email);
   }
 
-/*   async login(username: string, password: string): Promise<{ token: string, user: PersonDTO } | null> {
-    return this.database.transaction(async (transactionObj) => {
-        const user = await this.dao.findUser(username);
-        if (!user) {
-            return null;
-        }
-        if (user.password !== password) {
-            return null;
-        }
-        const token = jwt.sign(
-            {
-                id: user.id,
-                username: user.username,
-                roleId: user.role
-            },
-            process.env.JWT_SECRET || "temporary_secret_key",
-            { expiresIn: '1h' }
-        );
-        return { token, user };
-    });
-  } */
-
   async login(username: string, password: string): Promise<PersonDTO | null> {
     return this.database.transaction(async (transactionObj) => {
         const user = await this.dao.findUser(username);
