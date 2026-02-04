@@ -2,6 +2,7 @@ import express from "express";
 import cors from "cors";
 import loader from "./api";
 import dotenv from "dotenv";
+import cookieParser from "cookie-parser";
 
 // Load environment variables immediately
 dotenv.config();
@@ -9,6 +10,7 @@ dotenv.config();
 const app = express();
 
 // Middleware
+app.use(cookieParser());
 app.use(cors({
   origin: "http://localhost:5173", // Standard Vite port, or use true to allow all
   credentials: true

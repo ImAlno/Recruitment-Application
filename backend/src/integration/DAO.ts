@@ -15,7 +15,7 @@ class DAO {
     this.database = db;
   }
 
-  /** 
+  /**
    * @return {Object} database instance from drizzle
    */
   getTransactionManager(): Database {
@@ -32,7 +32,7 @@ class DAO {
           pnr: userBody.personNumber,
           email: userBody.email,
           password: userBody.password,
-          roleId: 4,
+          roleId: 2,
           username: userBody.username,
         })
         .returning();
@@ -67,6 +67,24 @@ class DAO {
     }
   }
 
+  async findUser(username: string): Promise<PersonDTO | null> {
+    try {
+        const result = await this.database
+            .select()
+            .from(personTable)
+            .where(eq(personTable.username, username));
+
+        if (result.length === 0) {
+            return null;
+        }
+
+        return this.createPersonDTO(result[0]!);
+    } catch (error) {
+        console.error("Failed finding user:", error);
+        throw error;
+    }
+}
+
   private createPersonDTO(personTableDBrow: InferSelectModel<typeof personTable>): PersonDTO {
     return new PersonDTO(
       personTableDBrow.personId,
@@ -76,6 +94,7 @@ class DAO {
       personTableDBrow.password || "",
       personTableDBrow.email || "",
       personTableDBrow.pnr || "",
+      personTableDBrow.roleId || 2,
     );
   }
 }

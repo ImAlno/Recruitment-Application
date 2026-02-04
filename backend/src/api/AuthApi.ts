@@ -1,5 +1,6 @@
 import { Request, Response, NextFunction } from 'express';
 import RequestHandler from "./RequestHandler";
+import { Authorization } from './Authorization';
 
 class AuthApi extends RequestHandler {
     /**
@@ -46,7 +47,7 @@ class AuthApi extends RequestHandler {
                         this.sendHttpResponse(response, 500, "Internal Server Error");
                     }
                 }
-            )
+            );
 
             /*
                 Check if username or email is available.
@@ -66,7 +67,87 @@ class AuthApi extends RequestHandler {
                         this.sendHttpResponse(response, 500, "Internal Server Error");
                     }
                 }
-            )
+            );
+
+            /*
+                User login. When user tries to log in to the web service a request will be sent here.
+            */
+
+/*             this.router.post(
+                "/login",
+                async (request: Request, response: Response, next: NextFunction) => {
+                    try {
+                        const { username, password } = request.body;
+                        const result = await this.controller?.login(username, password);
+                        if (result) {
+                            const roleName = result.user.role === 1 ? 'recruiter' : 'applicant';
+                            response.cookie('Authorization', result.token, {
+                                httpOnly: true,
+                                secure: false,
+                                sameSite: 'lax',
+                                maxAge: 3600000
+                            });
+                            const responseBody = {
+                                token: result.token,
+                                user: {
+                                    id: result.user.id,
+                                    username: result.user.username,
+                                    role: roleName
+                                }
+                            };
+                            this.sendHttpResponse(response, 200, responseBody);
+                        } else {
+                            this.sendHttpResponse(response, 401, "Invalid credentials");
+                        }
+                    } catch (error) {
+                        console.error("Login error:", error);
+                        this.sendHttpResponse(response, 500, "Internal Server Error");
+                    }
+                }
+            ); */
+
+            this.router.post(
+                "/login",
+                async (request: Request, response: Response) => {
+                    try {
+                        const { username, password } = request.body;
+                        const user = await this.controller?.login(username, password);
+                        if (user) {
+                            //Authorization.sendAuthCookie(user, response);
+                            const roleName = user.role === 1 ? 'recruiter' : 'applicant';
+                            const responseBody = {
+                                user: {
+                                    id: user.id,
+                                    username: user.username,
+                                    role: roleName
+                                }
+                            };
+                            this.sendHttpResponse(response, 200, responseBody);
+                        } else {
+                            this.sendHttpResponse(response, 401, "Invalid credentials");
+                        }
+                    } catch (error) {
+                        console.error("Login error:", error);
+                        this.sendHttpResponse(response, 500, "Internal Server Error");
+                    }
+                }
+            );
+
+            this.router.post(
+                "/logout",
+                async (request: Request, response: Response) => {
+                    try {
+                        Authorization.logout(response);
+                        this.sendHttpResponse(response, 200, "Logout successful");
+                    } catch (error) {
+                        console.error("Logout error:", error);
+                        this.sendHttpResponse(response, 500, "Internal Server Error");
+                    }
+                }
+            );
+
+            // TODO add /me or /:id route
+
         } catch (error) {
             console.error("AuthApi initialization error:", error);
         }
