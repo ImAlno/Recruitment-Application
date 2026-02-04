@@ -13,7 +13,7 @@ const ApplicantDashboard = () => {
                 <aside className="flex flex-col gap-2">
                     <Button variant="outline" fullWidth className="justify-start" onClick={() => navigate('/applicant/apply/competence')}>Apply for Position</Button>
                     <Button variant="outline" fullWidth className="justify-start">View Submitted Application</Button>
-                    <Button variant="danger" fullWidth className="justify-start mt-4" onClick={() => navigate('/login')}>Logout</Button>
+
                 </aside>
                 <main className="space-y-6">
                     <Card>

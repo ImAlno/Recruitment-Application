@@ -23,10 +23,7 @@ const ProfilePage: React.FC = () => {
                                 <label className="text-sm font-medium text-gray-500">Username</label>
                                 <p className="text-lg font-medium">{user.username}</p>
                             </div>
-                            <div className="space-y-1">
-                                <label className="text-sm font-medium text-gray-500">Role</label>
-                                <p className="text-lg font-medium capitalize">{user.role}</p>
-                            </div>
+
                             <div className="space-y-1">
                                 <label className="text-sm font-medium text-gray-500">First Name</label>
                                 <p className="text-lg font-medium">{user.firstName}</p>
