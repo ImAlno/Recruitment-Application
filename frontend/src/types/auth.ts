@@ -26,13 +26,16 @@ export interface LoginRequest {
     password: string;
 }
 
-export interface LoginResponse {
-    success: {
-        token?: string;
-        user: {
-            id: number;
-            username: string;
-            role: 'applicant' | 'recruiter';
-        };
-    };
+export interface User {
+    id: number;
+    username: string;
+    firstName: string;
+    lastName: string;
+    email: string;
+    personNumber: string;
+    role: 'applicant' | 'recruiter';
 }
+
+
+export type LoginResponse = User;
+

@@ -2,9 +2,11 @@
 import Layout from '../components/Layout';
 import Button from '../components/ui/Button';
 import { useNavigate } from 'react-router-dom';
+import { useAuth } from '../context/AuthContext';
 
 const LandingPage = () => {
     const navigate = useNavigate();
+    const { user, isAuthenticated } = useAuth();
 
     return (
         <Layout>
@@ -18,8 +20,19 @@ const LandingPage = () => {
                     </p>
                 </div>
                 <div className="flex flex-col sm:flex-row gap-4">
-                    <Button size="lg" onClick={() => navigate('/register')}>Create Account</Button>
-                    <Button size="lg" variant="outline" onClick={() => navigate('/login')}>Login</Button>
+                    {!isAuthenticated ? (
+                        <>
+                            <Button size="lg" onClick={() => navigate('/register')}>Create Account</Button>
+                            <Button size="lg" variant="outline" onClick={() => navigate('/login')}>Login</Button>
+                        </>
+                    ) : (
+                        <Button
+                            size="lg"
+                            onClick={() => navigate(user?.role === 'recruiter' ? '/recruiter/dashboard' : '/applicant/dashboard')}
+                        >
+                            Go to Dashboard
+                        </Button>
+                    )}
                 </div>
             </div>
         </Layout>

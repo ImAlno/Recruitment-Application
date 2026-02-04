@@ -1,6 +1,6 @@
 import type { SVGProps } from 'react';
 
-interface IconProps extends SVGProps<SVGSVGElement> {
+export interface IconProps extends SVGProps<SVGSVGElement> {
     size?: number | string;
 }
 
@@ -39,5 +39,23 @@ export const EyeOff = ({ size = 20, ...props }: IconProps) => (
         <path d="M6.61 6.61A13.52 13.52 0 0 0 2 12s3 7 10 7a9.74 9.74 0 0 0 5.39-1.61" />
         <line x1="2" x2="22" y1="2" y2="22" />
         <path d="M9.88 9.88a3 3 0 1 0 4.24 4.24" />
+    </svg>
+);
+
+export const X = ({ size = 20, ...props }: IconProps) => (
+    <svg
+        xmlns="http://www.w3.org/2000/svg"
+        width={size}
+        height={size}
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="currentColor"
+        strokeWidth="2"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+        {...props}
+    >
+        <path d="M18 6 6 18" />
+        <path d="m6 6 12 12" />
     </svg>
 );

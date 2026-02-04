@@ -12,7 +12,7 @@ const RecruiterDashboard = () => {
             <div className="grid gap-6 md:grid-cols-[240px_1fr]">
                 <aside className="flex flex-col gap-2">
                     <Button variant="outline" fullWidth className="justify-start" onClick={() => navigate('/recruiter/applications')}>List Applications</Button>
-                    <Button variant="danger" fullWidth className="justify-start mt-4" onClick={() => navigate('/login')}>Logout</Button>
+
                 </aside>
                 <main className="space-y-6">
                     <Card>
