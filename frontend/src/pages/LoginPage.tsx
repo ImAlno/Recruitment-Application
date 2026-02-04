@@ -22,14 +22,9 @@ const LoginPage = () => {
         setIsLoading(true);
 
         try {
-            const response = await authService.login(username, password);
-            const { token, user } = response.success;
+            const user = await authService.login(username, password);
 
-            // Mapping backend user role to frontend expected role if needed, 
-            // but assuming they match based on types.
-            // Backend sends 'applicant' or 'recruiter'.
-
-            login(user, token);
+            login(user);
 
             if (user.role === 'recruiter') {
                 navigate('/recruiter/dashboard');
@@ -37,8 +32,8 @@ const LoginPage = () => {
                 navigate('/applicant/dashboard');
             }
         } catch (err) {
-            setError('Invalid credentials. Please try again.');
             console.error(err);
+            setError(err instanceof Error ? err.message : 'Invalid credentials. Please try again.');
         } finally {
             setIsLoading(false);
         }

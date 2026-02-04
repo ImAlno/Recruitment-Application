@@ -4,6 +4,7 @@ import ProtectedRoute from './components/ProtectedRoute';
 import LandingPage from './pages/LandingPage';
 import RegisterPage from './pages/RegisterPage';
 import LoginPage from './pages/LoginPage';
+import ProfilePage from './pages/ProfilePage';
 import ApplicantDashboard from './pages/ApplicantDashboard';
 import CompetenceProfilePage from './pages/CompetenceProfilePage';
 import AvailabilityPage from './pages/AvailabilityPage';
@@ -87,6 +88,16 @@ function App() {
             element={
               <ProtectedRoute allowedRoles={['recruiter']}>
                 <ApplicationDetailsPage />
+              </ProtectedRoute>
+            }
+          />
+
+          {/* Common Protected Routes */}
+          <Route
+            path="/profile"
+            element={
+              <ProtectedRoute allowedRoles={['applicant', 'recruiter']}>
+                <ProfilePage />
               </ProtectedRoute>
             }
           />

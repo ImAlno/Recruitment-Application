@@ -1,16 +1,10 @@
-
-import { Link, useNavigate } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
-import Button from './ui/Button';
+import UserDropdown from './UserDropdown';
 
 const Header = () => {
-    const { user, isAuthenticated, logout } = useAuth();
-    const navigate = useNavigate();
-
-    const handleLogout = () => {
-        logout();
-        navigate('/');
-    };
+    const { user, isAuthenticated } = useAuth();
+    // navigate and logout unused here now, handled in UserDropdown
 
     return (
         <header className="sticky top-0 z-50 w-full border-b border-gray-200 bg-white/95 backdrop-blur supports-[backdrop-filter]:bg-white/60">
@@ -34,9 +28,7 @@ const Header = () => {
                         <option>SV</option>
                     </select>
                     {isAuthenticated ? (
-                        <Button variant="outline" size="sm" onClick={handleLogout}>
-                            Logout
-                        </Button>
+                        <UserDropdown />
                     ) : (
                         <Link to="/login" className="text-sm font-medium hover:underline underline-offset-4">
                             Login

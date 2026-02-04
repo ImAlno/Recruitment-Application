@@ -1,34 +1,46 @@
 
-import React, { createContext, useContext, useState, type ReactNode } from 'react';
+import React, { createContext, useContext, useState, useEffect, type ReactNode } from 'react';
 
-interface User {
-    id: number;
-    username: string;
-    role: 'applicant' | 'recruiter';
-}
+import type { User } from '../types/auth';
 
 interface AuthContextType {
     user: User | null;
     isAuthenticated: boolean;
-    login: (user: User, token?: string) => void;
+    login: (user: User) => void;
     logout: () => void;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
 export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
-    const [user, setUser] = useState<User | null>(null);
+    const [user, setUser] = useState<User | null>(() => {
+        // Restore user from localStorage on initial load
+        const storedUser = localStorage.getItem('user');
+        return storedUser ? JSON.parse(storedUser) : null;
+    });
 
-    const login = (userData: User, token?: string) => {
+    useEffect(() => {
+        const handleLogout = () => {
+            setUser(null);
+            localStorage.removeItem('user');
+        };
+
+        window.addEventListener('auth:logout', handleLogout);
+
+        return () => {
+            window.removeEventListener('auth:logout', handleLogout);
+        };
+    }, []);
+
+    const login = (userData: User) => {
         setUser(userData);
-        if (token) {
-            localStorage.setItem('auth_token', token);
-        }
+        localStorage.setItem('user', JSON.stringify(userData));
     };
 
     const logout = () => {
         setUser(null);
-        localStorage.removeItem('auth_token');
+        localStorage.removeItem('user');
+        // Ideally also call an API endpoint to clear the cookie
     };
 
     return (

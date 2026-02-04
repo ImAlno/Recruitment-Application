@@ -44,8 +44,10 @@ class ApiClient {
             },
             (error) => {
                 if (error.response?.status === HttpStatus.UNAUTHORIZED) {
-                    // Handle unauthorized - could trigger logout or redirect
-                    console.warn('User unauthorized - may need to re-login');
+                    // Force logout on 401
+                    localStorage.removeItem('user');
+                    window.dispatchEvent(new Event('auth:logout'));
+                    console.warn('Session expired - User logged out');
                 }
                 return Promise.reject(error);
             }
