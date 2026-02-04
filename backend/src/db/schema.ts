@@ -32,6 +32,7 @@ export const roleTable = pgTable("role", {
     name: varchar({ length: 255 }),
 });
 
+
 // TODO: Look into how these tables are connected more closely
 export const competenceTable = pgTable("competence", {
     competenceId: integer("competence_id").primaryKey().generatedByDefaultAsIdentity(),
