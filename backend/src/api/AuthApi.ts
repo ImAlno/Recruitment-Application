@@ -119,7 +119,11 @@ class AuthApi extends RequestHandler {
                                 user: {
                                     id: user.id,
                                     username: user.username,
-                                    role: roleName
+                                    role: roleName,
+                                    firstName: user.firstName,
+                                    lastName: user.lastName,
+                                    email: user.email,
+                                    personNumber: user.personNumber
                                 }
                             };
                             this.sendHttpResponse(response, 200, responseBody);

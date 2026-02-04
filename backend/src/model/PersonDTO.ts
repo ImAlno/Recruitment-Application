@@ -21,10 +21,10 @@ class PersonDTO {
         public readonly firstName: string,
         public readonly lastName: string,
         public readonly username: string,
-        public readonly password: string,
         public readonly email: string,
         public readonly personNumber: string,
-        public readonly role: number
+        public readonly role: number,
+        public readonly password?: string,
     ) {
         this.id = id;
         this.firstName = firstName;

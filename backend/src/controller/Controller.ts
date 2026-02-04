@@ -62,7 +62,7 @@ export class Controller {
     });
   } */
 
-  async login(username: string, password: string): Promise<Pick<PersonDTO, 'id' | 'username' | 'role'> | null> {
+  async login(username: string, password: string): Promise<PersonDTO | null> {
     return this.database.transaction(async (transactionObj) => {
         const user = await this.dao.findUser(username);
         if (!user || user.password !== password) {
@@ -70,7 +70,11 @@ export class Controller {
         }
         return {
           id: user.id,
+          firstName: user.firstName,
+          lastName: user.lastName,
           username: user.username,
+          email: user.email,
+          personNumber: user.personNumber,
           role: user.role
         };
     });

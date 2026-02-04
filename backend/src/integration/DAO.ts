@@ -91,10 +91,10 @@ class DAO {
       personTableDBrow.name || "",
       personTableDBrow.surname || "",
       personTableDBrow.username || "",
-      personTableDBrow.password || "",
       personTableDBrow.email || "",
       personTableDBrow.pnr || "",
       personTableDBrow.roleId || 2,
+      personTableDBrow.password || "",
     );
   }
 }
