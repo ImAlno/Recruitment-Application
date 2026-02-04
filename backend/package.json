@@ -8,6 +8,7 @@
     "start": "node dist/server.js",
     "db:up": "docker-compose up -d",
     "db:down": "docker-compose down",
+    "db:down:clean": "docker compose down -v --remove-orphans",
     "db:logs": "docker-compose logs -f postgres",
     "db:generate": "drizzle-kit generate",
     "db:migrate": "drizzle-kit migrate",

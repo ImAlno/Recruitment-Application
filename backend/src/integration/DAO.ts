@@ -32,7 +32,7 @@ class DAO {
           pnr: userBody.personNumber,
           email: userBody.email,
           password: userBody.password,
-          roleId: 2,
+          roleId: 2,                    // TODO: look into better solution
           username: userBody.username,
         })
         .returning();
