@@ -31,7 +31,7 @@ async function seed() {
                 { name: "roller coaster operation" }, 
             ]);
         }
-
+        
         const existingStatus = await db.select().from(statusTable);
         if (existingStatus.length > 0) {
             console.log("Status entries already exist, skipping seed.");
