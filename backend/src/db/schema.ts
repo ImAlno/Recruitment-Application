@@ -5,6 +5,7 @@ import {
     date,
     numeric,
 } from "drizzle-orm/pg-core";
+import { application } from "express";
 
 /**
  * All tables are made to match the existing database file available on Canvas.
@@ -56,5 +57,21 @@ export const availabilityTable = pgTable("availability", {
     fromDate: date("from_date"),
     toDate: date("to_date"),
 });
+
+export const applicationTable = pgTable("application", {
+    applicationId: integer("application_id")
+        .primaryKey()
+        .generatedByDefaultAsIdentity(),
+    personId: integer("person_id").references(() => personTable.personId),
+    statusId: integer("status_id").references(() => statusTable.statusId),
+    createdAt: date("created_at"),
+})
+
+export const statusTable = pgTable("status", {
+    statusId: integer("status_id")
+        .primaryKey()
+        .generatedByDefaultAsIdentity(),
+    name: varchar({ length: 255 }),
+})
 
 // TODO: Look into drizzle relations API documentation, can make complex queries easier to perform

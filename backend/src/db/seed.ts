@@ -1,5 +1,5 @@
 import db from "./index";
-import { roleTable, competenceTable } from "./schema";
+import { roleTable, competenceTable, statusTable, applicationTable } from "./schema";
 
 /** // TODO: This is a temporary function, a better solution should be implemented.
  * The database requires that the role table and compentence table has entries for both 1. applicant and recruiter and 2. ticket sales, lotteries and roller coaster operation. 
@@ -24,7 +24,6 @@ async function seed() {
         const existingCompetence = await db.select().from(competenceTable);
         if (existingCompetence.length > 0) {
             console.log("Competence entries already exist, skipping seed.");
-            return;
         } else {
             await db.insert(competenceTable).values([
                 { name: "ticket sales" },
@@ -32,6 +31,33 @@ async function seed() {
                 { name: "roller coaster operation" }, 
             ]);
         }
+
+        const existingStatus = await db.select().from(statusTable);
+        if (existingStatus.length > 0) {
+            console.log("Status entries already exist, skipping seed.");
+            return;
+        } else {
+            await db.insert(statusTable).values([
+                { name: "accepted" },
+                { name: "rejected" },
+                { name: "unhandled" }, 
+            ]);
+        }
+
+        /* // ? Temporary
+        const existingApplications = await db.select().from(applicationTable);
+        if (existingApplications.length > 0) {
+            console.log("Application entries already exist, skipping seed.");
+            return;
+        } else {
+            await db.insert(applicationTable).values([
+                {
+                    personId: 1,        
+                    statusId: 1,        
+                    createdAt: new Date().toISOString().split("T")[0], // converts to 'YYYY-MM-DD'
+                },
+            ]);
+        } */
 
         console.log("Seeding completed successfully!");
     } catch (error) {
