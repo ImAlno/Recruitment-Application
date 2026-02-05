@@ -1,6 +1,7 @@
 import { Application, Router } from 'express';
 import AuthApi from "./AuthApi";
 import RequestHandler from "./RequestHandler";
+import ApplicationApi from './ApplicationApi';
 
 /**
  * Contains all request handlers.
@@ -42,5 +43,5 @@ class RequestHandlerLoader {
 
 const loader = new RequestHandlerLoader();
 loader.addRequestHandler(new AuthApi());
-
+loader.addRequestHandler(new ApplicationApi)
 export default loader;

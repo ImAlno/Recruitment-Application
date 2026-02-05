@@ -2,7 +2,9 @@ import DAO from '../integration/DAO';
 import PersonDTO from '../model/PersonDTO';
 import db, { Database } from '../db';
 import { RegisterRequest } from '../model/RegisterRequest';
-import jwt from 'jsonwebtoken';
+//import jwt from 'jsonwebtoken';
+import ApplicationDAO from '../integration/ApplicationDAO';
+import { CompetenceDTO, CreateApplicationDTO } from '../model/CompetenceDTO';
 
 /**
  * The application's controller. No other class shall call the model or
@@ -11,12 +13,14 @@ import jwt from 'jsonwebtoken';
 export class Controller {
   protected dao: DAO;
   protected database: Database;
+  protected applicationDAO: ApplicationDAO
   /**
   * Creates a new instance.
   */
   constructor() {
     this.dao = new DAO();
     this.database = this.dao.getTransactionManager();
+    this.applicationDAO = new ApplicationDAO();
   }
 
   /**
@@ -65,7 +69,24 @@ export class Controller {
     });
   }
 
+  async createApplication(applicantId:number, data:CreateApplicationDTO): Promise<void>{
+    return this.database.transaction(async (tx) => {
+      try{
+      
+      for (const competence of data.competences) {
+        await this.applicationDAO.addCompetence(applicantId, competence, tx);
+      }
 
+      for (const availability of data.availability) {
+        await this.applicationDAO.addAvailability(applicantId, availability, tx);
+      }
+
+    }catch(err){
+      console.error("Transaction failed", err)
+      throw err;
+    }
+    })
+  }
   // TODO Add methods like: registerUser, findUser, login etc to handle bussiness logic and make calls to integration layer
 }
 export default Controller;
