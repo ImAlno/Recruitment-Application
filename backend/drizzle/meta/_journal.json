@@ -15,6 +15,20 @@
       "when": 1769986204269,
       "tag": "0001_clever_bucky",
       "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "7",
+      "when": 1770290034577,
+      "tag": "0002_parallel_eternals",
+      "breakpoints": true
+    },
+    {
+      "idx": 3,
+      "version": "7",
+      "when": 1770290196621,
+      "tag": "0003_chubby_wasp",
+      "breakpoints": true
     }
   ]
 }

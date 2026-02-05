@@ -1,0 +1,1 @@
+ALTER TABLE "application" RENAME COLUMN "availability_id" TO "application_id";
