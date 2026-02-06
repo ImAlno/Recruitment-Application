@@ -1,11 +1,18 @@
-
 import Layout from '../components/Layout';
 import Card, { CardHeader, CardTitle, CardContent, CardFooter } from '../components/ui/Card';
 import Button from '../components/ui/Button';
 import { useNavigate } from 'react-router-dom';
+import { useApplication } from '../contexts/ApplicationContext';
+import { useEffect } from 'react';
 
 const ConfirmationPage = () => {
     const navigate = useNavigate();
+    const { clearApplication } = useApplication();
+
+    // Clear the application context when the confirmation page loads
+    useEffect(() => {
+        clearApplication();
+    }, []);
 
     return (
         <Layout>
@@ -23,10 +30,12 @@ const ConfirmationPage = () => {
                         <p className="text-gray-500">
                             Thank you for applying. We have received your application and will review it shortly.
                         </p>
+                        <p className="text-sm text-gray-400 mt-4">
+                            You can check your application status from your dashboard.
+                        </p>
                     </CardContent>
                     <CardFooter className="flex flex-col gap-2">
                         <Button fullWidth onClick={() => navigate('/applicant/dashboard')}>Return to Dashboard</Button>
-                        <Button fullWidth variant="outline" onClick={() => navigate('/login')}>Logout</Button>
                     </CardFooter>
                 </Card>
             </div>

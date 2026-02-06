@@ -1,0 +1,60 @@
+import { useState } from 'react';
+import { useApplication } from '../contexts/ApplicationContext';
+
+/**
+ * Hook for managing the competence profile form
+ */
+export const useCompetenceForm = () => {
+    const { competences, addCompetence, removeCompetence } = useApplication();
+    const [selectedCompetenceId, setSelectedCompetenceId] = useState<number>(0);
+    const [years, setYears] = useState<string>('');
+    const [error, setError] = useState<string>('');
+
+    const handleAddCompetence = () => {
+        // Validation
+        if (!selectedCompetenceId || selectedCompetenceId === 0) {
+            setError('Please select a competence');
+            return false;
+        }
+
+        const yearsNum = parseFloat(years);
+        if (years === '' || isNaN(yearsNum) || yearsNum < 0) {
+            setError('Please enter a valid number of years');
+            return false;
+        }
+
+        // Check if competence already exists
+        const exists = competences.some(c => c.competence_id === selectedCompetenceId);
+        if (exists) {
+            setError('This competence has already been added');
+            return false;
+        }
+
+        // Add competence
+        addCompetence({
+            competence_id: selectedCompetenceId,
+            years_of_experience: yearsNum,
+        });
+
+        // Reset form
+        setSelectedCompetenceId(0);
+        setYears('');
+        setError('');
+        return true;
+    };
+
+    const clearError = () => setError('');
+
+    return {
+        selectedCompetenceId,
+        setSelectedCompetenceId,
+        years,
+        setYears,
+        error,
+        setError,
+        competences,
+        handleAddCompetence,
+        removeCompetence,
+        clearError
+    };
+};

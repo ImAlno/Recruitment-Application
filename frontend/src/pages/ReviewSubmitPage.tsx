@@ -1,11 +1,21 @@
-
 import Layout from '../components/Layout';
 import Card, { CardHeader, CardTitle, CardContent } from '../components/ui/Card';
 import Button from '../components/ui/Button';
 import { useNavigate } from 'react-router-dom';
+import { useAuth } from '../contexts/AuthContext';
+import { useReviewSubmit } from '../hooks';
+import { getCompetenceLabel } from '../utils/applicationUtils';
 
 const ReviewSubmitPage = () => {
     const navigate = useNavigate();
+    const { user } = useAuth();
+    const {
+        competences,
+        availability,
+        isSubmitting,
+        error,
+        handleFinalSubmit
+    } = useReviewSubmit();
 
     return (
         <Layout>
@@ -13,19 +23,21 @@ const ReviewSubmitPage = () => {
                 <h1 className="text-3xl font-bold">Review & Submit</h1>
 
                 <div className="space-y-6">
-                    <Card>
-                        <CardHeader className="flex flex-row items-center justify-between">
-                            <CardTitle className="text-lg">Personal Information</CardTitle>
-                        </CardHeader>
-                        <CardContent>
-                            <div className="grid grid-cols-2 gap-y-2 text-sm">
-                                <span className="text-gray-500">First Name:</span> <span>John</span>
-                                <span className="text-gray-500">Last Name:</span> <span>Doe</span>
-                                <span className="text-gray-500">Email:</span> <span>john.doe@example.com</span>
-                                <span className="text-gray-500">Person Number:</span> <span>19900101-1234</span>
-                            </div>
-                        </CardContent>
-                    </Card>
+                    {user && (
+                        <Card>
+                            <CardHeader className="flex flex-row items-center justify-between">
+                                <CardTitle className="text-lg">Personal Information</CardTitle>
+                            </CardHeader>
+                            <CardContent>
+                                <div className="grid grid-cols-2 gap-y-2 text-sm">
+                                    <span className="text-gray-500">First Name:</span> <span>{user.firstName}</span>
+                                    <span className="text-gray-500">Last Name:</span> <span>{user.lastName}</span>
+                                    <span className="text-gray-500">Email:</span> <span>{user.email}</span>
+                                    <span className="text-gray-500">Person Number:</span> <span>{user.personNumber}</span>
+                                </div>
+                            </CardContent>
+                        </Card>
+                    )}
 
                     <Card>
                         <CardHeader className="flex flex-row items-center justify-between">
@@ -33,9 +45,17 @@ const ReviewSubmitPage = () => {
                             <Button size="sm" variant="outline" onClick={() => navigate('/applicant/apply/competence')}>Edit</Button>
                         </CardHeader>
                         <CardContent>
-                            <ul className="text-sm space-y-1">
-                                <li>Ticket sales: 2 years</li>
-                            </ul>
+                            {competences.length === 0 ? (
+                                <p className="text-sm text-gray-500">No competences added yet</p>
+                            ) : (
+                                <ul className="text-sm space-y-1">
+                                    {competences.map((comp, index) => (
+                                        <li key={index}>
+                                            {getCompetenceLabel(comp.competence_id)}: {comp.years_of_experience} years
+                                        </li>
+                                    ))}
+                                </ul>
+                            )}
                         </CardContent>
                     </Card>
 
@@ -45,16 +65,34 @@ const ReviewSubmitPage = () => {
                             <Button size="sm" variant="outline" onClick={() => navigate('/applicant/apply/availability')}>Edit</Button>
                         </CardHeader>
                         <CardContent>
-                            <ul className="text-sm space-y-1">
-                                <li>2024-06-01 to 2024-08-31</li>
-                            </ul>
+                            {availability.length === 0 ? (
+                                <p className="text-sm text-gray-500">No availability periods added yet</p>
+                            ) : (
+                                <ul className="text-sm space-y-1">
+                                    {availability.map((period, index) => (
+                                        <li key={index}>
+                                            {period.from_date} to {period.to_date}
+                                        </li>
+                                    ))}
+                                </ul>
+                            )}
                         </CardContent>
                     </Card>
                 </div>
 
+                {error && (
+                    <p className="text-red-600 text-sm">{error}</p>
+                )}
+
                 <div className="flex justify-between pt-4">
-                    <Button variant="outline" onClick={() => navigate('/applicant/dashboard')}>Cancel Application</Button>
-                    <Button size="lg" onClick={() => navigate('/applicant/apply/confirmation')}>Submit Application</Button>
+                    <Button variant="outline" onClick={() => navigate('/applicant/apply/availability')}>Back</Button>
+                    <Button
+                        size="lg"
+                        onClick={handleFinalSubmit}
+                        disabled={isSubmitting}
+                    >
+                        {isSubmitting ? 'Submitting...' : 'Submit Application'}
+                    </Button>
                 </div>
             </div>
         </Layout>

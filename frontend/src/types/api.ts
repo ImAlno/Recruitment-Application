@@ -29,7 +29,7 @@ export const API_ENDPOINTS = {
     LOGOUT: '/auth/logout',
 
     // Application endpoints
-    SUBMIT_APPLICATION: '/applications',
+    SUBMIT_APPLICATION: '/application/submit',
     GET_APPLICATIONS: '/applications',
     GET_APPLICATION: (id: number) => `/applications/${id}`,
     UPDATE_APPLICATION_STATUS: (id: number) => `/applications/${id}/status`,
