@@ -17,6 +17,7 @@ const AvailabilityPage = () => {
         availability,
         handleAddAvailability,
         removeAvailability,
+        clearApplication,
         clearError
     } = useAvailabilityForm();
 
@@ -98,7 +99,10 @@ const AvailabilityPage = () => {
                     <CardFooter className="justify-between">
                         <div className="flex gap-2">
                             <Button variant="outline" onClick={() => navigate('/applicant/apply/competence')}>Back</Button>
-                            <Button variant="outline" onClick={() => navigate('/applicant/dashboard')}>Cancel</Button>
+                            <Button variant="outline" onClick={() => {
+                                clearApplication();
+                                navigate('/applicant/dashboard');
+                            }}>Cancel</Button>
                         </div>
                         <Button
                             onClick={() => {

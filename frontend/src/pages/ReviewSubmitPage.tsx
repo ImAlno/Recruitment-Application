@@ -14,7 +14,8 @@ const ReviewSubmitPage = () => {
         availability,
         isSubmitting,
         error,
-        handleFinalSubmit
+        handleFinalSubmit,
+        clearApplication
     } = useReviewSubmit();
 
     return (
@@ -85,7 +86,13 @@ const ReviewSubmitPage = () => {
                 )}
 
                 <div className="flex justify-between pt-4">
-                    <Button variant="outline" onClick={() => navigate('/applicant/apply/availability')}>Back</Button>
+                    <div className="flex gap-2">
+                        <Button variant="outline" onClick={() => navigate('/applicant/apply/availability')}>Back</Button>
+                        <Button variant="outline" onClick={() => {
+                            clearApplication();
+                            navigate('/applicant/dashboard');
+                        }}>Cancel</Button>
+                    </div>
                     <Button
                         size="lg"
                         onClick={handleFinalSubmit}

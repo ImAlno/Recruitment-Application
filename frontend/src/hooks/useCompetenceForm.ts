@@ -5,7 +5,7 @@ import { useApplication } from '../contexts/ApplicationContext';
  * Hook for managing the competence profile form
  */
 export const useCompetenceForm = () => {
-    const { competences, addCompetence, removeCompetence } = useApplication();
+    const { competences, addCompetence, removeCompetence, clearApplication } = useApplication();
     const [selectedCompetenceId, setSelectedCompetenceId] = useState<number>(0);
     const [years, setYears] = useState<string>('');
     const [error, setError] = useState<string>('');
@@ -55,6 +55,7 @@ export const useCompetenceForm = () => {
         competences,
         handleAddCompetence,
         removeCompetence,
+        clearApplication,
         clearError
     };
 };

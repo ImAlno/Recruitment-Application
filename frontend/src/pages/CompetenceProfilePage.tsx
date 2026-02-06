@@ -20,6 +20,7 @@ const CompetenceProfilePage = () => {
         competences,
         handleAddCompetence,
         removeCompetence,
+        clearApplication,
         clearError
     } = useCompetenceForm();
 
@@ -108,7 +109,10 @@ const CompetenceProfilePage = () => {
                         </div>
                     </CardContent>
                     <CardFooter className="justify-between">
-                        <Button variant="outline" onClick={() => navigate('/applicant/dashboard')}>Cancel Application</Button>
+                        <Button variant="outline" onClick={() => {
+                            clearApplication();
+                            navigate('/applicant/dashboard');
+                        }}>Cancel Application</Button>
                         <Button
                             onClick={() => {
                                 if (competences.length === 0) {

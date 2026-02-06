@@ -7,7 +7,7 @@ import { useApplication } from '../contexts/ApplicationContext';
  */
 export const useReviewSubmit = () => {
     const navigate = useNavigate();
-    const { competences, availability, submitApplication, isSubmitting } = useApplication();
+    const { competences, availability, submitApplication, isSubmitting, clearApplication } = useApplication();
     const [error, setError] = useState<string | null>(null);
 
     const handleFinalSubmit = async () => {
@@ -42,6 +42,7 @@ export const useReviewSubmit = () => {
         error,
         setError,
         handleFinalSubmit,
+        clearApplication,
         clearError
     };
 };

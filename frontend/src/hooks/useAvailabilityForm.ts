@@ -6,7 +6,7 @@ import { isOverlapping, isValidDateRange } from '../utils/applicationUtils';
  * Hook for managing the availability form state
  */
 export const useAvailabilityForm = () => {
-    const { availability, addAvailability, removeAvailability } = useApplication();
+    const { availability, addAvailability, removeAvailability, clearApplication } = useApplication();
     const [startDate, setStartDate] = useState<string>('');
     const [endDate, setEndDate] = useState<string>('');
     const [error, setError] = useState<string>('');
@@ -60,6 +60,7 @@ export const useAvailabilityForm = () => {
         availability,
         handleAddAvailability,
         removeAvailability,
+        clearApplication,
         clearError
     };
 };
