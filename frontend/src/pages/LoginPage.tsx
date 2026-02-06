@@ -4,7 +4,7 @@ import Layout from '../components/Layout';
 import Card, { CardHeader, CardTitle, CardDescription, CardContent, CardFooter } from '../components/ui/Card';
 import Input from '../components/ui/Input';
 import Button from '../components/ui/Button';
-import { useAuth } from '../context/AuthContext';
+import { useAuth } from '../contexts/AuthContext';
 import { authService } from '../services/authService';
 
 const LoginPage = () => {
