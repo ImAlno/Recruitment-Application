@@ -43,5 +43,5 @@ class RequestHandlerLoader {
 
 const loader = new RequestHandlerLoader();
 loader.addRequestHandler(new AuthApi());
-loader.addRequestHandler(new ApplicationApi)
+loader.addRequestHandler(new ApplicationApi());
 export default loader;

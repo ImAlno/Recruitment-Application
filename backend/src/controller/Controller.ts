@@ -1,7 +1,7 @@
 import DAO from '../integration/DAO';
 import PersonDTO from '../model/PersonDTO';
 import db, { Database } from '../db';
-import { RegisterRequest } from '../model/RegisterRequest';
+import { RegisterRequest } from '../model/types/authApi';
 //import jwt from 'jsonwebtoken';
 import ApplicationDAO from '../integration/ApplicationDAO';
 import { CompetenceDTO, CreateApplicationDTO } from '../model/CompetenceDTO';

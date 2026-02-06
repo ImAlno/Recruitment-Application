@@ -1,7 +1,7 @@
 import PersonDTO from "../model/PersonDTO";
 import db, { Database, Transaction } from "../db";
 import { personTable, roleTable, competenceTable, competenceProfileTable, availabilityTable } from "../db/schema";
-import { RegisterRequest } from "../model/RegisterRequest";
+import { RegisterRequest } from "../model/types/authApi";
 import { InferSelectModel, eq, or } from "drizzle-orm";
 /**
  * This class is responsible for all calls to the database. There shall not be any database-related code outside this class.
