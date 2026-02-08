@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { applicationService } from '../services';
+import { applicationService } from '../services/applicationService';
 
 /**
  * Hook for managing application data
@@ -13,12 +13,19 @@ export const useApplications = () => {
         try {
             setLoading(true);
             setError(null);
+
             const data = await applicationService.getApplications();
 
             if (Array.isArray(data)) {
                 setApplications(data);
-            } else if (data) {
-                setApplications([data]);
+            } else if (data && typeof data === 'object') {
+                // Handle case where response might be wrapped or single object
+                // If the backend returns { applications: [...] } or just [...]
+                if (Array.isArray(data.applications)) {
+                    setApplications(data.applications);
+                } else {
+                    setApplications([data]);
+                }
             } else {
                 setApplications([]);
             }
@@ -31,8 +38,7 @@ export const useApplications = () => {
     };
 
     useEffect(() => {
-        // fetchApplications(); // until backend is ready
-        setLoading(false);
+        fetchApplications();
     }, []);
 
     return {

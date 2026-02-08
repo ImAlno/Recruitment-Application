@@ -17,8 +17,19 @@ export class ApplicationService {
     }
 
     /**
+     * Update the status of an application
+     */
+    async updateApplicationStatus(id: number, status: string): Promise<any> {
+        try {
+            // Note: Adjust payload structure based on backend requirements
+            return await apiClient.put<any>(`/application/${id}`, { status });
+        } catch (error) {
+            throw new Error(`Failed to update application status: ${(error as Error).message}`);
+        }
+    }
+
+    /**
      * Get all applications for the current user
-     * TODO: Implement when backend endpoint is available
      */
     async getApplications(): Promise<any> {
         try {
@@ -30,7 +41,6 @@ export class ApplicationService {
 
     /**
      * Get a specific application by ID
-     * TODO: Implement when backend endpoint is available
      */
     async getApplicationById(id: number): Promise<any> {
         try {
@@ -42,7 +52,6 @@ export class ApplicationService {
 
     /**
          * Get all applications for all users
-         * TODO: Implement when backend endpoint is available
          */
     async getAllApplications(): Promise<any> {
         try {
@@ -56,5 +65,6 @@ export class ApplicationService {
 // Export singleton instance
 export const applicationService = new ApplicationService();
 
-// Also export the named function for backward compatibility
 export const submitApplication = (data: ApplicationSubmission) => applicationService.submitApplication(data);
+export const getApplications = () => applicationService.getApplications();
+export const updateApplicationStatus = (id: number, status: string) => applicationService.updateApplicationStatus(id, status);

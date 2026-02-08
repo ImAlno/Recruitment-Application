@@ -1,43 +1,74 @@
-
+import { useNavigate } from 'react-router-dom';
 import Layout from '../components/Layout';
 import Card, { CardHeader, CardTitle, CardContent } from '../components/ui/Card';
-import Button from '../components/ui/Button';
-import { useNavigate } from 'react-router-dom';
+import ApplicationList from '../components/ApplicationList';
+import ApplicationFilters from '../components/ApplicationFilters';
+import { useApplications } from '../hooks/useApplications';
+import { useApplicationFilters } from '../hooks/useApplicationFilters';
+import AnimatedPage from '../components/layout/AnimatedPage';
+import { AnimatedList, AnimatedItem } from '../components/common/AnimatedList';
 
 const RecruiterDashboard = () => {
     const navigate = useNavigate();
+    const { applications, loading, error } = useApplications();
+
+    const {
+        filters,
+        handleFilterChange,
+        handleReset,
+        filteredApplications,
+        stats
+    } = useApplicationFilters(applications);
+
+    const handleViewDetails = (id: number) => {
+        navigate(`/recruiter/applications/${id}`);
+    };
 
     return (
         <Layout>
-            <div className="grid gap-6 md:grid-cols-[240px_1fr]">
-                <aside className="flex flex-col gap-2">
-                    <Button variant="outline" fullWidth className="justify-start" onClick={() => navigate('/recruiter/applications')}>List Applications</Button>
-
+            <AnimatedPage className="grid grid-cols-1 md:grid-cols-[300px_1fr] gap-6 items-start">
+                <aside className="sticky top-4">
+                    <ApplicationFilters
+                        filters={filters}
+                        onFilterChange={handleFilterChange}
+                        onReset={handleReset}
+                    />
                 </aside>
                 <main className="space-y-6">
                     <Card>
                         <CardHeader>
-                            <CardTitle>Welcome back, Recruiter Name</CardTitle>
+                            <CardTitle>Application Overview</CardTitle>
                         </CardHeader>
                         <CardContent>
-                            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-                                <div className="p-4 bg-blue-50 rounded-lg">
+                            <AnimatedList className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+                                <AnimatedItem className="p-4 bg-blue-50 rounded-lg shadow-sm border border-blue-100">
                                     <p className="text-sm text-blue-600 font-medium">Unhandled Applications</p>
-                                    <p className="text-2xl font-bold">12</p>
-                                </div>
-                                <div className="p-4 bg-green-50 rounded-lg">
+                                    <p className="text-2xl font-bold text-blue-900">{stats.unhandled}</p>
+                                </AnimatedItem>
+                                <AnimatedItem className="p-4 bg-green-50 rounded-lg shadow-sm border border-green-100">
                                     <p className="text-sm text-green-600 font-medium">Accepted</p>
-                                    <p className="text-2xl font-bold">45</p>
-                                </div>
-                                <div className="p-4 bg-red-50 rounded-lg">
+                                    <p className="text-2xl font-bold text-green-900">{stats.accepted}</p>
+                                </AnimatedItem>
+                                <AnimatedItem className="p-4 bg-red-50 rounded-lg shadow-sm border border-red-100">
                                     <p className="text-sm text-red-600 font-medium">Rejected</p>
-                                    <p className="text-2xl font-bold">8</p>
-                                </div>
-                            </div>
+                                    <p className="text-2xl font-bold text-red-900">{stats.rejected}</p>
+                                </AnimatedItem>
+                            </AnimatedList>
                         </CardContent>
                     </Card>
+
+                    {loading ? (
+                        <div className="text-center py-8">Loading applications...</div>
+                    ) : error ? (
+                        <div className="text-center py-8 text-red-500">{error}</div>
+                    ) : (
+                        <ApplicationList
+                            applications={filteredApplications}
+                            onViewDetails={handleViewDetails}
+                        />
+                    )}
                 </main>
-            </div>
+            </AnimatedPage>
         </Layout>
     );
 };

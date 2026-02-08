@@ -5,6 +5,8 @@ import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
 import { useApplications } from '../hooks';
 import { getStatusColor } from '../utils/applicationUtils';
+import AnimatedPage from '../components/layout/AnimatedPage';
+import { AnimatedList, AnimatedItem } from '../components/common/AnimatedList';
 
 const ApplicantDashboard = () => {
     const navigate = useNavigate();
@@ -13,13 +15,13 @@ const ApplicantDashboard = () => {
 
     return (
         <Layout>
-            <div className="max-w-4xl mx-auto space-y-6">
+            <AnimatedPage className="max-w-4xl mx-auto space-y-6">
                 {/* Welcome Card */}
                 <Card>
                     <CardHeader>
                         <div className="flex justify-between items-center">
                             <CardTitle>Welcome back, {user?.firstName || 'Applicant'}</CardTitle>
-                            <Button onClick={() => navigate('/applicant/apply/competence')}>
+                            <Button onClick={() => navigate('/applicant/apply')}>
                                 Apply for Position
                             </Button>
                         </div>
@@ -47,27 +49,28 @@ const ApplicantDashboard = () => {
                                 Loading applications...
                             </div>
                         ) : applications.length > 0 ? (
-                            <div className="space-y-3">
+                            <AnimatedList className="space-y-3">
                                 {applications.map((app) => (
-                                    <div
-                                        key={app.id}
-                                        className="border rounded-lg p-4 flex justify-between items-center hover:bg-gray-50 transition-colors"
-                                    >
-                                        <div>
-                                            <p className="font-medium">Application #{app.id}</p>
-                                            <p className="text-sm text-gray-500">
-                                                Submitted: {new Date(app.submittedDate).toLocaleDateString()}
-                                            </p>
+                                    <AnimatedItem key={app.id}>
+                                        <div
+                                            className="border rounded-lg p-4 flex justify-between items-center hover:bg-gray-50 transition-colors shadow-sm"
+                                        >
+                                            <div>
+                                                <p className="font-medium text-blue-900">Application #{app.id}</p>
+                                                <p className="text-sm text-gray-500">
+                                                    Submitted: {new Date(app.submittedDate).toLocaleDateString()}
+                                                </p>
+                                            </div>
+                                            <div className="text-right">
+                                                <p className="text-sm text-gray-500">Status</p>
+                                                <p className={`font-semibold ${getStatusColor(app.status)}`}>
+                                                    {app.status}
+                                                </p>
+                                            </div>
                                         </div>
-                                        <div className="text-right">
-                                            <p className="text-sm text-gray-500">Status</p>
-                                            <p className={`font-semibold ${getStatusColor(app.status)}`}>
-                                                {app.status}
-                                            </p>
-                                        </div>
-                                    </div>
+                                    </AnimatedItem>
                                 ))}
-                            </div>
+                            </AnimatedList>
                         ) : (
                             <div className="border-2 border-dashed border-gray-300 rounded-lg p-8 text-center bg-gray-50">
                                 <div className="mx-auto w-12 h-12 bg-white rounded-full flex items-center justify-center mb-3 border border-gray-200">
@@ -93,7 +96,7 @@ const ApplicantDashboard = () => {
                                 </p>
                                 <Button
                                     size="sm"
-                                    onClick={() => navigate('/applicant/apply/competence')}
+                                    onClick={() => navigate('/applicant/apply')}
                                 >
                                     Apply for Position
                                 </Button>
@@ -101,7 +104,7 @@ const ApplicantDashboard = () => {
                         )}
                     </CardContent>
                 </Card>
-            </div>
+            </AnimatedPage>
         </Layout>
     );
 };

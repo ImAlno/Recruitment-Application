@@ -1,4 +1,4 @@
-import React, { createContext, useContext, useState } from 'react';
+import React, { createContext, useContext, useState, useEffect } from 'react';
 import type { ReactNode } from 'react';
 import type { Competence, AvailabilityPeriod, ApplicationSubmission } from '../types/application';
 import { applicationService } from '../services';
@@ -31,10 +31,24 @@ interface ApplicationProviderProps {
 }
 
 export const ApplicationProvider: React.FC<ApplicationProviderProps> = ({ children }) => {
-    const [competences, setCompetences] = useState<Competence[]>([]);
-    const [availability, setAvailability] = useState<AvailabilityPeriod[]>([]);
+    const [competences, setCompetences] = useState<Competence[]>(() => {
+        const saved = localStorage.getItem('application_competences');
+        return saved ? JSON.parse(saved) : [];
+    });
+    const [availability, setAvailability] = useState<AvailabilityPeriod[]>(() => {
+        const saved = localStorage.getItem('application_availability');
+        return saved ? JSON.parse(saved) : [];
+    });
     const [isSubmitting, setIsSubmitting] = useState(false);
     const { user } = useAuth();
+
+    useEffect(() => {
+        localStorage.setItem('application_competences', JSON.stringify(competences));
+    }, [competences]);
+
+    useEffect(() => {
+        localStorage.setItem('application_availability', JSON.stringify(availability));
+    }, [availability]);
 
     const addCompetence = (competence: Competence) => {
         setCompetences([...competences, competence]);
@@ -86,6 +100,8 @@ export const ApplicationProvider: React.FC<ApplicationProviderProps> = ({ childr
     const clearApplication = () => {
         setCompetences([]);
         setAvailability([]);
+        localStorage.removeItem('application_competences');
+        localStorage.removeItem('application_availability');
     };
 
     return (
