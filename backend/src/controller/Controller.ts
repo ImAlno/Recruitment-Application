@@ -1,6 +1,6 @@
 import DAO from '../integration/DAO';
 import PersonDTO from '../model/PersonDTO';
-import db, { Database } from '../db';
+import { Database } from '../db';
 import { RegisterRequest } from '../model/types/authApi';
 import { ApplicationSubmissionRequest } from '../model/types/applicationApi';
 // import jwt from 'jsonwebtoken';
@@ -68,7 +68,7 @@ export class Controller {
 
   async createApplication(submissionBody: ApplicationSubmissionRequest): Promise<number | null>{
     return this.database.transaction(async (transactionObj) => {
-        const applicationId = await this.dao.createApplication(submissionBody);
+        const applicationId = await this.dao.createApplication(submissionBody, transactionObj);
         if (!applicationId) {
           return null;
         }
