@@ -1,4 +1,6 @@
 import React from 'react';
+import { motion } from 'framer-motion';
+import type { HTMLMotionProps } from 'framer-motion';
 
 interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
     variant?: 'primary' | 'secondary' | 'outline' | 'danger';
@@ -14,7 +16,7 @@ const Button = ({
     className = '',
     ...props
 }: ButtonProps) => {
-    const baseStyles = 'inline-flex items-center justify-center rounded-md font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 disabled:pointer-events-none disabled:opacity-50';
+    const baseStyles = 'inline-flex items-center justify-center rounded-md font-medium transition-shadow focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 disabled:pointer-events-none disabled:opacity-50 shadow-sm';
 
     const variants = {
         primary: 'bg-blue-600 text-white hover:bg-blue-700',
@@ -31,13 +33,18 @@ const Button = ({
 
     const widthStyle = fullWidth ? 'w-full' : '';
 
+    // Cast to motion component props to avoid type conflicts with standard button props
+    const motionProps = props as HTMLMotionProps<'button'>;
+
     return (
-        <button
+        <motion.button
+            whileHover={{ scale: 1.02 }}
+            whileTap={{ scale: 0.98 }}
             className={`${baseStyles} ${variants[variant]} ${sizes[size]} ${widthStyle} ${className}`}
-            {...props}
+            {...motionProps}
         >
             {children}
-        </button>
+        </motion.button>
     );
 };
 

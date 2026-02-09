@@ -6,6 +6,7 @@ import Input from '../components/ui/Input';
 import Button from '../components/ui/Button';
 import { useAuth } from '../contexts/AuthContext';
 import { authService } from '../services/authService';
+import AnimatedPage from '../components/layout/AnimatedPage';
 
 const LoginPage = () => {
     const [username, setUsername] = useState('');
@@ -41,7 +42,7 @@ const LoginPage = () => {
 
     return (
         <Layout>
-            <div className="max-w-md mx-auto">
+            <AnimatedPage className="max-w-md mx-auto">
                 <Card>
                     <CardHeader>
                         <CardTitle>Login</CardTitle>
@@ -77,7 +78,7 @@ const LoginPage = () => {
                         </CardFooter>
                     </form>
                 </Card>
-            </div>
+            </AnimatedPage>
         </Layout>
     );
 };

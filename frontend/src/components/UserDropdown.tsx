@@ -22,10 +22,10 @@ const UserDropdown: React.FC = () => {
         };
     }, []);
 
-    const handleLogout = () => {
-        logout();
+    const handleLogout = async () => {
         setIsOpen(false);
-        navigate('/');
+        await logout();
+        navigate('/', { replace: true });
     };
 
     if (!user) return null;

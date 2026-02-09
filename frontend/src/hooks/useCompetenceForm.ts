@@ -7,7 +7,7 @@ import { useApplication } from '../contexts/ApplicationContext';
 export const useCompetenceForm = () => {
     const { competences, addCompetence, removeCompetence, clearApplication } = useApplication();
     const [selectedCompetenceId, setSelectedCompetenceId] = useState<number>(0);
-    const [years, setYears] = useState<string>('');
+    const [years, setYears] = useState<string>('0');
     const [error, setError] = useState<string>('');
 
     const handleAddCompetence = () => {
@@ -38,7 +38,7 @@ export const useCompetenceForm = () => {
 
         // Reset form
         setSelectedCompetenceId(0);
-        setYears('');
+        setYears('0');
         setError('');
         return true;
     };

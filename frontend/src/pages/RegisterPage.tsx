@@ -9,6 +9,7 @@ import { passwordRequirements, usernameRequirements, validateEmail } from '../ut
 import { useRegisterForm } from '../hooks/useRegisterForm';
 import Toast from '../components/ui/Toast';
 import { Check } from '../components/ui/Check';
+import AnimatedPage from '../components/layout/AnimatedPage';
 
 const RegisterPage = () => {
     const {
@@ -28,7 +29,7 @@ const RegisterPage = () => {
 
     return (
         <Layout>
-            <div className="max-w-md mx-auto">
+            <AnimatedPage className="max-w-md mx-auto">
                 <Card>
                     <CardHeader>
                         {!success ? (
@@ -164,7 +165,7 @@ const RegisterPage = () => {
                         </>
                     )}
                 </Card>
-            </div>
+            </AnimatedPage>
 
             {/* Error Toast */}
             {errors.submit && (
