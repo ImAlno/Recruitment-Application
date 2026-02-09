@@ -1,9 +1,9 @@
-interface Competence {
+export interface Competence {
     competence_id: number;
     years_of_experience: number;
 }
 
-interface AvailabilityPeriod {
+export interface AvailabilityPeriod {
     from_date: string;
     to_date: string;
 }

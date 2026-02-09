@@ -67,13 +67,15 @@ export class Controller {
   }
 
   async createApplication(submissionBody: ApplicationSubmissionRequest): Promise<number | null>{
-    return this.database.transaction(async (transactionObj) => {
-        const applicationId = await this.dao.createApplication(submissionBody, transactionObj);
-        if (!applicationId) {
-          return null;
-        }
-        return applicationId;
-    });
+    try {
+      const applicationId = await this.database.transaction(async (transactionObj) => {
+        return await this.dao.createApplication(submissionBody, transactionObj);
+      });
+      return applicationId;
+    } catch (error) {
+        console.error("Failed creating application submission:", error);
+        return null;
+    }
   }
   
   // TODO Add methods like: registerUser, findUser, login etc to handle bussiness logic and make calls to integration layer

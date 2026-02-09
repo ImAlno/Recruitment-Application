@@ -3,7 +3,7 @@ import db, { Database, Transaction } from "../db";
 import { personTable, roleTable, competenceTable, competenceProfileTable, availabilityTable, applicationTable } from "../db/schema";
 import { RegisterRequest } from "../model/types/authApi";
 import { InferSelectModel, eq, or } from "drizzle-orm";
-import { ApplicationSubmissionRequest } from "../model/types/applicationApi";
+import { ApplicationSubmissionRequest, Competence, AvailabilityPeriod} from "../model/types/applicationApi";
 /**
  * This class is responsible for all calls to the database. There shall not be any database-related code outside this class.
  */
@@ -85,52 +85,60 @@ class DAO {
     }
   }
 
-  async createApplication(submissionBody: ApplicationSubmissionRequest, transactionObj: Transaction): Promise<number | null> {
+  // Transaction gets rolled back automatically if an error is thrown
+  async createApplication(submissionBody: ApplicationSubmissionRequest, transactionObj: Transaction): Promise<number> {
+    await this.addCompetence(submissionBody.competences, submissionBody.userId, transactionObj);
+    await this.addAvailability(submissionBody.availability, submissionBody.userId, transactionObj);
+
+    const [row] = await this.addApplication(submissionBody.userId, transactionObj); // expecting 1 row of the new application
+    if (!row) {
+      throw new Error("Application insertion returned empty row");
+    }
+    return row.applicationId;
+  }
+
+  private async addCompetence(competences: Competence[], userId: number, transactionObj: Transaction) {
     try {
-      for (const compentence of submissionBody.competences) {
-        await this.addCompetence(compentence.competence_id, compentence.years_of_experience, submissionBody.userId, transactionObj);
-      }
-      for (const availability of submissionBody.availability) {
-        await this.addAvailability(submissionBody.userId, availability.from_date, availability.to_date, transactionObj);
-      }
-      const result = await this.addApplication(submissionBody.userId, transactionObj);
-      if (result[0]) {
-        return result[0].applicationId;
-      } else {
-        transactionObj.rollback();
-      }
+      return transactionObj.insert(competenceProfileTable)
+      .values(
+        competences.map(comp => ({
+          personId: userId,
+          competenceId: comp.competence_id,
+          yearsOfExperience: comp.years_of_experience.toString(), // yearsOfExperience is given as a number but is a numeric in Drizzle schema
+        }))
+      );
     } catch (error) {
-        console.error("Failed creating application submission:", error);
-        transactionObj.rollback();
+        throw new Error("Competence insertion failed", {cause: error});
     }
   }
 
-  private async addCompetence(id: number, years_of_experience: number, userId: number, transactionObj: Transaction) {
-    return transactionObj.insert(competenceProfileTable)
-      .values({
-        personId: userId,
-        competenceId: id,
-        yearsOfExperience: years_of_experience.toString(),
-      });
-  }
-
-  private async addAvailability(userId: number, fromDate: string, toDate: string, transactionObj: Transaction) {
-    return transactionObj.insert(availabilityTable)
-      .values({
-        personId: userId,
-        fromDate: fromDate,
-        toDate: toDate,
-      });
+  private async addAvailability(availability: AvailabilityPeriod[], userId: number, transactionObj: Transaction) {
+    try {
+      return transactionObj.insert(availabilityTable)
+      .values(
+        availability.map(ava => ({
+          personId: userId,
+          fromDate: ava.from_date,
+          toDate: ava.to_date,
+        }))
+      );
+    } catch (error) {
+        throw new Error("Availability insertion failed", {cause: error});
+    }
   }
 
   private async addApplication(userId: number, transactionObj: Transaction) {
-    return transactionObj.insert(applicationTable)
+    try {
+      return transactionObj.insert(applicationTable)
       .values({
         personId: userId,
         statusId: 3, // All applications begin with status 3 => unhandled
         createdAt: new Date().toISOString().split("T")[0],
       })
       .returning();
+    } catch (error) {
+        throw new Error("Application insertion failed", {cause: error});
+    }
   }
 
   private createPersonDTO(personTableDBrow: InferSelectModel<typeof personTable>): PersonDTO {
