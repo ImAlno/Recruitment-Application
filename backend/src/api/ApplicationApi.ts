@@ -36,8 +36,8 @@ class ApplicationApi extends RequestHandler {
                 .withMessage("Competence ID must be an integer"),
 
               body("competences.*.years_of_experience")
-                .isInt({ min: 0, max: 50 })
-                .withMessage("Years of experience must be between 0 and 50"),
+                .isNumeric()
+                .withMessage("Years of experience must be numeric"),
 
               body("availability")
                 .isArray({ min: 1 })
