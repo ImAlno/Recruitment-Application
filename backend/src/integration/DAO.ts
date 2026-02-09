@@ -1,8 +1,9 @@
 import PersonDTO from "../model/PersonDTO";
 import db, { Database, Transaction } from "../db";
-import { personTable, roleTable, competenceTable, competenceProfileTable, availabilityTable } from "../db/schema";
-import { RegisterRequest } from "../model/RegisterRequest";
+import { personTable, roleTable, competenceTable, competenceProfileTable, availabilityTable, applicationTable } from "../db/schema";
+import { RegisterRequest } from "../model/types/authApi";
 import { InferSelectModel, eq, or } from "drizzle-orm";
+import { ApplicationSubmissionRequest, Competence, AvailabilityPeriod} from "../model/types/applicationApi";
 /**
  * This class is responsible for all calls to the database. There shall not be any database-related code outside this class.
  */
@@ -22,10 +23,9 @@ class DAO {
     return this.database;
   }
 
-  async registerUser(userBody: RegisterRequest, transactionObj?: Transaction) {
-    const queryRunner = transactionObj || this.database;
+  async registerUser(userBody: RegisterRequest, transactionObj: Transaction) {
     try {
-      const result = await queryRunner.insert(personTable)
+      const result = await transactionObj.insert(personTable)
         .values({
           name: userBody.firstName,
           surname: userBody.lastName,
@@ -83,7 +83,63 @@ class DAO {
         console.error("Failed finding user:", error);
         throw error;
     }
-}
+  }
+
+  // Transaction gets rolled back automatically if an error is thrown
+  async createApplication(submissionBody: ApplicationSubmissionRequest, transactionObj: Transaction): Promise<number> {
+    await this.addCompetence(submissionBody.competences, submissionBody.userId, transactionObj);
+    await this.addAvailability(submissionBody.availability, submissionBody.userId, transactionObj);
+
+    const [row] = await this.addApplication(submissionBody.userId, transactionObj); // expecting 1 row of the new application
+    if (!row) {
+      throw new Error("Application insertion returned empty row");
+    }
+    return row.applicationId;
+  }
+
+  private async addCompetence(competences: Competence[], userId: number, transactionObj: Transaction) {
+    try {
+      return transactionObj.insert(competenceProfileTable)
+      .values(
+        competences.map(comp => ({
+          personId: userId,
+          competenceId: comp.competence_id,
+          yearsOfExperience: comp.years_of_experience.toString(), // yearsOfExperience is given as a number but is a numeric in Drizzle schema
+        }))
+      );
+    } catch (error) {
+        throw new Error("Competence insertion failed", {cause: error});
+    }
+  }
+
+  private async addAvailability(availability: AvailabilityPeriod[], userId: number, transactionObj: Transaction) {
+    try {
+      return transactionObj.insert(availabilityTable)
+      .values(
+        availability.map(ava => ({
+          personId: userId,
+          fromDate: ava.from_date,
+          toDate: ava.to_date,
+        }))
+      );
+    } catch (error) {
+        throw new Error("Availability insertion failed", {cause: error});
+    }
+  }
+
+  private async addApplication(userId: number, transactionObj: Transaction) {
+    try {
+      return transactionObj.insert(applicationTable)
+      .values({
+        personId: userId,
+        statusId: 3, // All applications begin with status 3 => unhandled
+        createdAt: new Date().toISOString().split("T")[0],
+      })
+      .returning();
+    } catch (error) {
+        throw new Error("Application insertion failed", {cause: error});
+    }
+  }
 
   private createPersonDTO(personTableDBrow: InferSelectModel<typeof personTable>): PersonDTO {
     const roleName = personTableDBrow.roleId === 1 ? 'recruiter' : 'applicant';

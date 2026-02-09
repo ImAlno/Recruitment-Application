@@ -1,8 +1,9 @@
 import DAO from '../integration/DAO';
 import PersonDTO from '../model/PersonDTO';
-import db, { Database } from '../db';
-import { RegisterRequest } from '../model/RegisterRequest';
-import jwt from 'jsonwebtoken';
+import { Database } from '../db';
+import { RegisterRequest } from '../model/types/authApi';
+import { ApplicationSubmissionRequest } from '../model/types/applicationApi';
+// import jwt from 'jsonwebtoken';
 
 /**
  * The application's controller. No other class shall call the model or
@@ -65,7 +66,18 @@ export class Controller {
     });
   }
 
-
+  async createApplication(submissionBody: ApplicationSubmissionRequest): Promise<number | null>{
+    try {
+      const applicationId = await this.database.transaction(async (transactionObj) => {
+        return await this.dao.createApplication(submissionBody, transactionObj);
+      });
+      return applicationId;
+    } catch (error) {
+        console.error("Failed creating application submission:", error);
+        return null;
+    }
+  }
+  
   // TODO Add methods like: registerUser, findUser, login etc to handle bussiness logic and make calls to integration layer
 }
 export default Controller;
