@@ -80,15 +80,10 @@ export const ApplicationProvider: React.FC<ApplicationProviderProps> = ({ childr
                 userId: user.id,
             };
 
-            const response = await applicationService.submitApplication(submission);
+            await applicationService.submitApplication(submission);
 
-            if (response.success) {
-                clearApplication();
-                return true;
-            } else {
-                console.error('Application submission failed');
-                return false;
-            }
+            clearApplication();
+            return true;
         } catch (error) {
             console.error('Error submitting application:', error);
             return false;
