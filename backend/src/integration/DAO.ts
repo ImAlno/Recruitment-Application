@@ -23,6 +23,7 @@ class DAO {
     return this.database;
   }
 
+  // TODO: fix proper error handling
   async registerUser(userBody: RegisterRequest, transactionObj: Transaction) {
     try {
       const result = await transactionObj.insert(personTable)
@@ -67,21 +68,21 @@ class DAO {
     }
   }
 
-  async findUser(username: string): Promise<PersonDTO | null> {
+  // TODO: fix proper error handling
+  async findUser(username: string, transactionObj: Transaction): Promise<PersonDTO | null> {
     try {
-        const result = await this.database
-            .select()
+        const result = await transactionObj.select()
             .from(personTable)
             .where(eq(personTable.username, username));
 
         if (result.length === 0) {
+            //* throw error to rollback transaction
             return null;
         }
 
         return this.createPersonDTO(result[0]!);
     } catch (error) {
-        console.error("Failed finding user:", error);
-        throw error;
+        throw new Error("Failed finding user", {cause: error});
     }
   }
 
