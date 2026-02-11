@@ -6,3 +6,8 @@ export interface RegisterRequest {
     username: string;
     password: string;
 }
+
+export interface AvailabilityResponse {
+    usernameTaken: boolean, 
+    emailTaken: boolean,
+}

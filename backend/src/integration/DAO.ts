@@ -1,7 +1,7 @@
 import PersonDTO from "../model/PersonDTO";
 import db, { Database, Transaction } from "../db";
 import { personTable, roleTable, competenceTable, competenceProfileTable, availabilityTable, applicationTable } from "../db/schema";
-import { RegisterRequest } from "../model/types/authApi";
+import { RegisterRequest, AvailabilityResponse } from "../model/types/authApi";
 import { InferSelectModel, eq, or } from "drizzle-orm";
 import { ApplicationSubmissionRequest, Competence, AvailabilityPeriod} from "../model/types/applicationApi";
 /**
@@ -24,7 +24,7 @@ class DAO {
   }
 
   // TODO: fix proper error handling
-  async registerUser(userBody: RegisterRequest, transactionObj: Transaction) {
+  async registerUser(userBody: RegisterRequest, transactionObj: Transaction): Promise<PersonDTO> {
     try {
       const result = await transactionObj.insert(personTable)
         .values({
@@ -46,25 +46,26 @@ class DAO {
     }
   }
 
-  async checkUserExistence(username?: string, email?: string) {
+  async checkUserExistence(transactionObj: Transaction, username?: string, email?: string): Promise<AvailabilityResponse> {
     try {
       const conditions = [];
-      if (username) conditions.push(eq(personTable.username, username));
-      if (email) conditions.push(eq(personTable.email, email));
+      if (username) conditions.push(eq(personTable.username, username)); // creates condition: username = 'provided username'
+      if (email) conditions.push(eq(personTable.email, email));          // creates condition: email = 'provided email'
 
-      if (conditions.length === 0) return { usernameTaken: false, emailTaken: false };
+      if (conditions.length === 0) {
+        return { usernameTaken: false, emailTaken: false };
+      }
 
-      const result = await this.database
-        .select()
+      const result = await transactionObj.select() // Selects rows from person table which have: username = 'provided username' OR email = 'provided email'
         .from(personTable)
         .where(or(...conditions));
 
       return {
-        usernameTaken: result.some(user => user.username === username),
-        emailTaken: result.some(user => user.email === email)
+        usernameTaken: result.some(user => user.username === username), // checks if any of the resulting rows have a username matching the imput username
+        emailTaken: result.some(user => user.email === email)           // checks if any of the resulting rows have a email matching the imput email
       };
     } catch (error) {
-      throw error;
+      throw new Error("Availability check failed in db", {cause: error});
     }
   }
 
