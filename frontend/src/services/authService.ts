@@ -2,7 +2,6 @@ import { apiClient } from './api';
 import { API_ENDPOINTS } from '../types/api';
 import type { RegisterData, AvailabilityCheckRequest, AvailabilityStatus, LoginResponse } from '../types/auth';
 import { validateUsername } from '../utils/validation';
-import i18n from '../i18n';
 
 /**
  * Authentication service for handling auth-related operations
@@ -26,10 +25,7 @@ export class AuthService {
         // Validate username before sending to backend
         const validation = validateUsername(data.username);
         if (!validation.isValid) {
-            const errorMsg = validation.error === 'Username contains invalid characters'
-                ? i18n.t('validation.usernameChars')
-                : i18n.t('validation.usernameInvalid');
-            throw new Error(errorMsg);
+            throw new Error(validation.error);
         }
 
         try {
@@ -45,7 +41,7 @@ export class AuthService {
     async login(username: string, password: string): Promise<LoginResponse> {
         // Validate credentials
         if (!username || !password) {
-            throw new Error(i18n.t('validation.credentialsRequired'));
+            throw new Error('validation.credentialsRequired');
         }
 
         try {

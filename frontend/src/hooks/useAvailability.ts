@@ -32,8 +32,8 @@ export const useAvailability = ({ formData, setErrors }: UseAvailabilityProps) =
                         else delete newErrors.username;
                     } else if (formData.username) {
                         const { isValid: isFormatValid, error: formatError } = validateUsername(formData.username);
-                        if (!isFormatValid && formatError !== 'Username format is invalid') {
-                            if (formatError === 'Username contains invalid characters') {
+                        if (!isFormatValid && formatError !== 'validation.usernameInvalid') {
+                            if (formatError === 'validation.usernameChars') {
                                 newErrors.username = 'validation.usernameChars';
                             } else {
                                 newErrors.username = 'validation.usernameInvalid';

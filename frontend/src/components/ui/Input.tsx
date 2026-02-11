@@ -26,15 +26,8 @@ const Input = ({
 
         // Handle complex password errors
         if (error.startsWith('PASSWORD_ERROR:')) {
-            const reqCodes = error.replace('PASSWORD_ERROR:', '').split(',');
-            const reqMap: Record<string, string> = {
-                'min_length': 'minLength',
-                'uppercase': 'uppercase',
-                'lowercase': 'lowercase',
-                'number': 'number',
-                'special': 'special'
-            };
-            const translatedReqs = reqCodes.map(code => t(`validation.password.${reqMap[code] || code}`));
+            const reqKeys = error.replace('PASSWORD_ERROR:', '').split(',');
+            const translatedReqs = reqKeys.map(key => t(key));
             return `${t('validation.passwordTitle')} ${translatedReqs.join(', ')}`;
         }
 

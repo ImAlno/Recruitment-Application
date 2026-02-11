@@ -43,7 +43,7 @@ export const useRegisterForm = () => {
         if (name === 'username' || name === 'email') {
             if (name === 'username') {
                 const { isValid, error } = validateUsername(value);
-                if (!isValid && error === 'Username contains invalid characters') {
+                if (!isValid && error === 'validation.usernameChars') {
                     setErrors(prev => ({ ...prev, username: 'validation.usernameChars' }));
                     setIsCheckingUsername(false);
                 } else {
@@ -99,7 +99,7 @@ export const useRegisterForm = () => {
         }
 
         if (!formData.personNumber) {
-            newErrors.personNumber = t('validation.personNumberRequired');
+            newErrors.personNumber = 'validation.personNumberRequired';
         }
 
         if (!formData.username) {
@@ -107,10 +107,12 @@ export const useRegisterForm = () => {
         } else {
             const { isValid, error } = validateUsername(formData.username);
             if (!isValid) {
-                if (error === 'Username contains invalid characters') {
-                    newErrors.username = 'validation.usernameChars';
-                } else {
-                    newErrors.username = 'validation.usernameInvalid';
+                if (!isValid) {
+                    if (error === 'validation.usernameChars') {
+                        newErrors.username = 'validation.usernameChars';
+                    } else {
+                        newErrors.username = 'validation.usernameInvalid';
+                    }
                 }
             }
         }
