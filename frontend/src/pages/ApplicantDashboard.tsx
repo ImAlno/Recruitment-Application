@@ -7,8 +7,10 @@ import { useApplications } from '../hooks';
 import { getStatusColor } from '../utils/applicationUtils';
 import AnimatedPage from '../components/layout/AnimatedPage';
 import { AnimatedList, AnimatedItem } from '../components/common/AnimatedList';
+import { useTranslation } from 'react-i18next';
 
 const ApplicantDashboard = () => {
+    const { t } = useTranslation();
     const navigate = useNavigate();
     const { user } = useAuth();
     const { applications, loading, error } = useApplications();
@@ -20,15 +22,17 @@ const ApplicantDashboard = () => {
                 <Card>
                     <CardHeader>
                         <div className="flex justify-between items-center">
-                            <CardTitle>Welcome back, {user?.firstName || 'Applicant'}</CardTitle>
+                            <CardTitle>
+                                {t('applicantDashboard.welcome', { name: user?.firstName || t('common.applicant') })}
+                            </CardTitle>
                             <Button onClick={() => navigate('/applicant/apply')}>
-                                Apply for Position
+                                {t('applicantDashboard.applyButton')}
                             </Button>
                         </div>
                     </CardHeader>
                     <CardContent>
                         <p className="text-sm text-gray-600">
-                            Manage your applications and track your application status here.
+                            {t('applicantDashboard.description')}
                         </p>
                     </CardContent>
                 </Card>
@@ -36,17 +40,17 @@ const ApplicantDashboard = () => {
                 {/* Applications Card */}
                 <Card>
                     <CardHeader>
-                        <CardTitle>Your Applications</CardTitle>
+                        <CardTitle>{t('applicantDashboard.yourApplications')}</CardTitle>
                     </CardHeader>
                     <CardContent>
                         {error && (
                             <div className="mb-4 p-4 text-sm text-red-700 bg-red-100 rounded-lg border border-red-200" role="alert">
-                                {error}
+                                <span className="font-bold">{t('common.error')}:</span> {t(error)}
                             </div>
                         )}
                         {loading ? (
                             <div className="text-center py-8 text-gray-500">
-                                Loading applications...
+                                {t('common.loadingApplications')}
                             </div>
                         ) : applications.length > 0 ? (
                             <AnimatedList className="space-y-3">
@@ -56,15 +60,17 @@ const ApplicantDashboard = () => {
                                             className="border rounded-lg p-4 flex justify-between items-center hover:bg-gray-50 transition-colors shadow-sm"
                                         >
                                             <div>
-                                                <p className="font-medium text-blue-900">Application #{app.id}</p>
+                                                <p className="font-medium text-blue-900">
+                                                    {t('applicantDashboard.applicationNumber', { id: app.id })}
+                                                </p>
                                                 <p className="text-sm text-gray-500">
-                                                    Submitted: {new Date(app.submittedDate).toLocaleDateString()}
+                                                    {t('applicantDashboard.submitted', { date: new Date(app.submittedDate).toLocaleDateString() })}
                                                 </p>
                                             </div>
                                             <div className="text-right">
-                                                <p className="text-sm text-gray-500">Status</p>
+                                                <p className="text-sm text-gray-500">{t('common.status')}</p>
                                                 <p className={`font-semibold ${getStatusColor(app.status)}`}>
-                                                    {app.status}
+                                                    {t(`common.statuses.${app.status.toLowerCase()}`, { defaultValue: app.status })}
                                                 </p>
                                             </div>
                                         </div>
@@ -89,16 +95,16 @@ const ApplicantDashboard = () => {
                                     </svg>
                                 </div>
                                 <h3 className="font-semibold text-gray-900 mb-1">
-                                    No applications yet
+                                    {t('applicantDashboard.noApplications')}
                                 </h3>
                                 <p className="text-sm text-gray-500 mb-4">
-                                    Start your journey by applying for a position!
+                                    {t('applicantDashboard.noApplicationsDesc')}
                                 </p>
                                 <Button
                                     size="sm"
                                     onClick={() => navigate('/applicant/apply')}
                                 >
-                                    Apply for Position
+                                    {t('applicantDashboard.applyButton')}
                                 </Button>
                             </div>
                         )}

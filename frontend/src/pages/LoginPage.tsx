@@ -7,8 +7,10 @@ import Button from '../components/ui/Button';
 import { useAuth } from '../contexts/AuthContext';
 import { authService } from '../services/authService';
 import AnimatedPage from '../components/layout/AnimatedPage';
+import { useTranslation } from 'react-i18next';
 
 const LoginPage = () => {
+    const { t } = useTranslation();
     const [username, setUsername] = useState('');
     const [password, setPassword] = useState('');
     const [error, setError] = useState('');
@@ -34,7 +36,7 @@ const LoginPage = () => {
             }
         } catch (err) {
             console.error(err);
-            setError(err instanceof Error ? err.message : 'Invalid credentials. Please try again.');
+            setError(err instanceof Error ? err.message : 'login.invalidCredentials');
         } finally {
             setIsLoading(false);
         }
@@ -45,25 +47,25 @@ const LoginPage = () => {
             <AnimatedPage className="max-w-md mx-auto">
                 <Card>
                     <CardHeader>
-                        <CardTitle>Login</CardTitle>
-                        <CardDescription>Enter your credentials to access your account.</CardDescription>
+                        <CardTitle>{t('common.login')}</CardTitle>
+                        <CardDescription>{t('login.description')}</CardDescription>
                     </CardHeader>
                     <form onSubmit={handleSubmit}>
                         <CardContent className="space-y-4">
                             {error && (
                                 <div className="p-3 text-sm text-red-500 bg-red-50 rounded-md">
-                                    {error}
+                                    {t(error)}
                                 </div>
                             )}
                             <Input
-                                label="Username"
+                                label={t('login.username')}
                                 placeholder="johndoe"
                                 value={username}
                                 onChange={(e) => setUsername(e.target.value)}
                                 required
                             />
                             <Input
-                                label="Password"
+                                label={t('login.password')}
                                 type="password"
                                 value={password}
                                 onChange={(e) => setPassword(e.target.value)}
@@ -72,9 +74,9 @@ const LoginPage = () => {
                         </CardContent>
                         <CardFooter className="flex flex-col gap-4">
                             <Button fullWidth type="submit" disabled={isLoading}>
-                                {isLoading ? 'Logging in...' : 'Login'}
+                                {isLoading ? t('login.loggingIn') : t('common.login')}
                             </Button>
-                            <Link to="/" className="text-sm text-blue-600 hover:underline text-center">Back to Landing</Link>
+                            <Link to="/" className="text-sm text-blue-600 hover:underline text-center">{t('common.backToLanding') || 'Back to Landing'}</Link>
                         </CardFooter>
                     </form>
                 </Card>

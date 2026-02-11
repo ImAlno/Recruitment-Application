@@ -1,10 +1,15 @@
 import { Link } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
 import UserDropdown from './UserDropdown';
+import { useTranslation } from 'react-i18next';
 
 const Header = () => {
     const { user, isAuthenticated } = useAuth();
-    // navigate and logout unused here now, handled in UserDropdown
+    const { t, i18n } = useTranslation();
+
+    const handleLanguageChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+        i18n.changeLanguage(e.target.value);
+    };
 
     return (
         <header className="sticky top-0 z-50 w-full border-b border-gray-200 bg-white/95 backdrop-blur supports-[backdrop-filter]:bg-white/60">
@@ -15,23 +20,27 @@ const Header = () => {
                     </Link>
                     <nav className="hidden md:flex items-center gap-6 text-sm font-medium">
                         {isAuthenticated && user?.role === 'applicant' && (
-                            <Link to="/applicant/dashboard" className="transition-colors hover:text-blue-600">Applicant</Link>
+                            <Link to="/applicant/dashboard" className="transition-colors hover:text-blue-600">{t('common.applicant') || 'Applicant'}</Link>
                         )}
                         {isAuthenticated && user?.role === 'recruiter' && (
-                            <Link to="/recruiter/dashboard" className="transition-colors hover:text-blue-600">Recruiter</Link>
+                            <Link to="/recruiter/dashboard" className="transition-colors hover:text-blue-600">{t('common.recruiter') || 'Recruiter'}</Link>
                         )}
                     </nav>
                 </div>
                 <div className="flex items-center gap-4">
-                    <select className="bg-transparent text-sm border-none focus:ring-0 cursor-pointer">
-                        <option>EN</option>
-                        <option>SV</option>
+                    <select
+                        value={i18n.language}
+                        onChange={handleLanguageChange}
+                        className="bg-transparent text-sm border-none focus:ring-0 cursor-pointer"
+                    >
+                        <option value="en">EN</option>
+                        <option value="sv">SV</option>
                     </select>
                     {isAuthenticated ? (
                         <UserDropdown />
                     ) : (
                         <Link to="/login" className="text-sm font-medium hover:underline underline-offset-4">
-                            Login
+                            {t('common.login')}
                         </Link>
                     )}
                 </div>

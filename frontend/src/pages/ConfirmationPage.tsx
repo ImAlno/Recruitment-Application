@@ -1,48 +1,56 @@
-import Layout from '../components/Layout';
-import Card, { CardHeader, CardTitle, CardContent, CardFooter } from '../components/ui/Card';
-import Button from '../components/ui/Button';
 import { useNavigate } from 'react-router-dom';
-import { useApplication } from '../contexts/ApplicationContext';
-import { useEffect } from 'react';
-import AnimatedPage from '../components/layout/AnimatedPage';
+import Layout from '../components/Layout';
+import Card, { CardTitle, CardContent, CardFooter } from '../components/ui/Card';
+import Button from '../components/ui/Button';
 import { motion } from 'framer-motion';
+import AnimatedPage from '../components/layout/AnimatedPage';
+import { useTranslation } from 'react-i18next';
 
 const ConfirmationPage = () => {
+    const { t } = useTranslation();
     const navigate = useNavigate();
-    const { clearApplication } = useApplication();
-
-    // Clear the application context when the confirmation page loads
-    useEffect(() => {
-        clearApplication();
-    }, []);
 
     return (
         <Layout>
-            <AnimatedPage className="max-w-md mx-auto py-20">
-                <Card className="text-center shadow-lg border-green-100">
-                    <CardHeader>
+            <AnimatedPage className="max-w-xl mx-auto flex items-center justify-center min-h-[60vh]">
+                <Card className="w-full text-center py-8">
+                    <CardContent className="space-y-6">
                         <motion.div
-                            initial={{ scale: 0, rotate: -45 }}
-                            animate={{ scale: 1, rotate: 0 }}
-                            transition={{ type: 'spring', damping: 12, stiffness: 200, delay: 0.2 }}
-                            className="mx-auto w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mb-4"
+                            initial={{ scale: 0 }}
+                            animate={{ scale: 1 }}
+                            transition={{
+                                type: "spring",
+                                stiffness: 260,
+                                damping: 20
+                            }}
+                            className="mx-auto w-20 h-20 bg-green-100 rounded-full flex items-center justify-center mb-6"
                         >
-                            <svg className="w-8 h-8 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <svg className="w-10 h-10 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="3" d="M5 13l4 4L19 7" />
                             </svg>
                         </motion.div>
-                        <CardTitle className="text-2xl text-green-800">Application Submitted!</CardTitle>
-                    </CardHeader>
-                    <CardContent>
-                        <p className="text-gray-600">
-                            Thank you for applying. We have received your application and will review it shortly.
-                        </p>
-                        <p className="text-sm text-gray-400 mt-4 italic">
-                            You can check your application status from your dashboard.
-                        </p>
+
+                        <div className="space-y-2">
+                            <CardTitle className="text-3xl font-bold text-gray-900">{t('confirmation.title')}</CardTitle>
+                            <p className="text-lg text-gray-600 italic">
+                                "{t('confirmation.message')}"
+                            </p>
+                        </div>
+
+                        <div className="bg-blue-50 p-4 rounded-lg border border-blue-100">
+                            <p className="text-sm text-blue-800">
+                                {t('confirmation.statusCheck')}
+                            </p>
+                        </div>
                     </CardContent>
-                    <CardFooter className="flex flex-col gap-2">
-                        <Button fullWidth size="lg" onClick={() => navigate('/applicant/dashboard')}>Return to Dashboard</Button>
+                    <CardFooter className="justify-center pt-8">
+                        <Button
+                            size="lg"
+                            className="px-8 shadow-md hover:shadow-lg transition-shadow"
+                            onClick={() => navigate('/applicant/dashboard')}
+                        >
+                            {t('confirmation.returnDashboard')}
+                        </Button>
                     </CardFooter>
                 </Card>
             </AnimatedPage>

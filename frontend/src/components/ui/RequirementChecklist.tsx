@@ -1,3 +1,4 @@
+import { useTranslation } from 'react-i18next';
 import type { Requirement } from '../../utils/validation';
 
 interface RequirementChecklistProps {
@@ -13,6 +14,7 @@ const RequirementChecklist = ({
     requirements,
     className = ''
 }: RequirementChecklistProps) => {
+    const { t } = useTranslation();
     if (!value) return null;
 
     return (
@@ -28,7 +30,7 @@ const RequirementChecklist = ({
                                 }`}
                         >
                             <span>{isMet ? '✓' : '○'}</span>
-                            <span>{req.label}</span>
+                            <span>{t(req.key)}</span>
                         </div>
                     );
                 })}

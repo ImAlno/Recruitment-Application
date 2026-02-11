@@ -7,8 +7,10 @@ import { useRandomSubheader } from '../hooks';
 import AnimatedPage from '../components/layout/AnimatedPage';
 import { motion } from 'framer-motion';
 import rogerImage from '../assets/roger.png';
+import { useTranslation } from 'react-i18next';
 
 const LandingPage = () => {
+    const { t } = useTranslation();
     const navigate = useNavigate();
     const { user, isAuthenticated } = useAuth();
     const subheader = useRandomSubheader();
@@ -30,8 +32,8 @@ const LandingPage = () => {
                                 transition={{ duration: 0.5, delay: 0.2 }}
                                 className="text-4xl font-extrabold tracking-tight sm:text-5xl md:text-6xl text-blue-900 leading-tight"
                             >
-                                Welcome to <br />
-                                <span className="text-blue-600">Roger's recruitapp.</span>
+                                {t('landing.title')} <br />
+                                <span className="text-blue-600">{t('landing.highlight')}</span>
                             </motion.h1>
                             <motion.p
                                 initial={{ opacity: 0, y: 20 }}
@@ -51,8 +53,8 @@ const LandingPage = () => {
                         >
                             {!isAuthenticated ? (
                                 <>
-                                    <Button size="lg" className="px-8" onClick={() => navigate('/register')}>Get Started</Button>
-                                    <Button size="lg" variant="outline" className="px-8" onClick={() => navigate('/login')}>Sign In</Button>
+                                    <Button size="lg" className="px-8" onClick={() => navigate('/register')}>{t('landing.getStarted')}</Button>
+                                    <Button size="lg" variant="outline" className="px-8" onClick={() => navigate('/login')}>{t('common.login')}</Button>
                                 </>
                             ) : (
                                 <Button
@@ -60,7 +62,7 @@ const LandingPage = () => {
                                     className="px-8"
                                     onClick={() => navigate(user?.role === 'recruiter' ? '/recruiter/dashboard' : '/applicant/dashboard')}
                                 >
-                                    Go to Dashboard
+                                    {t('landing.viewDashboard')}
                                 </Button>
                             )}
                         </motion.div>

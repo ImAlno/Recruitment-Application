@@ -13,20 +13,20 @@ export const useCompetenceForm = () => {
     const handleAddCompetence = () => {
         // Validation
         if (!selectedCompetenceId || selectedCompetenceId === 0) {
-            setError('Please select a competence');
+            setError('validation.selectCompetence');
             return false;
         }
 
         const yearsNum = parseFloat(years);
         if (years === '' || isNaN(yearsNum) || yearsNum < 0) {
-            setError('Please enter a valid number of years');
+            setError('validation.invalidYears');
             return false;
         }
 
         // Check if competence already exists
         const exists = competences.some(c => c.competence_id === selectedCompetenceId);
         if (exists) {
-            setError('This competence has already been added');
+            setError('validation.duplicateCompetence');
             return false;
         }
 

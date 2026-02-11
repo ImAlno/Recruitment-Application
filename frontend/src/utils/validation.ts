@@ -1,7 +1,6 @@
 export interface Requirement {
-    label: string;
+    key: string;
     test: (value: string) => boolean;
-    errorCode?: string;
 }
 
 export const validateEmail = (email: string): boolean => {
@@ -9,24 +8,24 @@ export const validateEmail = (email: string): boolean => {
 };
 
 export const passwordRequirements: Requirement[] = [
-    { label: 'Minimum 6 characters', test: (p: string) => p.length >= 6, errorCode: 'min_length' },
-    { label: 'At least 1 uppercase', test: (p: string) => /[A-Z]/.test(p), errorCode: 'uppercase' },
-    { label: 'At least 1 lowercase', test: (p: string) => /[a-z]/.test(p), errorCode: 'lowercase' },
-    { label: 'At least 1 number', test: (p: string) => /\d/.test(p), errorCode: 'number' },
-    { label: 'At least 1 special character', test: (p: string) => /[!@#$%^&*(),.?":{}|<>]/.test(p), errorCode: 'special' }
+    { key: 'validation.password.minLength', test: (p: string) => p.length >= 6 },
+    { key: 'validation.password.uppercase', test: (p: string) => /[A-Z]/.test(p) },
+    { key: 'validation.password.lowercase', test: (p: string) => /[a-z]/.test(p) },
+    { key: 'validation.password.number', test: (p: string) => /\d/.test(p) },
+    { key: 'validation.password.special', test: (p: string) => /[!@#$%^&*(),.?":{}|<>]/.test(p) }
 ];
 
 export const usernameRequirements: Requirement[] = [
-    { label: '6-30 characters', test: (u: string) => u.length >= 6 && u.length <= 30 }
+    { key: 'validation.usernameRange', test: (u: string) => u.length >= 6 && u.length <= 30 }
 ];
 
 export const validateUsername = (username: string): { isValid: boolean; error?: string } => {
     if (/[^a-zA-Z0-9.,_-]/.test(username)) {
-        return { isValid: false, error: 'Username contains invalid characters' };
+        return { isValid: false, error: 'validation.usernameChars' };
     }
     const usernameRegex = /^[a-zA-Z0-9.,_-]{6,30}$/;
     if (!usernameRegex.test(username)) {
-        return { isValid: false, error: 'Username format is invalid' };
+        return { isValid: false, error: 'validation.usernameInvalid' };
     }
     return { isValid: true };
 };
@@ -34,7 +33,7 @@ export const validateUsername = (username: string): { isValid: boolean; error?: 
 export const getPasswordErrors = (password: string): string[] => {
     return passwordRequirements
         .filter(req => !req.test(password))
-        .map(req => req.label.replace('At least 1 ', '').toLowerCase());
+        .map(req => req.key);
 };
 
 export const formatPasswordErrorMessage = (errors: string[]): string => {

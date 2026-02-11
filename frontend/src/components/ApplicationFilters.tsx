@@ -2,6 +2,7 @@ import Card, { CardHeader, CardTitle, CardContent } from './ui/Card';
 import Button from './ui/Button';
 import Input from './ui/Input';
 import Select from './ui/Select';
+import { useTranslation } from 'react-i18next';
 
 interface ApplicationFiltersProps {
     filters: {
@@ -20,6 +21,8 @@ interface ApplicationFiltersProps {
 }
 
 const ApplicationFilters = ({ filters, onFilterChange, onReset }: ApplicationFiltersProps) => {
+    const { t } = useTranslation();
+
     const handleStatusChange = (status: 'unhandled' | 'accepted' | 'rejected') => {
         onFilterChange('status', {
             ...filters.status,
@@ -30,34 +33,34 @@ const ApplicationFilters = ({ filters, onFilterChange, onReset }: ApplicationFil
     return (
         <Card className="h-fit">
             <CardHeader>
-                <CardTitle className="text-lg">Filters</CardTitle>
+                <CardTitle className="text-lg">{t('filters.title')}</CardTitle>
             </CardHeader>
             <CardContent className="space-y-4">
                 <div className="space-y-2">
                     <label className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">
-                        Search
+                        {t('filters.search')}
                     </label>
                     <Input
-                        placeholder="Applicant Name..."
+                        placeholder={t('filters.searchPlaceholder')}
                         value={filters.name}
                         onChange={(e) => onFilterChange('name', e.target.value)}
                     />
                 </div>
 
                 <Select
-                    label="Competence"
+                    label={t('filters.competence')}
                     value={filters.competence}
                     onChange={(e) => onFilterChange('competence', e.target.value)}
                     options={[
-                        { label: "All Competences", value: "" },
-                        { label: "Ticket Sales", value: "ticket_sales" },
-                        { label: "Lotteries", value: "lotteries" },
-                        { label: "Roller Coaster Operation", value: "roller_coaster" },
+                        { label: t('filters.allCompetences'), value: "" },
+                        { label: t('common.competences.ticket_sales'), value: "ticket_sales" },
+                        { label: t('common.competences.lotteries'), value: "lotteries" },
+                        { label: t('common.competences.roller_coaster'), value: "roller_coaster" },
                     ]}
                 />
 
                 <div className="space-y-2">
-                    <label className="text-sm font-medium leading-none">Status</label>
+                    <label className="text-sm font-medium leading-none">{t('filters.status')}</label>
                     <div className="space-y-1">
                         <label className="flex items-center space-x-2">
                             <input
@@ -66,7 +69,7 @@ const ApplicationFilters = ({ filters, onFilterChange, onReset }: ApplicationFil
                                 checked={filters.status.unhandled}
                                 onChange={() => handleStatusChange('unhandled')}
                             />
-                            <span className="text-sm">Unhandled</span>
+                            <span className="text-sm">{t('common.statuses.unhandled')}</span>
                         </label>
                         <label className="flex items-center space-x-2">
                             <input
@@ -75,7 +78,7 @@ const ApplicationFilters = ({ filters, onFilterChange, onReset }: ApplicationFil
                                 checked={filters.status.accepted}
                                 onChange={() => handleStatusChange('accepted')}
                             />
-                            <span className="text-sm">Accepted</span>
+                            <span className="text-sm">{t('common.statuses.accepted')}</span>
                         </label>
                         <label className="flex items-center space-x-2">
                             <input
@@ -84,24 +87,24 @@ const ApplicationFilters = ({ filters, onFilterChange, onReset }: ApplicationFil
                                 checked={filters.status.rejected}
                                 onChange={() => handleStatusChange('rejected')}
                             />
-                            <span className="text-sm">Rejected</span>
+                            <span className="text-sm">{t('common.statuses.rejected')}</span>
                         </label>
                     </div>
                 </div>
 
                 <Select
-                    label="Sort By"
+                    label={t('filters.sortBy')}
                     value={filters.sortBy}
                     onChange={(e) => onFilterChange('sortBy', e.target.value)}
                     options={[
-                        { label: "Submission Date", value: "date" },
-                        { label: "Applicant Name", value: "name" },
-                        { label: "Status", value: "status" },
+                        { label: t('filters.submissionDate'), value: "date" },
+                        { label: t('filters.applicantName'), value: "name" },
+                        { label: t('common.status'), value: "status" },
                     ]}
                 />
 
                 <Select
-                    label="Order"
+                    label={t('filters.order')}
                     value={filters.sortOrder}
                     onChange={(e) => onFilterChange('sortOrder', e.target.value)}
                     options={[
@@ -110,7 +113,7 @@ const ApplicationFilters = ({ filters, onFilterChange, onReset }: ApplicationFil
                     ]}
                 />
 
-                <Button variant="outline" fullWidth onClick={onReset}>Reset Filters</Button>
+                <Button variant="outline" fullWidth onClick={onReset}>{t('filters.reset')}</Button>
             </CardContent>
         </Card>
     );

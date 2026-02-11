@@ -1,12 +1,13 @@
 import { useState, useEffect } from 'react';
 import { useApplications } from './useApplications';
 import { applicationService } from '../services/applicationService';
-
 export const useApplicationDetails = (id: string | undefined) => {
     const { applications, loading: appsLoading } = useApplications();
     const [application, setApplication] = useState<any | null>(null);
     const [status, setStatus] = useState<string>('');
     const [isSaving, setIsSaving] = useState(false);
+    const [successMessage, setSuccessMessage] = useState<string | null>(null);
+    const [errorMessage, setErrorMessage] = useState<string | null>(null);
 
     useEffect(() => {
         if (!appsLoading && applications.length > 0 && id) {
@@ -26,14 +27,16 @@ export const useApplicationDetails = (id: string | undefined) => {
         if (!application) return;
 
         setIsSaving(true);
+        setSuccessMessage(null);
+        setErrorMessage(null);
         try {
             await applicationService.updateApplicationStatus(application.application_id, status);
 
             setApplication({ ...application, status });
-            alert(`Status updated to ${status}`);
+            setSuccessMessage(`errors.statusUpdated:${status}`);
         } catch (error) {
             console.error('Failed to update status:', error);
-            alert('Failed to update status. Please try again.');
+            setErrorMessage('errors.updateStatusFailed');
         } finally {
             setIsSaving(false);
         }
@@ -43,8 +46,14 @@ export const useApplicationDetails = (id: string | undefined) => {
         application,
         status,
         isSaving,
+        successMessage,
+        errorMessage,
         loading: appsLoading,
         handleStatusChange,
-        handleSaveStatus
+        handleSaveStatus,
+        clearMessages: () => {
+            setSuccessMessage(null);
+            setErrorMessage(null);
+        }
     };
 };

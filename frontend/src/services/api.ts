@@ -2,6 +2,7 @@ import axios from 'axios';
 import type { AxiosInstance, AxiosResponse } from 'axios';
 import type { ApiResponse } from '../types/api';
 import { DEFAULT_API_CONFIG, HttpStatus } from '../types/api';
+import i18n from '../i18n';
 
 /**
  * API Client for interacting with the recruitment backend
@@ -61,14 +62,14 @@ class ApiClient {
         if (error.response) {
             // Server responded with error status
             const { status, data } = error.response;
-            const message = data?.error || data?.message || `HTTP ${status} error`;
-            throw new Error(`${status}: ${message}`);
+            const message = data?.error || data?.message || i18n.t('common.error');
+            throw new Error(i18n.t('errors.serverError', { status, message }));
         } else if (error.request) {
             // Request was made but no response received
-            throw new Error('Network error - no response from server');
+            throw new Error(i18n.t('errors.networkError'));
         } else {
             // Something else happened
-            throw new Error(`Request error: ${error.message}`);
+            throw new Error(i18n.t('errors.requestError', { message: error.message }));
         }
     }
 
@@ -79,7 +80,7 @@ class ApiClient {
         if (response.data && 'success' in response.data && response.data.success) {
             return response.data.success;
         }
-        throw new Error('Invalid API response format');
+        throw new Error(i18n.t('errors.invalidResponse'));
     }
 
     /**

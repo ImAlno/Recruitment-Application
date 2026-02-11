@@ -14,7 +14,7 @@ export class AuthService {
         try {
             return await apiClient.get<AvailabilityStatus>(API_ENDPOINTS.CHECK_AVAILABILITY, params);
         } catch (error) {
-            throw new Error(`Failed to check availability: ${(error as Error).message}`);
+            throw error;
         }
     }
 
@@ -31,7 +31,7 @@ export class AuthService {
         try {
             await apiClient.post<void>(API_ENDPOINTS.REGISTER, data);
         } catch (error) {
-            throw new Error(`Registration failed: ${(error as Error).message}`);
+            throw error;
         }
     }
 
@@ -41,14 +41,14 @@ export class AuthService {
     async login(username: string, password: string): Promise<LoginResponse> {
         // Validate credentials
         if (!username || !password) {
-            throw new Error('Username and password are required');
+            throw new Error('validation.credentialsRequired');
         }
 
         try {
             const response = await apiClient.post<LoginResponse>(API_ENDPOINTS.LOGIN, { username, password });
             return response;
         } catch (error) {
-            throw new Error(`Login failed: ${(error as Error).message}`);
+            throw error;
         }
     }
 

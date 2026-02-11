@@ -12,6 +12,7 @@ import { AVAILABLE_COMPETENCES } from '../types/application';
 import { getCompetenceLabel } from '../utils/applicationUtils';
 import AnimatedPage from '../components/layout/AnimatedPage';
 import { AnimatedList, AnimatedItem } from '../components/common/AnimatedList';
+import { useTranslation } from 'react-i18next';
 
 const STEPS = {
     COMPETENCE: 0,
@@ -22,6 +23,7 @@ const STEPS = {
 type Step = typeof STEPS[keyof typeof STEPS];
 
 const ApplyPage = () => {
+    const { t } = useTranslation();
     const navigate = useNavigate();
     const [step, setStep] = useState<Step>(STEPS.COMPETENCE);
     const { user } = useAuth();
@@ -69,7 +71,7 @@ const ApplyPage = () => {
         <Layout>
             <AnimatedPage className="max-w-2xl mx-auto space-y-8">
                 <div className="flex justify-between items-center bg-white p-4 rounded-lg shadow-sm border border-gray-100">
-                    <h1 className="text-2xl font-bold text-blue-900">Application</h1>
+                    <h1 className="text-2xl font-bold text-blue-900">{t('apply.title')}</h1>
                     <div className="flex items-center gap-2">
                         {[0, 1, 2].map((i) => (
                             <div
@@ -94,28 +96,28 @@ const ApplyPage = () => {
                             >
                                 <Card>
                                     <CardHeader>
-                                        <CardTitle>Competence Profile</CardTitle>
+                                        <CardTitle>{t('apply.competenceProfile')}</CardTitle>
                                     </CardHeader>
                                     <CardContent className="space-y-6">
                                         <div className="grid grid-cols-1 md:grid-cols-2 gap-4 items-end">
                                             <Select
-                                                label="Area of Expertise"
+                                                label={t('apply.areaOfExpertise')}
                                                 value={competenceForm.selectedCompetenceId.toString()}
                                                 onChange={(e) => {
                                                     competenceForm.setSelectedCompetenceId(parseInt(e.target.value));
                                                     competenceForm.clearError();
                                                 }}
                                                 options={[
-                                                    { label: "Select competence...", value: "0" },
+                                                    { label: t('apply.selectCompetence'), value: "0" },
                                                     ...AVAILABLE_COMPETENCES.map(c => ({
-                                                        label: c.label,
+                                                        label: t(`common.competences.${c.label.toLowerCase().replace(/ /g, '_')}`, { defaultValue: c.label }),
                                                         value: c.id.toString()
                                                     }))
                                                 ]}
                                             />
                                             <div className="flex gap-2 items-end">
                                                 <Input
-                                                    label="Years of Experience"
+                                                    label={t('apply.yearsOfExperience')}
                                                     type="number"
                                                     placeholder="0"
                                                     value={competenceForm.years}
@@ -126,7 +128,7 @@ const ApplyPage = () => {
                                                     min="0"
                                                     step="0.5"
                                                 />
-                                                <Button onClick={competenceForm.handleAddCompetence}>Add</Button>
+                                                <Button onClick={competenceForm.handleAddCompetence}>{t('apply.add')}</Button>
                                             </div>
                                         </div>
 
@@ -138,22 +140,24 @@ const ApplyPage = () => {
                                             <table className="w-full text-sm">
                                                 <thead className="bg-gray-50 border-b">
                                                     <tr>
-                                                        <th className="px-4 py-2 text-left">Area</th>
-                                                        <th className="px-4 py-2 text-left">Years</th>
-                                                        <th className="px-4 py-2 text-right">Action</th>
+                                                        <th className="px-4 py-2 text-left">{t('apply.area')}</th>
+                                                        <th className="px-4 py-2 text-left">{t('apply.years')}</th>
+                                                        <th className="px-4 py-2 text-right">{t('common.action')}</th>
                                                     </tr>
                                                 </thead>
                                                 <tbody>
                                                     {competenceForm.competences.length === 0 ? (
                                                         <tr>
                                                             <td colSpan={3} className="px-4 py-6 text-center text-gray-500">
-                                                                No competences added yet
+                                                                {t('apply.noCompetences')}
                                                             </td>
                                                         </tr>
                                                     ) : (
                                                         competenceForm.competences.map((comp, index) => (
                                                             <tr key={index} className="border-b hover:bg-gray-50 transition-colors">
-                                                                <td className="px-4 py-2">{getCompetenceLabel(comp.competence_id)}</td>
+                                                                <td className="px-4 py-2">
+                                                                    {t(`common.competences.${getCompetenceLabel(comp.competence_id).toLowerCase().replace(/ /g, '_')}`, { defaultValue: getCompetenceLabel(comp.competence_id) })}
+                                                                </td>
                                                                 <td className="px-4 py-2 font-medium">{comp.years_of_experience}</td>
                                                                 <td className="px-4 py-2 text-right">
                                                                     <Button
@@ -161,7 +165,7 @@ const ApplyPage = () => {
                                                                         size="sm"
                                                                         onClick={() => competenceForm.removeCompetence(index)}
                                                                     >
-                                                                        Remove
+                                                                        {t('apply.remove')}
                                                                     </Button>
                                                                 </td>
                                                             </tr>
@@ -172,14 +176,14 @@ const ApplyPage = () => {
                                         </div>
                                     </CardContent>
                                     <CardFooter className="justify-between">
-                                        <Button variant="outline" type="button" onClick={handleCancel}>Cancel</Button>
+                                        <Button variant="outline" type="button" onClick={handleCancel}>{t('common.cancel')}</Button>
                                         <Button onClick={() => {
                                             if (competenceForm.competences.length === 0) {
-                                                competenceForm.setError('Please add at least one competence before proceeding');
+                                                competenceForm.setError(t('apply.atLeastOneCompetence'));
                                                 return;
                                             }
                                             changeStep(STEPS.AVAILABILITY);
-                                        }}>Next – Availability</Button>
+                                        }}>{t('apply.nextAvailability')}</Button>
                                     </CardFooter>
                                 </Card>
                             </motion.div>
@@ -197,12 +201,12 @@ const ApplyPage = () => {
                             >
                                 <Card>
                                     <CardHeader>
-                                        <CardTitle>Availability</CardTitle>
+                                        <CardTitle>{t('apply.availability')}</CardTitle>
                                     </CardHeader>
                                     <CardContent className="space-y-6">
                                         <div className="grid grid-cols-1 md:grid-cols-2 gap-4 items-end">
                                             <Input
-                                                label="Start Date"
+                                                label={t('apply.startDate')}
                                                 type="date"
                                                 value={availabilityForm.startDate}
                                                 onChange={(e) => {
@@ -212,7 +216,7 @@ const ApplyPage = () => {
                                             />
                                             <div className="flex gap-2 items-end">
                                                 <Input
-                                                    label="End Date"
+                                                    label={t('apply.endDate')}
                                                     type="date"
                                                     value={availabilityForm.endDate}
                                                     onChange={(e) => {
@@ -220,7 +224,7 @@ const ApplyPage = () => {
                                                         availabilityForm.clearError();
                                                     }}
                                                 />
-                                                <Button onClick={availabilityForm.handleAddAvailability}>Add</Button>
+                                                <Button onClick={availabilityForm.handleAddAvailability}>{t('apply.add')}</Button>
                                             </div>
                                         </div>
 
@@ -232,16 +236,16 @@ const ApplyPage = () => {
                                             <table className="w-full text-sm">
                                                 <thead className="bg-gray-50 border-b">
                                                     <tr>
-                                                        <th className="px-4 py-2 text-left">Start Date</th>
-                                                        <th className="px-4 py-2 text-left">End Date</th>
-                                                        <th className="px-4 py-2 text-right">Action</th>
+                                                        <th className="px-4 py-2 text-left">{t('apply.startDate')}</th>
+                                                        <th className="px-4 py-2 text-left">{t('apply.endDate')}</th>
+                                                        <th className="px-4 py-2 text-right">{t('common.action')}</th>
                                                     </tr>
                                                 </thead>
                                                 <tbody>
                                                     {availabilityForm.availability.length === 0 ? (
                                                         <tr>
                                                             <td colSpan={3} className="px-4 py-6 text-center text-gray-500">
-                                                                No availability periods added yet
+                                                                {t('apply.noAvailability')}
                                                             </td>
                                                         </tr>
                                                     ) : (
@@ -255,7 +259,7 @@ const ApplyPage = () => {
                                                                         size="sm"
                                                                         onClick={() => availabilityForm.removeAvailability(index)}
                                                                     >
-                                                                        Remove
+                                                                        {t('apply.remove')}
                                                                     </Button>
                                                                 </td>
                                                             </tr>
@@ -267,16 +271,16 @@ const ApplyPage = () => {
                                     </CardContent>
                                     <CardFooter className="justify-between">
                                         <div className="flex gap-2">
-                                            <Button variant="outline" onClick={() => changeStep(STEPS.COMPETENCE)}>Back</Button>
-                                            <Button variant="outline" onClick={handleCancel}>Cancel</Button>
+                                            <Button variant="outline" onClick={() => changeStep(STEPS.COMPETENCE)}>{t('error.back')}</Button>
+                                            <Button variant="outline" onClick={handleCancel}>{t('common.cancel')}</Button>
                                         </div>
                                         <Button onClick={() => {
                                             if (availabilityForm.availability.length === 0) {
-                                                availabilityForm.setError('Please add at least one availability period before proceeding');
+                                                availabilityForm.setError(t('apply.atLeastOneAvailability'));
                                                 return;
                                             }
                                             changeStep(STEPS.REVIEW);
-                                        }}>Next – Review</Button>
+                                        }}>{t('apply.nextReview')}</Button>
                                     </CardFooter>
                                 </Card>
                             </motion.div>
@@ -298,14 +302,14 @@ const ApplyPage = () => {
                                             <AnimatedItem>
                                                 <Card>
                                                     <CardHeader>
-                                                        <CardTitle className="text-lg">Personal Information</CardTitle>
+                                                        <CardTitle className="text-lg">{t('apply.personalInfo')}</CardTitle>
                                                     </CardHeader>
                                                     <CardContent>
                                                         <div className="grid grid-cols-2 gap-y-2 text-sm">
-                                                            <span className="text-gray-500 font-medium">First Name:</span> <span>{user.firstName}</span>
-                                                            <span className="text-gray-500 font-medium">Last Name:</span> <span>{user.lastName}</span>
-                                                            <span className="text-gray-500 font-medium">Email:</span> <span>{user.email}</span>
-                                                            <span className="text-gray-500 font-medium">Person Number:</span> <span>{user.personNumber}</span>
+                                                            <span className="text-gray-500 font-medium">{t('apply.firstName')}</span> <span>{user.firstName}</span>
+                                                            <span className="text-gray-500 font-medium">{t('apply.lastName')}</span> <span>{user.lastName}</span>
+                                                            <span className="text-gray-500 font-medium">{t('apply.email')}</span> <span>{user.email}</span>
+                                                            <span className="text-gray-500 font-medium">{t('apply.personNumber')}</span> <span>{user.personNumber}</span>
                                                         </div>
                                                     </CardContent>
                                                 </Card>
@@ -315,18 +319,20 @@ const ApplyPage = () => {
                                         <AnimatedItem>
                                             <Card>
                                                 <CardHeader className="flex flex-row items-center justify-between">
-                                                    <CardTitle className="text-lg">Competence Summary</CardTitle>
-                                                    <Button size="sm" variant="outline" onClick={() => changeStep(STEPS.COMPETENCE)}>Edit</Button>
+                                                    <CardTitle className="text-lg">{t('apply.competenceSummary')}</CardTitle>
+                                                    <Button size="sm" variant="outline" onClick={() => changeStep(STEPS.COMPETENCE)}>{t('apply.edit')}</Button>
                                                 </CardHeader>
                                                 <CardContent>
                                                     {competenceForm.competences.length === 0 ? (
-                                                        <p className="text-sm text-gray-500">No competences added yet</p>
+                                                        <p className="text-sm text-gray-500">{t('apply.noCompetences')}</p>
                                                     ) : (
                                                         <ul className="text-sm space-y-2">
                                                             {competenceForm.competences.map((comp, index) => (
                                                                 <li key={index} className="flex justify-between border-b border-gray-100 pb-1">
-                                                                    <span className="text-gray-600">{getCompetenceLabel(comp.competence_id)}</span>
-                                                                    <span className="font-medium text-blue-700">{comp.years_of_experience} years</span>
+                                                                    <span className="text-gray-600">
+                                                                        {t(`common.competences.${getCompetenceLabel(comp.competence_id).toLowerCase().replace(/ /g, '_')}`, { defaultValue: getCompetenceLabel(comp.competence_id) })}
+                                                                    </span>
+                                                                    <span className="font-medium text-blue-700">{comp.years_of_experience} {t('apply.yearsAbbr')}</span>
                                                                 </li>
                                                             ))}
                                                         </ul>
@@ -338,18 +344,18 @@ const ApplyPage = () => {
                                         <AnimatedItem>
                                             <Card>
                                                 <CardHeader className="flex flex-row items-center justify-between">
-                                                    <CardTitle className="text-lg">Availability Summary</CardTitle>
-                                                    <Button size="sm" variant="outline" onClick={() => changeStep(STEPS.AVAILABILITY)}>Edit</Button>
+                                                    <CardTitle className="text-lg">{t('apply.availabilitySummary')}</CardTitle>
+                                                    <Button size="sm" variant="outline" onClick={() => changeStep(STEPS.AVAILABILITY)}>{t('apply.edit')}</Button>
                                                 </CardHeader>
                                                 <CardContent>
                                                     {availabilityForm.availability.length === 0 ? (
-                                                        <p className="text-sm text-gray-500">No availability periods added yet</p>
+                                                        <p className="text-sm text-gray-500">{t('apply.noAvailability')}</p>
                                                     ) : (
                                                         <ul className="text-sm space-y-2">
                                                             {availabilityForm.availability.map((period, index) => (
                                                                 <li key={index} className="flex justify-between border-b border-gray-100 pb-1">
-                                                                    <span className="text-gray-600">{period.from_date} to {period.to_date}</span>
-                                                                    <span className="text-xs bg-green-50 text-green-700 px-2 py-0.5 rounded-full border border-green-100">Available</span>
+                                                                    <span className="text-gray-600">{period.from_date} {t('apply.to')} {period.to_date}</span>
+                                                                    <span className="text-xs bg-green-50 text-green-700 px-2 py-0.5 rounded-full border border-green-100">{t('apply.available')}</span>
                                                                 </li>
                                                             ))}
                                                         </ul>
@@ -365,15 +371,15 @@ const ApplyPage = () => {
 
                                     <div className="flex justify-between pt-4">
                                         <div className="flex gap-2">
-                                            <Button variant="outline" onClick={() => changeStep(STEPS.AVAILABILITY)}>Back</Button>
-                                            <Button variant="outline" onClick={handleCancel}>Cancel</Button>
+                                            <Button variant="outline" onClick={() => changeStep(STEPS.AVAILABILITY)}>{t('error.back')}</Button>
+                                            <Button variant="outline" onClick={handleCancel}>{t('common.cancel')}</Button>
                                         </div>
                                         <Button
                                             size="lg"
                                             onClick={reviewSubmit.handleFinalSubmit}
                                             disabled={reviewSubmit.isSubmitting}
                                         >
-                                            {reviewSubmit.isSubmitting ? 'Submitting...' : 'Submit Application'}
+                                            {reviewSubmit.isSubmitting ? t('apply.submitting') : t('apply.submitApplication')}
                                         </Button>
                                     </div>
                                 </div>

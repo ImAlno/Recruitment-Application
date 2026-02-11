@@ -28,18 +28,22 @@ export const useAvailability = ({ formData, setErrors }: UseAvailabilityProps) =
                 setErrors(prev => {
                     const newErrors = { ...prev };
                     if (needsUsernameCheck) {
-                        if (usernameTaken) newErrors.username = 'Username already exists';
+                        if (usernameTaken) newErrors.username = 'validation.usernameExists';
                         else delete newErrors.username;
                     } else if (formData.username) {
                         const { isValid: isFormatValid, error: formatError } = validateUsername(formData.username);
-                        if (!isFormatValid && formatError !== 'Username format is invalid') {
-                            newErrors.username = formatError || 'Invalid format';
+                        if (!isFormatValid && formatError !== 'validation.usernameInvalid') {
+                            if (formatError === 'validation.usernameChars') {
+                                newErrors.username = 'validation.usernameChars';
+                            } else {
+                                newErrors.username = 'validation.usernameInvalid';
+                            }
                         } else {
                             delete newErrors.username;
                         }
                     }
                     if (needsEmailCheck) {
-                        if (emailTaken) newErrors.email = 'Email already exists';
+                        if (emailTaken) newErrors.email = 'validation.emailExists';
                         else delete newErrors.email;
                     }
                     return newErrors;
