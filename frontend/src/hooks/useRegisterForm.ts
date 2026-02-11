@@ -1,8 +1,9 @@
 import { useState } from 'react';
 import { registerApplicant } from '../services/authService';
-import { validateEmail, getPasswordErrors, formatPasswordErrorMessage, validateUsername } from '../utils/validation';
+import { validateEmail, getPasswordErrors, validateUsername } from '../utils/validation';
 import { formatPersonNumber } from '../utils/formatters';
 import { useAvailability } from './useAvailability';
+import { useTranslation } from 'react-i18next';
 
 export const useRegisterForm = () => {
     const [formData, setFormData] = useState({
@@ -19,6 +20,7 @@ export const useRegisterForm = () => {
 
     const [success, setSuccess] = useState<string | null>(null);
 
+    const { t } = useTranslation();
     const {
         isCheckingUsername,
         isCheckingEmail,
@@ -42,7 +44,7 @@ export const useRegisterForm = () => {
             if (name === 'username') {
                 const { isValid, error } = validateUsername(value);
                 if (!isValid && error === 'Username contains invalid characters') {
-                    setErrors(prev => ({ ...prev, username: error }));
+                    setErrors(prev => ({ ...prev, username: 'validation.usernameChars' }));
                     setIsCheckingUsername(false);
                 } else {
                     setIsCheckingUsername(true);
@@ -87,34 +89,40 @@ export const useRegisterForm = () => {
 
     const validate = (): Record<string, string> => {
         const newErrors: Record<string, string> = {};
-        if (!formData.firstName) newErrors.firstName = 'First name is required';
-        if (!formData.lastName) newErrors.lastName = 'Last name is required';
+        if (!formData.firstName) newErrors.firstName = 'validation.firstNameRequired';
+        if (!formData.lastName) newErrors.lastName = 'validation.lastNameRequired';
 
         if (!formData.email) {
-            newErrors.email = 'Email address is required';
+            newErrors.email = 'validation.emailRequired';
         } else if (!validateEmail(formData.email)) {
-            newErrors.email = 'Email is invalid';
+            newErrors.email = 'validation.emailInvalid';
         }
 
         if (!formData.personNumber) {
-            newErrors.personNumber = 'Person number is required';
+            newErrors.personNumber = t('validation.personNumberRequired');
         }
 
         if (!formData.username) {
-            newErrors.username = 'Username is required';
+            newErrors.username = 'validation.usernameRequired';
         } else {
             const { isValid, error } = validateUsername(formData.username);
             if (!isValid) {
-                newErrors.username = error || 'Invalid username';
+                if (error === 'Username contains invalid characters') {
+                    newErrors.username = 'validation.usernameChars';
+                } else {
+                    newErrors.username = 'validation.usernameInvalid';
+                }
             }
         }
 
         if (!formData.password) {
-            newErrors.password = 'Password is required';
+            newErrors.password = 'validation.passwordRequired';
         } else {
             const passwordReqs = getPasswordErrors(formData.password);
             if (passwordReqs.length > 0) {
-                newErrors.password = formatPasswordErrorMessage(passwordReqs);
+                // Store password errors as a special object/string that the UI can parse
+                // For now, we'll store a prefix so the UI knows it's a password-titles-reqs type
+                newErrors.password = `PASSWORD_ERROR:${passwordReqs.join(',')}`;
             }
         }
 
@@ -127,7 +135,8 @@ export const useRegisterForm = () => {
                     updated[field] = newErrors[field];
                 } else {
                     const current = prev[field];
-                    const isAsyncError = current?.includes('already exists');
+                    // Check if it's an async error key
+                    const isAsyncError = current === 'validation.usernameExists' || current === 'validation.emailExists';
                     if (!isAsyncError) {
                         delete updated[field];
                     }
@@ -155,7 +164,9 @@ export const useRegisterForm = () => {
     const handleSubmit = async () => {
         const formatErrors = validate();
         const hasFormatErrors = Object.keys(formatErrors).length > 0;
-        const hasAsyncErrors = errors.username?.includes('exists') || errors.email?.includes('exists');
+
+        // Key-based check for async errors
+        const hasAsyncErrors = errors.username === 'validation.usernameExists' || errors.email === 'validation.emailExists';
 
         if (hasFormatErrors || hasAsyncErrors) return;
 
@@ -168,11 +179,11 @@ export const useRegisterForm = () => {
 
         try {
             await registerApplicant(formData);
-            setSuccess('Account created successfully! You can now login.');
+            setSuccess(t('common.success.registration'));
         } catch (error) {
             setErrors(prev => ({
                 ...prev,
-                submit: error instanceof Error ? error.message : 'Registration failed. Please try again.'
+                submit: error instanceof Error ? error.message : 'errors.registrationFailed'
             }));
             setIsSubmitting(false);
         }

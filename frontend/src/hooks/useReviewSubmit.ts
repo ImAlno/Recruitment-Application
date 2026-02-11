@@ -14,12 +14,12 @@ export const useReviewSubmit = () => {
         setError(null);
 
         if (competences.length === 0) {
-            setError('Please add at least one competence');
+            setError('validation.minOneCompetence');
             return false;
         }
 
         if (availability.length === 0) {
-            setError('Please add at least one availability period');
+            setError('validation.minOneAvailability');
             return false;
         }
 
@@ -28,7 +28,7 @@ export const useReviewSubmit = () => {
             navigate('/applicant/apply/confirmation');
             return true;
         } else {
-            setError('Failed to submit application. Please try again.');
+            setError('errors.submissionFailed');
             return false;
         }
     };

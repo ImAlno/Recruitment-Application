@@ -31,7 +31,7 @@ export const useApplications = () => {
             }
         } catch (err) {
             console.error('Failed to fetch applications:', err);
-            setError('Could not load applications. Please try again later.');
+            setError('errors.loadApplicationsFailed');
         } finally {
             setLoading(false);
         }

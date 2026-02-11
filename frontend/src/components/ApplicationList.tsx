@@ -1,5 +1,6 @@
 import Card, { CardHeader, CardTitle, CardContent } from './ui/Card';
 import Button from './ui/Button';
+import { useTranslation } from 'react-i18next';
 
 interface Application {
     application_id: number;
@@ -16,6 +17,8 @@ interface ApplicationListProps {
 }
 
 const ApplicationList = ({ applications, onViewDetails }: ApplicationListProps) => {
+    const { t } = useTranslation();
+
     const getStatusBadge = (status: string) => {
         const styles: Record<string, string> = {
             unhandled: "bg-yellow-100 text-yellow-800",
@@ -26,34 +29,34 @@ const ApplicationList = ({ applications, onViewDetails }: ApplicationListProps) 
 
         return (
             <span className={`inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-semibold ${styles[status] || defaultStyle}`}>
-                {status.charAt(0).toUpperCase() + status.slice(1)}
+                {t(`common.statuses.${status.toLowerCase()}`, { defaultValue: status.charAt(0).toUpperCase() + status.slice(1) })}
             </span>
         );
     };
 
     const getCompetenceName = (id: number) => {
         const map: Record<number, string> = {
-            1: 'Ticket Sales',
-            2: 'Lotteries',
-            3: 'Roller Coaster Operation'
+            1: t('common.competences.ticket_sales'),
+            2: t('common.competences.lotteries'),
+            3: t('common.competences.roller_coaster')
         };
-        return map[id] || 'Unknown';
+        return map[id] || t('common.competences.unknown');
     };
 
     return (
         <Card>
             <CardHeader>
-                <CardTitle>Recent Applications</CardTitle>
+                <CardTitle>{t('applicationList.title')}</CardTitle>
             </CardHeader>
             <CardContent>
                 <div className="border rounded-md overflow-hidden">
                     <table className="w-full text-sm text-left">
                         <thead className="bg-gray-50 border-b">
                             <tr>
-                                <th className="px-4 py-3 font-medium">Applicant Full Name</th>
-                                <th className="px-4 py-3 font-medium">Competence</th>
-                                <th className="px-4 py-3 font-medium">Status</th>
-                                <th className="px-4 py-3 text-right">Action</th>
+                                <th className="px-4 py-3 font-medium">{t('applicationList.fullName')}</th>
+                                <th className="px-4 py-3 font-medium">{t('applicationList.competence')}</th>
+                                <th className="px-4 py-3 font-medium">{t('common.status')}</th>
+                                <th className="px-4 py-3 text-right">{t('applicationList.action')}</th>
                             </tr>
                         </thead>
                         <tbody className="divide-y">
@@ -72,14 +75,16 @@ const ApplicationList = ({ applications, onViewDetails }: ApplicationListProps) 
                                             {getStatusBadge(app.status)}
                                         </td>
                                         <td className="px-4 py-3 text-right">
-                                            <Button size="sm" variant="outline" onClick={() => onViewDetails(app.application_id)}>View Details</Button>
+                                            <Button size="sm" variant="outline" onClick={() => onViewDetails(app.application_id)}>
+                                                {t('applicationList.viewDetails')}
+                                            </Button>
                                         </td>
                                     </tr>
                                 ))
                             ) : (
                                 <tr>
                                     <td colSpan={4} className="px-4 py-8 text-center text-gray-500">
-                                        No applications found matching your criteria.
+                                        {t('applicationList.noResults')}
                                     </td>
                                 </tr>
                             )}

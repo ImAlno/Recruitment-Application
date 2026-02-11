@@ -7,8 +7,10 @@ import { useApplications } from '../hooks/useApplications';
 import { useApplicationFilters } from '../hooks/useApplicationFilters';
 import AnimatedPage from '../components/layout/AnimatedPage';
 import { AnimatedList, AnimatedItem } from '../components/common/AnimatedList';
+import { useTranslation } from 'react-i18next';
 
 const RecruiterDashboard = () => {
+    const { t } = useTranslation();
     const navigate = useNavigate();
     const { applications, loading, error } = useApplications();
 
@@ -37,20 +39,20 @@ const RecruiterDashboard = () => {
                 <main className="space-y-6">
                     <Card>
                         <CardHeader>
-                            <CardTitle>Application Overview</CardTitle>
+                            <CardTitle>{t('recruiterDashboard.overview')}</CardTitle>
                         </CardHeader>
                         <CardContent>
                             <AnimatedList className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
                                 <AnimatedItem className="p-4 bg-blue-50 rounded-lg shadow-sm border border-blue-100">
-                                    <p className="text-sm text-blue-600 font-medium">Unhandled Applications</p>
+                                    <p className="text-sm text-blue-600 font-medium">{t('recruiterDashboard.unhandled')}</p>
                                     <p className="text-2xl font-bold text-blue-900">{stats.unhandled}</p>
                                 </AnimatedItem>
                                 <AnimatedItem className="p-4 bg-green-50 rounded-lg shadow-sm border border-green-100">
-                                    <p className="text-sm text-green-600 font-medium">Accepted</p>
+                                    <p className="text-sm text-green-600 font-medium">{t('recruiterDashboard.accepted')}</p>
                                     <p className="text-2xl font-bold text-green-900">{stats.accepted}</p>
                                 </AnimatedItem>
                                 <AnimatedItem className="p-4 bg-red-50 rounded-lg shadow-sm border border-red-100">
-                                    <p className="text-sm text-red-600 font-medium">Rejected</p>
+                                    <p className="text-sm text-red-600 font-medium">{t('recruiterDashboard.rejected')}</p>
                                     <p className="text-2xl font-bold text-red-900">{stats.rejected}</p>
                                 </AnimatedItem>
                             </AnimatedList>
@@ -58,9 +60,9 @@ const RecruiterDashboard = () => {
                     </Card>
 
                     {loading ? (
-                        <div className="text-center py-8">Loading applications...</div>
+                        <div className="text-center py-8">{t('common.loadingApplications')}</div>
                     ) : error ? (
-                        <div className="text-center py-8 text-red-500">{error}</div>
+                        <div className="text-center py-8 text-red-500">{t(error)}</div>
                     ) : (
                         <ApplicationList
                             applications={filteredApplications}

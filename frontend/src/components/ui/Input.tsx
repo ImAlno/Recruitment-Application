@@ -1,4 +1,5 @@
 import React from 'react';
+import { useTranslation } from 'react-i18next';
 
 interface InputProps extends React.InputHTMLAttributes<HTMLInputElement> {
     label?: string;
@@ -16,8 +17,30 @@ const Input = ({
     id,
     ...props
 }: InputProps) => {
+    const { t } = useTranslation();
     const inputId = id || label?.toLowerCase().replace(/\s+/g, '-');
     const widthStyle = fullWidth ? 'w-full' : '';
+
+    const renderError = () => {
+        if (!error) return null;
+
+        // Handle complex password errors
+        if (error.startsWith('PASSWORD_ERROR:')) {
+            const reqCodes = error.replace('PASSWORD_ERROR:', '').split(',');
+            const reqMap: Record<string, string> = {
+                'min_length': 'minLength',
+                'uppercase': 'uppercase',
+                'lowercase': 'lowercase',
+                'number': 'number',
+                'special': 'special'
+            };
+            const translatedReqs = reqCodes.map(code => t(`validation.password.${reqMap[code] || code}`));
+            return `${t('validation.passwordTitle')} ${translatedReqs.join(', ')}`;
+        }
+
+        // Handle simple translation keys or direct strings
+        return t(error);
+    };
 
     return (
         <div className={`flex flex-col gap-1.5 ${widthStyle} ${className}`}>
@@ -41,7 +64,7 @@ const Input = ({
                     </div>
                 )}
             </div>
-            {error && <p className="text-xs font-medium text-red-500">{error}</p>}
+            {error && <p className="text-xs font-medium text-red-500">{renderError()}</p>}
         </div>
     );
 };

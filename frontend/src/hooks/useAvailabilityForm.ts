@@ -14,24 +14,24 @@ export const useAvailabilityForm = () => {
     const handleAddAvailability = () => {
         // Validation
         if (!startDate) {
-            setError('Please select a start date');
+            setError('validation.selectStartDate');
             return false;
         }
 
         if (!endDate) {
-            setError('Please select an end date');
+            setError('validation.selectEndDate');
             return false;
         }
 
         // Check that end date is after start date
         if (!isValidDateRange(startDate, endDate)) {
-            setError('End date must be after start date');
+            setError('validation.dateRangeInvalid');
             return false;
         }
 
         // Check for overlapping periods
         if (isOverlapping(startDate, endDate, availability)) {
-            setError('This period overlaps with an existing availability period');
+            setError('validation.dateOverlap');
             return false;
         }
 

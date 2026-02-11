@@ -12,7 +12,7 @@ export class ApplicationService {
         try {
             return await apiClient.post<any>('/application/submit', data);
         } catch (error) {
-            throw new Error(`Application submission failed: ${(error as Error).message}`);
+            throw error;
         }
     }
 
@@ -24,7 +24,7 @@ export class ApplicationService {
             // Note: Adjust payload structure based on backend requirements
             return await apiClient.put<any>(`/application/${id}`, { status });
         } catch (error) {
-            throw new Error(`Failed to update application status: ${(error as Error).message}`);
+            throw error;
         }
     }
 
@@ -46,7 +46,7 @@ export class ApplicationService {
         try {
             return await apiClient.get<any>(`/application/${id}`);
         } catch (error) {
-            throw new Error(`Failed to fetch application: ${(error as Error).message}`);
+            throw error;
         }
     }
 

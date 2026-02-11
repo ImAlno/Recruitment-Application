@@ -10,8 +10,10 @@ import { useRegisterForm } from '../hooks/useRegisterForm';
 import Toast from '../components/ui/Toast';
 import { Check } from '../components/ui/Check';
 import AnimatedPage from '../components/layout/AnimatedPage';
+import { useTranslation } from 'react-i18next';
 
 const RegisterPage = () => {
+    const { t } = useTranslation();
     const {
         formData,
         errors,
@@ -34,24 +36,24 @@ const RegisterPage = () => {
                     <CardHeader>
                         {!success ? (
                             <>
-                                <CardTitle>Create Account</CardTitle>
-                                <CardDescription>Enter your details to register as an applicant.</CardDescription>
+                                <CardTitle>{t('register.title')}</CardTitle>
+                                <CardDescription>{t('register.description')}</CardDescription>
                             </>
                         ) : (
                             <div className="flex flex-col items-center justify-center py-8 animate-in fade-in zoom-in-95 duration-500">
                                 <div className="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mb-4 text-green-600">
                                     <Check size={32} className="animate-in zoom-in spin-in-12 duration-700" />
                                 </div>
-                                <CardTitle className="text-center text-2xl text-green-700 mb-2">Account Created!</CardTitle>
+                                <CardTitle className="text-center text-2xl text-green-700 mb-2">{t('register.successTitle')}</CardTitle>
                                 <CardDescription className="text-center text-gray-600">
-                                    Your account has been successfully created.
+                                    {t('register.successDescription')}
                                     <br />
-                                    Click below to login.
+                                    {t('register.clickToLogin')}
                                 </CardDescription>
                                 <div className="mt-8 w-full max-w-xs">
                                     <Link to="/login">
                                         <Button fullWidth variant="primary">
-                                            Go to Login
+                                            {t('register.goToLogin')}
                                         </Button>
                                     </Link>
                                 </div>
@@ -63,7 +65,7 @@ const RegisterPage = () => {
                             <CardContent className="space-y-4">
                                 <div className="grid grid-cols-2 gap-4">
                                     <Input
-                                        label="First Name"
+                                        label={t('register.firstName')}
                                         name="firstName"
                                         placeholder="Anita"
                                         value={formData.firstName}
@@ -71,7 +73,7 @@ const RegisterPage = () => {
                                         error={errors.firstName}
                                     />
                                     <Input
-                                        label="Last Name"
+                                        label={t('register.lastName')}
                                         name="lastName"
                                         placeholder="Drink"
                                         value={formData.lastName}
@@ -81,7 +83,7 @@ const RegisterPage = () => {
                                 </div>
                                 <div className="relative">
                                     <Input
-                                        label="Email Address"
+                                        label={t('register.email')}
                                         name="email"
                                         type="email"
                                         placeholder="anita.drink@example.com"
@@ -90,14 +92,14 @@ const RegisterPage = () => {
                                         error={errors.email}
                                     />
                                     {isCheckingEmail && formData.email && !errors.email && (
-                                        <div className="absolute right-3 top-[38px] text-[10px] text-blue-500 animate-pulse">Checking...</div>
+                                        <div className="absolute right-3 top-[38px] text-[10px] text-blue-500 animate-pulse">{t('common.checking')}</div>
                                     )}
                                     {!isCheckingEmail && formData.email && checkedValues.email === formData.email && !errors.email && validateEmail(formData.email) && (
-                                        <div className="absolute right-3 top-[38px] text-green-500 font-bold" title="Email is available">✓</div>
+                                        <div className="absolute right-3 top-[38px] text-green-500 font-bold" title={t('register.emailAvailable') || 'Email Available'}>✓</div>
                                     )}
                                 </div>
                                 <Input
-                                    label="Person Number"
+                                    label={t('register.personNumber')}
                                     name="personNumber"
                                     placeholder="YYYYMMDD-XXXX"
                                     value={formData.personNumber}
@@ -106,7 +108,7 @@ const RegisterPage = () => {
                                 />
                                 <div className="relative">
                                     <Input
-                                        label="Username"
+                                        label={t('register.username')}
                                         name="username"
                                         placeholder="anitadrink"
                                         value={formData.username}
@@ -114,20 +116,20 @@ const RegisterPage = () => {
                                         error={errors.username}
                                     />
                                     {isCheckingUsername && formData.username && !errors.username && (
-                                        <div className="absolute right-3 top-[38px] text-[10px] text-blue-500 animate-pulse">Checking...</div>
+                                        <div className="absolute right-3 top-[38px] text-[10px] text-blue-500 animate-pulse">{t('common.checking')}</div>
                                     )}
                                     {!isCheckingUsername && formData.username && checkedValues.username === formData.username && !errors.username && formData.username.length > 0 && (
-                                        <div className="absolute right-3 top-[38px] text-green-500 font-bold" title="Username is available">✓</div>
+                                        <div className="absolute right-3 top-[38px] text-green-500 font-bold" title={t('register.usernameAvailable') || 'Username Available'}>✓</div>
                                     )}
                                     <RequirementChecklist
-                                        title="Username requirements"
+                                        title={t('register.usernameRequirements')}
                                         value={formData.username}
                                         requirements={usernameRequirements}
                                     />
                                 </div>
                                 <div className="space-y-1">
                                     <Input
-                                        label="Password"
+                                        label={t('register.password')}
                                         name="password"
                                         type={showPassword ? 'text' : 'password'}
                                         placeholder="••••••••"
@@ -139,14 +141,14 @@ const RegisterPage = () => {
                                                 type="button"
                                                 onClick={() => setShowPassword(!showPassword)}
                                                 className="text-gray-500 hover:text-gray-700 focus:outline-none focus:text-blue-600 transition-colors p-1"
-                                                title={showPassword ? 'Hide password' : 'Show password'}
+                                                title={showPassword ? t('register.hidePassword') : t('register.showPassword')}
                                             >
                                                 {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
                                             </button>
                                         }
                                     />
                                     <RequirementChecklist
-                                        title="Password requirements"
+                                        title={t('register.passwordRequirements')}
                                         value={formData.password}
                                         requirements={passwordRequirements}
                                     />
@@ -158,9 +160,9 @@ const RegisterPage = () => {
                                     onClick={handleSubmit}
                                     disabled={isSubmitting || isCheckingUsername || isCheckingEmail}
                                 >
-                                    {isSubmitting ? 'Creating...' : 'Create Account'}
+                                    {isSubmitting ? t('register.creating') : t('register.createAccount')}
                                 </Button>
-                                <Link to="/" className="text-sm text-blue-600 hover:underline text-center">Cancel / Back to Landing</Link>
+                                <Link to="/" className="text-sm text-blue-600 hover:underline text-center">{t('register.cancelBack') || 'Cancel / Back to Home'}</Link>
                             </CardFooter>
                         </>
                     )}

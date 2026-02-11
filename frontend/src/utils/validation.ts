@@ -17,7 +17,7 @@ export const passwordRequirements: Requirement[] = [
 ];
 
 export const usernameRequirements: Requirement[] = [
-    { label: '6-30 characters', test: (u: string) => u.length >= 6 && u.length <= 30 }
+    { label: '6-30 characters', test: (u: string) => u.length >= 6 && u.length <= 30, errorCode: 'username_range' }
 ];
 
 export const validateUsername = (username: string): { isValid: boolean; error?: string } => {
@@ -34,7 +34,7 @@ export const validateUsername = (username: string): { isValid: boolean; error?: 
 export const getPasswordErrors = (password: string): string[] => {
     return passwordRequirements
         .filter(req => !req.test(password))
-        .map(req => req.label.replace('At least 1 ', '').toLowerCase());
+        .map(req => req.errorCode || req.label);
 };
 
 export const formatPasswordErrorMessage = (errors: string[]): string => {
