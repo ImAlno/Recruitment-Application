@@ -1,7 +1,7 @@
 import DAO from '../integration/DAO';
 import PersonDTO from '../model/PersonDTO';
 import { Database } from '../db';
-import { RegisterRequest } from '../model/types/authApi';
+import { RegisterRequest, AvailabilityResponse } from '../model/types/authApi';
 import { ApplicationSubmissionRequest } from '../model/types/applicationApi';
 // import jwt from 'jsonwebtoken';
 
@@ -37,24 +37,26 @@ export class Controller {
     });
   }
 
-  async isAvailable(username?: string, email?: string) {
-    return await this.dao.checkUserExistence(username, email);
+  async isAvailable(username?: string, email?: string): Promise<AvailabilityResponse> {
+    return this.database.transaction(async (transactionObj) => {
+        return await this.dao.checkUserExistence(transactionObj, username, email);
+    });
   }
 
   async login(username: string, password: string): Promise<PersonDTO | null> {
     return this.database.transaction(async (transactionObj) => {
-        const user = await this.dao.findUser(username);
+        const user = await this.dao.findUser(username, transactionObj);
         if (!user || user.password !== password) {
           return null;
         }
         
-        return new PersonDTO(user.id, user.firstName, user.lastName,user.username, user.email, user.personNumber, user.role);
+        return new PersonDTO(user.id, user.firstName, user.lastName, user.username, user.email, user.personNumber, user.role);
     });
   }
 
   async isLoggedIn(username: string): Promise<Pick<PersonDTO, 'id' | 'username' | 'role'> | null> {
     return this.database.transaction(async (transactionObj) => {
-        const user = await this.dao.findUser(username);
+        const user = await this.dao.findUser(username, transactionObj);
         if (!user) {
           return null;
         }

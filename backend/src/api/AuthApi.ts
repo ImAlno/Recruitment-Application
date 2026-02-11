@@ -56,14 +56,11 @@ class AuthApi extends RequestHandler {
                 "/availability",
                 async (request: Request, response: Response, next: NextFunction) => {
                     try {
-                        const { username, email } = request.query;
-                        const status = await this.controller?.isAvailable(
-                            username as string,
-                            email as string
-                        );
+                        const { username, email } = request.query; // in get requests parameters are stored in the query string not in body
+                        const status = await this.controller?.isAvailable(username as string, email as string);
                         this.sendHttpResponse(response, 200, status);
                     } catch (error) {
-                        console.error("Availability check error:", error);
+                        console.error("Availability check error:", {error});
                         this.sendHttpResponse(response, 500, "Internal Server Error");
                     }
                 }
