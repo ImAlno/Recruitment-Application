@@ -35,13 +35,8 @@ class AuthApi extends RequestHandler {
                 "/register",
                 async (request: Request, response: Response, next: NextFunction) => {
                     try {
-                        const registeredUser = await this.controller?.register(request.body);
-                        if (registeredUser === null) {
-                            this.sendHttpResponse(response, 401, "Registration failed");
-                            return;
-                        } else {
-                            this.sendHttpResponse(response, 200, "Registration successful");
-                        }
+                        await this.controller?.register(request.body);
+                        this.sendHttpResponse(response, 201, "Registration successful");
                     } catch (error) {
                         console.error("Registration error:", error);
                         this.sendHttpResponse(response, 500, "Internal Server Error");
