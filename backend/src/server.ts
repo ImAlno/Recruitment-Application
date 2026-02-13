@@ -25,6 +25,7 @@ app.use(express.json());
 const startServer = async () => {
   const apiRouter = express.Router();
   await loader.loadHandlers(apiRouter);
+  loader.loadErrorHandlers(apiRouter);
 
   // Mount all handlers under the /api prefix to match frontend config
   app.use("/api", apiRouter);
