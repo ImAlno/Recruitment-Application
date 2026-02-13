@@ -25,7 +25,7 @@ class RequestHandlerLoader {
     this.requestHandlers.push(requestHandler);
   }
 
-  /**
+  /** // TODO: why are we using any as the app type?
    * Makes all request handlers available in the specified express
    * Application or Router object.
    *
