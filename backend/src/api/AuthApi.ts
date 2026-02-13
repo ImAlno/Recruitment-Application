@@ -38,8 +38,7 @@ class AuthApi extends RequestHandler {
                         await this.controller?.register(request.body);
                         this.sendHttpResponse(response, 201, "Registration successful");
                     } catch (error) {
-                        console.error("Registration error:", error);
-                        this.sendHttpResponse(response, 500, "Internal Server Error");
+                        next(error);
                     }
                 }
             );
@@ -55,8 +54,7 @@ class AuthApi extends RequestHandler {
                         const status = await this.controller?.isAvailable(username as string, email as string);
                         this.sendHttpResponse(response, 200, status);
                     } catch (error) {
-                        console.error("Availability check error:", {error});
-                        this.sendHttpResponse(response, 500, "Internal Server Error");
+                        next(error);
                     }
                 }
             );
@@ -66,7 +64,7 @@ class AuthApi extends RequestHandler {
             */
             this.router.post(
                 "/login",
-                async (request: Request, response: Response) => {
+                async (request: Request, response: Response, next: NextFunction) => {
                     try {
                         const { username, password } = request.body;
                         const user = await this.controller?.login(username, password);
@@ -74,24 +72,22 @@ class AuthApi extends RequestHandler {
                             Authorization.sendAuthCookie(user, response);
                             this.sendHttpResponse(response, 200, user);
                         } else {
-                            this.sendHttpResponse(response, 401, "Invalid credentials");
+                            this.sendHttpResponse(response, 401, "Invalid credentials"); // TODO: handle in next() somehow
                         }
                     } catch (error) {
-                        console.error("Login error:", error);
-                        this.sendHttpResponse(response, 500, "Internal Server Error");
+                        next(error);
                     }
                 }
             );
 
             this.router.post(
                 "/logout",
-                async (request: Request, response: Response) => {
+                async (request: Request, response: Response, next: NextFunction) => {
                     try {
                         Authorization.logout(response);
                         this.sendHttpResponse(response, 200, "Logout successful");
                     } catch (error) {
-                        console.error("Logout error:", error);
-                        this.sendHttpResponse(response, 500, "Internal Server Error");
+                        next(error);
                     }
                 }
             );
