@@ -64,21 +64,15 @@ class ApplicationApi extends RequestHandler {
                         this.sendHttpResponse(res, 400, errors.array());
                     }
 
-                    const applicationId = await this.controller?.createApplication(req.body);
-                    if (applicationId === null){
-                        this.sendHttpResponse(res, 401, "Application submission failed");
-                    } else {
-                        this.sendHttpResponse(res, 201, "Application submitted successfully");
-                    } 
+                    const applicationId = await this.controller?.createApplication(req.body); // might use applicationId in the future
+                    this.sendHttpResponse(res, 201, "Application submitted successfully");
                 } catch (error) {
-                    // next(error); //? is there a implementation of next() or how does it work
-                    console.error("Application submission error:", error);
-                    this.sendHttpResponse(res, 500, "Internal Server Error");
+                    next(error); 
                 }
             }
         );
       } catch (error) {
-          console.error("Something went wrong in application api", error)
+          console.error("Something went wrong in application api", error) // TODO: Change when logger is implemented
       }
     }
 }

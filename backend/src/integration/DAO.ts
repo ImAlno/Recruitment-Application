@@ -23,26 +23,25 @@ class DAO {
     return this.database;
   }
 
-  // TODO: fix proper error handling
   async registerUser(userBody: RegisterRequest, transactionObj: Transaction): Promise<PersonDTO> {
     try {
-      const result = await transactionObj.insert(personTable)
+      const [person] = await transactionObj.insert(personTable)
         .values({
           name: userBody.firstName,
           surname: userBody.lastName,
           pnr: userBody.personNumber,
           email: userBody.email,
           password: userBody.password,
-          roleId: 2,                    // TODO: look into better solution
+          roleId: 2,                    
           username: userBody.username,
         })
         .returning();
-      if (result.length === 0) {
-        throw new Error("Failed to register user");
+      if (!person) {                                            // double check that a person was created and returned, code should not reach
+        throw new Error("Person insertion returned empty row"); // this point as an error should be thrown by the db, but this is a backup to be sure
       }
-      return this.createPersonDTO(result[0]!);
+      return this.createPersonDTO(person);
     } catch (error) {
-      throw error;
+      throw new Error("Failed inserting person", {cause: error});
     }
   }
 
@@ -65,23 +64,21 @@ class DAO {
         emailTaken: result.some(user => user.email === email)           // checks if any of the resulting rows have a email matching the imput email
       };
     } catch (error) {
-      throw new Error("Availability check failed in db", {cause: error});
+      throw new Error("Availability check failed", {cause: error});
     }
   }
 
   // TODO: fix proper error handling
-  async findUser(username: string, transactionObj: Transaction): Promise<PersonDTO | null> {
+  async findUser(username: string, transactionObj: Transaction): Promise<PersonDTO> {
     try {
-        const result = await transactionObj.select()
+        const [user] = await transactionObj.select()
             .from(personTable)
             .where(eq(personTable.username, username));
 
-        if (result.length === 0) {
-            //* throw error to rollback transaction
-            return null;
+        if (!user) {
+          throw new Error("Person selection returned empty row => username matches no person in db or possible db error (unlikely)");
         }
-
-        return this.createPersonDTO(result[0]!);
+        return this.createPersonDTO(user);
     } catch (error) {
         throw new Error("Failed finding user", {cause: error});
     }
