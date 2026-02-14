@@ -68,7 +68,6 @@ class DAO {
     }
   }
 
-  // TODO: fix proper error handling
   async findUser(username: string, transactionObj: Transaction): Promise<PersonDTO> {
     try {
         const [user] = await transactionObj.select()

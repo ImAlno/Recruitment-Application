@@ -1,6 +1,6 @@
 import { NextFunction, Request, Response } from "express";
 import RequestHandler from "./RequestHandler";
-import { body, matchedData, validationResult } from "express-validator";
+import { body, validationResult } from "express-validator";
 
 class ApplicationApi extends RequestHandler {
     /**
@@ -62,6 +62,7 @@ class ApplicationApi extends RequestHandler {
                     const errors = validationResult(req);
                     if (!errors.isEmpty()) {
                         this.sendHttpResponse(res, 400, errors.array());
+                        return;
                     }
 
                     const applicationId = await this.controller?.createApplication(req.body); // might use applicationId in the future
