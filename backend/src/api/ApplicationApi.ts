@@ -73,7 +73,7 @@ class ApplicationApi extends RequestHandler {
             }
         );
       } catch (error) {
-          console.error("Something went wrong in application api", error) // TODO: Change when logger is implemented
+          this.logger.logError(error);      
       }
     }
 }

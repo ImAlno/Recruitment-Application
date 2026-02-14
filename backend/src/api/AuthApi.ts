@@ -159,7 +159,7 @@ class AuthApi extends RequestHandler {
             // TODO add /me or /:id route
 
         } catch (error) {
-            console.error("AuthApi initialization error:", error); // TODO: Change when logger is implemented
+            this.logger.logError(error);
         }
     }
 }
