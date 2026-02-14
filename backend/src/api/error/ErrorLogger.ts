@@ -32,8 +32,7 @@ class ErrorLogger extends ErrorHandler {
      * Logs errors to the console.
      */
     app.use(this.path, (error: Error, request: Request, response: Response, next: NextFunction) => {
-        //this.logger.logException(error);
-        console.error("Something went wrong: ", error); //* Remove when logger is implemented
+        this.logger.logError(error);
         next(error);
     });
   }

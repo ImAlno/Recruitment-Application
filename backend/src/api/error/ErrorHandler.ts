@@ -1,4 +1,4 @@
-//import { Logger } from "./util/Logger";
+import Logger from "../../util/Logger";
 
 /**
  * Superclass for all error handlers.
@@ -8,9 +8,9 @@ abstract class ErrorHandler {
     * Constructs a new instance, and also creates a logger
     * for use by subclasses.
     */
-    //protected logger: Logger; // TODO: Implement the logging fuctionality
+    protected logger: Logger;
     constructor() {
-    // this.logger = new Logger();
+        this.logger = new Logger();
     }
 
     /**
