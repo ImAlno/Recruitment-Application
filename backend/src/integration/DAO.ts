@@ -38,13 +38,7 @@ class DAO {
   }
 
   // TODO: fix proper error handling
-  async registerUser(
-    userBody: RegisterRequest,
-    transactionObj: Transaction,
-  ): Promise<PersonDTO> {
-    try {
-      const result = await transactionObj
-        .insert(personTable)
+ 
   async registerUser(userBody: RegisterRequest, transactionObj: Transaction): Promise<PersonDTO> {
     try {
       const [person] = await transactionObj.insert(personTable)
@@ -54,7 +48,7 @@ class DAO {
           pnr: userBody.personNumber,
           email: userBody.email,
           password: userBody.password,
-          roleId: 2, // TODO: look into better solution
+          //roleId: 2, // TODO: look into better solution
           roleId: 2,                    
           username: userBody.username,
         })
@@ -96,26 +90,26 @@ class DAO {
     }
   }
 
-  // TODO: fix proper error handling
-  async findUser(
-    username: string,
-    transactionObj: Transaction,
-  ): Promise<PersonDTO | null> {
-    try {
-      const result = await transactionObj
-        .select()
-        .from(personTable)
-        .where(eq(personTable.username, username));
+  //TODO: fix proper error handling
+  // async findUser(
+  //   username: string,
+  //   transactionObj: Transaction,
+  // ): Promise<PersonDTO | null> {
+  //   try {
+  //     const result = await transactionObj
+  //       .select()
+  //       .from(personTable)
+  //       .where(eq(personTable.username, username));
 
-      if (result.length === 0) {
-        //* throw error to rollback transaction
-        return null;
-      }
+  //     if (result.length === 0) {
+  //       //* throw error to rollback transaction
+  //       return null;
+  //     }
 
-      return this.createPersonDTO(result[0]!);
-      throw new Error("Availability check failed", {cause: error});
-    }
-  }
+  //     return this.createPersonDTO(result[0]!);
+  //     throw new Error("Availability check failed", {cause: error});
+  //   }
+  // }
 
   async findUser(username: string, transactionObj: Transaction): Promise<PersonDTO> {
     try {
