@@ -1,5 +1,6 @@
 import express, { Router, Request, Response, NextFunction } from 'express';
 import { Controller } from '../controller/Controller';
+import Logger from '../util/Logger';
 
 /**
  * Superclass for all request handlers.
@@ -10,9 +11,11 @@ abstract class RequestHandler {
      * for use by subclasses.
      */
     public router: Router;
+    protected logger: Logger;
     protected controller?: Controller;
     constructor() {
         this.router = express.Router();
+        this.logger = new Logger();
     }
 
     /**

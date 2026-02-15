@@ -39,6 +39,7 @@ export class Controller {
         transactionObj,
       );
       return registeredUser;
+      return await this.dao.registerUser(userBody, transactionObj);
     });
   }
 
@@ -133,6 +134,30 @@ export class Controller {
       console.error("Error fetching application: ", error);
       return null;
     }
+        const user = await this.dao.findUser(username, transactionObj);
+        if (user.password !== password) {
+          return null; // If we were to throw an error, how do we differentiate db thrown errors from controller thrown errors? custom made error classes? // TODO <=
+        }
+        return new PersonDTO(user.id, user.firstName, user.lastName, user.username, user.email, user.personNumber, user.role);
+    });
+  }
+
+  // TODO: code in Authorization.ts needs to be updated to only expect a "good" user or an error
+  async isLoggedIn(username: string): Promise<Pick<PersonDTO, 'id' | 'username' | 'role'>> {
+    return this.database.transaction(async (transactionObj) => {
+        const user = await this.dao.findUser(username, transactionObj);
+        return {
+          id: user.id,
+          username: user.username,
+          role: user.role
+        };
+    });
+  }
+
+  async createApplication(submissionBody: ApplicationSubmissionRequest): Promise<number> {
+      return await this.database.transaction(async (transactionObj) => {
+        return await this.dao.createApplication(submissionBody, transactionObj);
+      });
   }
   // TODO Add methods like: registerUser, findUser, login etc to handle bussiness logic and make calls to integration layer
 }
