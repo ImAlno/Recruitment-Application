@@ -20,6 +20,7 @@
   "license": "ISC",
   "type": "commonjs",
   "dependencies": {
+    "all": "^0.0.0",
     "cookie-parser": "^1.4.7",
     "cors": "^2.8.6",
     "dotenv": "^17.2.3",

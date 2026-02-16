@@ -1,5 +1,5 @@
 import jwt from 'jsonwebtoken';
-import { Request, Response } from 'express';
+import { Request, Response, NextFunction} from 'express';
 import { Controller } from '../controller/Controller';
 
 export class Authorization {
@@ -31,6 +31,32 @@ export class Authorization {
             errorHandler(res, 401, 'Invalid or missing authorization token');
             return false;
         }
+    }
+
+    static requireAuth(contr: Controller) {
+        return async (req: Request, res: Response, next: NextFunction) => {
+            const isAuth = await this.checkLogin(
+                contr,
+                req,
+                res,
+                (res, code, msg) => res.status(code).json({ error: msg })
+            );
+
+            if (isAuth) {
+                next();
+            }
+        };
+    }
+
+    static requireRole(requiredRole: string) {
+        return (req: Request, res: Response, next: NextFunction) => {
+            const user = (req as any).user;
+            if (user && user.role === requiredRole) {
+                next();
+            } else {
+                res.status(403).json({ error: `Forbidden: Requires ${requiredRole} privileges.` });
+            }
+        };
     }
 
     static sendAuthCookie(user: any, res: Response) {

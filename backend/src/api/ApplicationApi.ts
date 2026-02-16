@@ -1,6 +1,7 @@
 import { NextFunction, Request, Response } from "express";
 import RequestHandler from "./RequestHandler";
 import { body, validationResult } from "express-validator";
+import { Authorization } from "./Authorization";
 
 class ApplicationApi extends RequestHandler {
     /**
@@ -26,6 +27,8 @@ class ApplicationApi extends RequestHandler {
 
         this.router.post(
             "/submit",
+            Authorization.requireAuth(this.controller!),
+            Authorization.requireRole("applicant"),
             [
               body("competences")
                 .isArray({ min: 1 })
@@ -51,11 +54,11 @@ class ApplicationApi extends RequestHandler {
                 .isISO8601()
                 .withMessage("Date must have ISO8601 format"),
 
-              body("userId")
+/*               body("userId")
                 .exists({ checkFalsy: true })
                 .isInt({ min: 1 })
                 .toInt()
-                .withMessage("userId must be a positive integer"),
+                .withMessage("userId must be a positive integer"), */
             ],
             async (req: Request, res: Response, next: NextFunction) => {
                 try {
@@ -65,15 +68,21 @@ class ApplicationApi extends RequestHandler {
                         return;
                     }
 
-                    const applicationId = await this.controller?.createApplication(req.body); // might use applicationId in the future
+                    const loggedInUserId = (req as any).user.id;
+                    const submissionData = {
+                        ...req.body,
+                        userId: loggedInUserId
+                    };
+
+                    const applicationId = await this.controller?.createApplication(submissionData); // might use applicationId in the future
                     this.sendHttpResponse(res, 201, "Application submitted successfully");
                 } catch (error) {
-                    next(error); 
+                    next(error);
                 }
             }
         );
       } catch (error) {
-          this.logger.logError(error);      
+          this.logger.logError(error);
       }
     }
 }
