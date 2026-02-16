@@ -45,7 +45,7 @@ const ApplicantDashboard = () => {
                     <CardContent>
                         {error && (
                             <div className="mb-4 p-4 text-sm text-red-700 bg-red-100 rounded-lg border border-red-200" role="alert">
-                                <span className="font-bold">{t('common.error')}:</span> {t(error)}
+                                <span className="font-bold">{t('common.error')}:</span> {error.includes('.') ? t(error) : error}
                             </div>
                         )}
                         {loading ? (

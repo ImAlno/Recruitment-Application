@@ -172,7 +172,7 @@ const RegisterPage = () => {
             {/* Error Toast */}
             {errors.submit && (
                 <Toast
-                    message={errors.submit}
+                    message={errors.submit.includes('.') ? t(errors.submit) : errors.submit}
                     type="error"
                     onClose={() => clearErrors('submit')}
                 />

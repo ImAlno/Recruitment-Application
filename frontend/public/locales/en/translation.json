@@ -28,6 +28,9 @@
             "unhandled": "Unhandled",
             "accepted": "Accepted",
             "rejected": "Rejected"
+        },
+        "success": {
+            "registration": "Account successfully created!"
         }
     },
     "footer": {
