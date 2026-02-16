@@ -133,7 +133,7 @@ const ApplyPage = () => {
                                         </div>
 
                                         {competenceForm.error && (
-                                            <p className="text-red-600 text-sm">{competenceForm.error}</p>
+                                            <p className="text-red-600 text-sm">{t(competenceForm.error)}</p>
                                         )}
 
                                         <div className="border rounded-md overflow-hidden shadow-sm">
@@ -229,7 +229,7 @@ const ApplyPage = () => {
                                         </div>
 
                                         {availabilityForm.error && (
-                                            <p className="text-red-600 text-sm">{availabilityForm.error}</p>
+                                            <p className="text-red-600 text-sm">{t(availabilityForm.error)}</p>
                                         )}
 
                                         <div className="border rounded-md overflow-hidden shadow-sm">
@@ -366,7 +366,7 @@ const ApplyPage = () => {
                                     </AnimatedList>
 
                                     {reviewSubmit.error && (
-                                        <p className="text-red-600 text-sm p-4 bg-red-50 rounded-md border border-red-100">{reviewSubmit.error}</p>
+                                        <p className="text-red-600 text-sm p-4 bg-red-50 rounded-md border border-red-100">{t(reviewSubmit.error)}</p>
                                     )}
 
                                     <div className="flex justify-between pt-4">
@@ -393,4 +393,3 @@ const ApplyPage = () => {
 };
 
 export default ApplyPage;
-

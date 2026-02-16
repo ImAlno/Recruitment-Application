@@ -55,7 +55,7 @@ const ApplicationFilters = ({ filters, onFilterChange, onReset }: ApplicationFil
                         { label: t('filters.allCompetences'), value: "" },
                         { label: t('common.competences.ticket_sales'), value: "ticket_sales" },
                         { label: t('common.competences.lotteries'), value: "lotteries" },
-                        { label: t('common.competences.roller_coaster'), value: "roller_coaster" },
+                        { label: t('common.competences.roller_coaster_operation'), value: "roller_coaster" },
                     ]}
                 />
 
@@ -108,8 +108,8 @@ const ApplicationFilters = ({ filters, onFilterChange, onReset }: ApplicationFil
                     value={filters.sortOrder}
                     onChange={(e) => onFilterChange('sortOrder', e.target.value)}
                     options={[
-                        { label: "A-Z", value: "asc" },
-                        { label: "Z-A", value: "desc" },
+                        { label: t('filters.orderAsc'), value: "asc" },
+                        { label: t('filters.orderDesc'), value: "desc" },
                     ]}
                 />
 

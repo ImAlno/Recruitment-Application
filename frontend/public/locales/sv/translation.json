@@ -21,7 +21,7 @@
         "competences": {
             "ticket_sales": "Biljettförsäljning",
             "lotteries": "Lotterier",
-            "roller_coaster": "Rollercoaster-drift",
+            "roller_coaster_operation": "Rollercoaster-drift",
             "unknown": "Okänd"
         },
         "statuses": {
@@ -166,6 +166,8 @@
         "submissionDate": "Inskickningsdatum",
         "applicantName": "Sökandes namn",
         "order": "Ordning",
+        "orderAsc": "A-Ö",
+        "orderDesc": "Ö-A",
         "reset": "Nollställ filter"
     },
     "applicationList": {
