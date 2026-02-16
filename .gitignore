@@ -1,2 +1,5 @@
 # SQL files
 existing-database.sql
+
+# Testing
+coverage/
