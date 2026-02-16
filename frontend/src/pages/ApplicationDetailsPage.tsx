@@ -95,7 +95,11 @@ const ApplicationDetailsPage = () => {
                                         <li className="text-gray-500 italic">{t('applicationDetails.noCompetenceProvided')}</li>
                                     )}
                                 </ul>
-                            </CardContent>
+                                {errorMessage && (
+                                    <div className="mb-6 p-4 text-sm text-red-700 bg-red-100 rounded-lg border border-red-200">
+                                        {errorMessage.includes('.') ? t(errorMessage) : errorMessage}
+                                    </div>
+                                )}</CardContent>
                         </Card>
                     </AnimatedItem>
 
@@ -152,7 +156,7 @@ const ApplicationDetailsPage = () => {
                             ? t('errors.statusUpdated', {
                                 status: t(`common.statuses.${successMessage.split(':')[1]}`)
                             })
-                            : t(successMessage)
+                            : (successMessage.includes('.') ? t(successMessage) : successMessage)
                     }
                     type="success"
                     onClose={clearMessages}
@@ -160,7 +164,7 @@ const ApplicationDetailsPage = () => {
             )}
             {errorMessage && (
                 <Toast
-                    message={t(errorMessage)}
+                    message={errorMessage.includes('.') ? t(errorMessage) : errorMessage}
                     type="error"
                     onClose={clearMessages}
                 />

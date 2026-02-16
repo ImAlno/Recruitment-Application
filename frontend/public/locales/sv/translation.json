@@ -28,6 +28,9 @@
             "unhandled": "Obehandlad",
             "accepted": "Accepterad",
             "rejected": "Nekad"
+        },
+        "success": {
+            "registration": "Kontot har skapats framgångsrikt!"
         }
     },
     "footer": {

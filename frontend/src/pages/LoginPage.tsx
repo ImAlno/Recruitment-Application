@@ -54,7 +54,7 @@ const LoginPage = () => {
                         <CardContent className="space-y-4">
                             {error && (
                                 <div className="p-3 text-sm text-red-500 bg-red-50 rounded-md">
-                                    {t(error)}
+                                    {error.includes('.') ? t(error) : error}
                                 </div>
                             )}
                             <Input
