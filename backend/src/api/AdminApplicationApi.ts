@@ -1,5 +1,6 @@
 import { Request, Response, NextFunction } from "express";
 import RequestHandler from "./RequestHandler";
+import { query, validationResult } from "express-validator";
 
 class AdminApplicationApi extends RequestHandler {
   constructor() {
@@ -17,20 +18,19 @@ class AdminApplicationApi extends RequestHandler {
   async registerHandler(): Promise<void> {
     try {
       await this.retrieveController();
-
+      
       this.router.get(
-        "/",
+        "/", 
         async (req: Request, res: Response, next: NextFunction) => {
           try {
             const applications = await this.controller?.getAllApplications();
 
-            if (!applications) {
-              this.sendHttpResponse(res, 400, "No applicaitons found");
+            if (applications?.length === 0) {
+              this.sendHttpResponse(res, 404, "No applicaitons found");
             }
             this.sendHttpResponse(res, 200, applications);
           } catch (error) {
-            console.error("Error fetching applications", error);
-            this.sendHttpResponse(res, 500, "Internal Server Error");
+            next(error);
           }
         },
       );
@@ -39,29 +39,28 @@ class AdminApplicationApi extends RequestHandler {
 
       this.router.get(
         "/:id",
+        [
+          query("id")
+            .isNumeric()
+            .withMessage("Field: id (numeric) required")
+        ],
         async (req: Request, res: Response, next: NextFunction) => {
           try {
+            const errors = validationResult(req);
+            if (!errors.isEmpty()) {
+                this.sendHttpResponse(res, 400, errors.array());
+                return;
+            }
             const { id } = req.params;
-
-            if (!id) {
-              this.sendHttpResponse(res, 400, "Invalid application ID");
-            }
-            const applicationId = Number(id);
-            const application =
-              await this.controller?.getApplicationById(applicationId);
-
-            if (!application) {
-              this.sendHttpResponse(res, 404, "Application not found");
-            }
+            const application = await this.controller?.getApplicationById(Number(id));
             this.sendHttpResponse(res, 200, application);
           } catch (error) {
-            console.error("Error fetching application: ", error);
-            this.sendHttpResponse(res, 500, "Internal Server Error");
+            next(error);
           }
         },
       );
     } catch (error) {
-      console.error("Controller initialization failed", error);
+      this.logger.logError(error);
     }
   }
 }

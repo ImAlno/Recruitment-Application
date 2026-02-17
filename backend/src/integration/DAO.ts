@@ -16,7 +16,7 @@ import {
   Competence,
   AvailabilityPeriod,
 } from "../model/types/applicationApi";
-import { AdminApplicatinResponse } from "../model/types/adminApplicationResponse";
+import { AdminApplicatinResponse } from "../model/types/adminApplicationApi";
 import { ApplicationDetailsDTO } from "../model/types/applicationDetails";
 /**
  * This class is responsible for all calls to the database. There shall not be any database-related code outside this class.
@@ -48,8 +48,7 @@ class DAO {
           pnr: userBody.personNumber,
           email: userBody.email,
           password: userBody.password,
-          //roleId: 2, // TODO: look into better solution
-          roleId: 2,                    
+          roleId: 2, // All new registered people are applicants          
           username: userBody.username,
         })
         .returning();
@@ -86,30 +85,9 @@ class DAO {
         emailTaken: result.some((user) => user.email === email), // checks if any of the resulting rows have a email matching the imput email
       };
     } catch (error) {
-      throw new Error("Availability check failed in db", { cause: error });
+      throw new Error("Availability check failed", { cause: error });
     }
   }
-
-  //TODO: fix proper error handling
-  // async findUser(
-  //   username: string,
-  //   transactionObj: Transaction,
-  // ): Promise<PersonDTO | null> {
-  //   try {
-  //     const result = await transactionObj
-  //       .select()
-  //       .from(personTable)
-  //       .where(eq(personTable.username, username));
-
-  //     if (result.length === 0) {
-  //       //* throw error to rollback transaction
-  //       return null;
-  //     }
-
-  //     return this.createPersonDTO(result[0]!);
-  //     throw new Error("Availability check failed", {cause: error});
-  //   }
-  // }
 
   async findUser(username: string, transactionObj: Transaction): Promise<PersonDTO> {
     try {
@@ -150,118 +128,6 @@ class DAO {
       throw new Error("Application insertion returned empty row");
     }
     return row.applicationId;
-  }
-
-  async findAll(
-    transactionObj: Transaction,
-  ): Promise<AdminApplicatinResponse[]> {
-    try {
-      const result = await transactionObj
-        .select({
-          applicationId: applicationTable.applicationId,
-          firstName: personTable.name,
-          lastName: personTable.surname,
-          status: statusTable.name,
-          createdAt: applicationTable.createdAt,
-        })
-        .from(applicationTable)
-        .innerJoin(
-          personTable,
-          eq(applicationTable.personId, personTable.personId),
-        )
-        .innerJoin(
-          statusTable,
-          eq(applicationTable.statusId, statusTable.statusId),
-        );
-      return result;
-    } catch (error) {
-      throw new Error("Failed fetching applications", { cause: error });
-    }
-  }
-  async findById(transactionObj: Transaction, applicationId: number): Promise<ApplicationDetailsDTO |null> {
-    try {
-      
-      const applicationInfo = await this.getApplicationInfo(
-        transactionObj,
-        applicationId,
-      );
-      if (!applicationInfo) return null;
-  
-      const competences = await this.getCompetence(
-        transactionObj,
-        applicationInfo.personId,
-      );
-      const availability = await this.getAvailability(transactionObj, applicationInfo.personId);
-  
-    return {
-      applicationId: applicationInfo.applicationId,
-      status: applicationInfo.status,
-      createdAt: applicationInfo.createdAt,
-      competences,
-      availability,
-      applicant: {
-        personId: applicationInfo.personId,
-        firstName: applicationInfo.firstName,
-        lastName: applicationInfo.lastName,
-        email: applicationInfo.email,
-      },
-    };
-    } catch (error) {
-      throw new Error("Failed fetching applicantion by id", {cause: error})
-    }
-  }
-
-  private async getAvailability(transactionObj: Transaction, personId: number) {
-    return transactionObj
-      .select({
-        fromDate: availabilityTable.fromDate,
-        toDate: availabilityTable.toDate,
-      })
-      .from(availabilityTable)
-      .where(eq(availabilityTable.personId, personId));
-  }
-
-  private async getCompetence(transactionObj: Transaction, personId: number) {
-    return transactionObj
-      .select({
-        competenceId: competenceTable.competenceId,
-        competenceName: competenceTable.name,
-        yearsOfExperience: competenceProfileTable.yearsOfExperience,
-      })
-      .from(competenceProfileTable)
-      .innerJoin(
-        competenceTable,
-        eq(competenceProfileTable.competenceId, competenceTable.competenceId),
-      )
-      .where(eq(competenceProfileTable.personId, personId));
-  }
-
-  private async getApplicationInfo(
-    transactionObj: Transaction,
-    applicationId: number,
-  ) {
-    const result = await transactionObj
-      .select({
-        applicationId: applicationTable.applicationId,
-        personId: personTable.personId,
-        firstName: personTable.name,
-        lastName: personTable.surname,
-        email: personTable.email,
-        status: statusTable.name,
-        createdAt: applicationTable.createdAt,
-      })
-      .from(applicationTable)
-      .innerJoin(
-        personTable,
-        eq(applicationTable.personId, personTable.personId),
-      )
-      .innerJoin(
-        statusTable,
-        eq(applicationTable.statusId, statusTable.statusId),
-      )
-      .where(eq(applicationTable.applicationId, applicationId))
-      .limit(1);
-    return result[0] ?? null;
   }
 
   private async addCompetence(
@@ -312,6 +178,139 @@ class DAO {
         .returning();
     } catch (error) {
       throw new Error("Application insertion failed", { cause: error });
+    }
+  }
+
+  async findAll(
+    transactionObj: Transaction,
+  ): Promise<AdminApplicatinResponse[]> {
+    try {
+      const result = await transactionObj
+        .select({
+          applicationId: applicationTable.applicationId,
+          firstName: personTable.name,
+          lastName: personTable.surname,
+          status: statusTable.name,
+          createdAt: applicationTable.createdAt,
+        })
+        .from(applicationTable)
+        .innerJoin(
+          personTable,
+          eq(applicationTable.personId, personTable.personId),
+        )
+        .innerJoin(
+          statusTable,
+          eq(applicationTable.statusId, statusTable.statusId),
+        );
+      return result;
+    } catch (error) {
+      throw new Error("Failed fetching applications", { cause: error });
+    }
+  }
+
+  async findById(transactionObj: Transaction, applicationId: number): Promise<ApplicationDetailsDTO> {
+    const applicationInfo = await this.getApplicationInfo(
+      transactionObj,
+      applicationId,
+    );
+
+    const competences = await this.getCompetence(
+      transactionObj,
+      applicationInfo.personId,
+    );
+    const availability = await this.getAvailability(transactionObj, applicationInfo.personId);
+
+    return {
+      applicationId: applicationInfo.applicationId,
+      status: applicationInfo.status,
+      createdAt: applicationInfo.createdAt,
+      competences,
+      availability,
+      applicant: {
+        personId: applicationInfo.personId,
+        firstName: applicationInfo.firstName,
+        lastName: applicationInfo.lastName,
+        email: applicationInfo.email,
+      },
+    };
+  }
+
+  private async getAvailability(transactionObj: Transaction, personId: number) {
+    try {
+      const result = await transactionObj
+      .select({
+        fromDate: availabilityTable.fromDate,
+        toDate: availabilityTable.toDate,
+      })
+      .from(availabilityTable)
+      .where(eq(availabilityTable.personId, personId));
+
+      if (result.length === 0) {
+        throw new Error("No availabilies found");
+      }
+      return result;
+    } catch (error) {
+      throw new Error("Failed getting availablities", {cause: error});
+    }
+  }
+
+  private async getCompetence(transactionObj: Transaction, personId: number) {
+    try {
+      const result = await transactionObj
+      .select({
+        competenceId: competenceTable.competenceId,
+        competenceName: competenceTable.name,
+        yearsOfExperience: competenceProfileTable.yearsOfExperience,
+      })
+      .from(competenceProfileTable)
+      .innerJoin(
+        competenceTable,
+        eq(competenceProfileTable.competenceId, competenceTable.competenceId),
+      )
+      .where(eq(competenceProfileTable.personId, personId));
+
+      if (result.length === 0) {
+        throw new Error("No competences found");
+      }
+      return result;
+    } catch (error) {
+      throw new Error("Failed getting competences", {cause: error});
+    }
+  }
+
+  private async getApplicationInfo(
+    transactionObj: Transaction,
+    applicationId: number,
+  ) {
+    try {
+      const [result] = await transactionObj
+      .select({
+        applicationId: applicationTable.applicationId,
+        personId: personTable.personId,
+        firstName: personTable.name,
+        lastName: personTable.surname,
+        email: personTable.email,
+        status: statusTable.name,
+        createdAt: applicationTable.createdAt,
+      })
+      .from(applicationTable)
+      .innerJoin(
+        personTable,
+        eq(applicationTable.personId, personTable.personId),
+      )
+      .innerJoin(
+        statusTable,
+        eq(applicationTable.statusId, statusTable.statusId),
+      )
+      .where(eq(applicationTable.applicationId, applicationId))
+      .limit(1);
+
+      if (!result) {
+        throw new Error(`Application with id ${applicationId} does not exist`); // Should be 404 but whatever... you can't win them all :)
+      }
+      return result;
+    } catch (error) {
+      throw new Error(`Failed fetching application: ${applicationId}`, {cause: error});
     }
   }
 

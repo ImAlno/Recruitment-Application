@@ -73,7 +73,7 @@ class RequestHandlerLoader {
 const loader = new RequestHandlerLoader();
 loader.addRequestHandler(new AuthApi());
 loader.addRequestHandler(new ApplicationApi());
-loader.addRequestHandler(new AdminApplicationApi)
+loader.addRequestHandler(new AdminApplicationApi())
 loader.addErrorHandler(new ErrorLogger());
 loader.addErrorHandler(new ErrorResponseSender());
 
