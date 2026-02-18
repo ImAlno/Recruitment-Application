@@ -2,6 +2,7 @@ import { Application, Router } from 'express';
 import AuthApi from "./AuthApi";
 import RequestHandler from "./RequestHandler";
 import ApplicationApi from './ApplicationApi';
+import AdminApplicationApi from './AdminApplicationApi';
 import ErrorHandler from './error/ErrorHandler';
 import ErrorLogger from './error/ErrorLogger';
 import ErrorResponseSender from './error/ErrorResponseSender';
@@ -72,6 +73,7 @@ class RequestHandlerLoader {
 const loader = new RequestHandlerLoader();
 loader.addRequestHandler(new AuthApi());
 loader.addRequestHandler(new ApplicationApi());
+loader.addRequestHandler(new AdminApplicationApi())
 loader.addErrorHandler(new ErrorLogger());
 loader.addErrorHandler(new ErrorResponseSender());
 

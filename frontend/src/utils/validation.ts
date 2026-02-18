@@ -36,7 +36,3 @@ export const getPasswordErrors = (password: string): string[] => {
         .map(req => req.key);
 };
 
-export const formatPasswordErrorMessage = (errors: string[]): string => {
-    if (errors.length === 0) return '';
-    return `Password must include: ${errors.join(', ')}`;
-};

@@ -21,7 +21,7 @@
         "competences": {
             "ticket_sales": "Ticket Sales",
             "lotteries": "Lotteries",
-            "roller_coaster": "Roller Coaster Operation",
+            "roller_coaster_operation": "Roller coaster operation",
             "unknown": "Unknown"
         },
         "statuses": {
@@ -165,6 +165,8 @@
         "submissionDate": "Submission Date",
         "applicantName": "Applicant Name",
         "order": "Order",
+        "orderAsc": "A-Z",
+        "orderDesc": "Z-A",
         "reset": "Reset Filters"
     },
     "applicationList": {
