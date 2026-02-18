@@ -1,6 +1,6 @@
 import { Request, Response, NextFunction } from "express";
 import RequestHandler from "./RequestHandler";
-import { query, validationResult } from "express-validator";
+import { param, validationResult } from "express-validator";
 
 class AdminApplicationApi extends RequestHandler {
   constructor() {
@@ -40,7 +40,7 @@ class AdminApplicationApi extends RequestHandler {
       this.router.get(
         "/:id",
         [
-          query("id")
+          param("id")
             .isNumeric()
             .withMessage("Field: id (numeric) required")
         ],
