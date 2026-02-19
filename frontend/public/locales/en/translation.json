@@ -141,7 +141,7 @@
     "applicantDashboard": {
         "welcome": "Welcome back, {{name}}",
         "applyButton": "Apply for Position",
-        "description": "Manage your applications and track your application status here.",
+        "description": "Ready to join our team? Submit your details below.",
         "yourApplications": "Your Applications",
         "applicationNumber": "Application #{{id}}",
         "submitted": "Submitted: {{date}}",
@@ -172,6 +172,7 @@
     "applicationList": {
         "title": "Recent Applications",
         "fullName": "Applicant Full Name",
+        "dateApplied": "Date Applied",
         "competence": "Competence",
         "action": "Action",
         "viewDetails": "View Details",
@@ -229,7 +230,7 @@
     "confirmation": {
         "title": "Application Submitted!",
         "message": "Thank you for applying. We have received your application and will review it shortly.",
-        "statusCheck": "You can check your application status from your dashboard.",
+        "statusCheck": "We will review your application and get back to you via email.",
         "returnDashboard": "Return to Dashboard"
     },
     "error": {

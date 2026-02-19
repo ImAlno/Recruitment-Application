@@ -142,7 +142,7 @@
     "applicantDashboard": {
         "welcome": "Välkommen tillbaka, {{name}}",
         "applyButton": "Sök tjänst",
-        "description": "Hantera dina ansökningar och följ din ansökningsstatus här.",
+        "description": "Är du redo att bli en del av vårt team? Skicka in din ansökan nedan.",
         "yourApplications": "Dina ansökningar",
         "applicationNumber": "Ansökan #{{id}}",
         "submitted": "Inskickad: {{date}}",
@@ -173,6 +173,7 @@
     "applicationList": {
         "title": "Senaste ansökningar",
         "fullName": "Sökandes fullständiga namn",
+        "dateApplied": "Ansökningsdatum",
         "competence": "Kompetens",
         "action": "Åtgärd",
         "viewDetails": "Visa detaljer",
@@ -230,7 +231,7 @@
     "confirmation": {
         "title": "Ansökan inskickad!",
         "message": "Tack för din ansökan. Vi har tagit emot den och kommer att granska den inom kort.",
-        "statusCheck": "Du kan kontrollera din ansökningsstatus från din översikt.",
+        "statusCheck": "Vi kommer att granska din ansökan och återkomma till dig via e-post.",
         "returnDashboard": "Återgå till översikt"
     },
     "error": {

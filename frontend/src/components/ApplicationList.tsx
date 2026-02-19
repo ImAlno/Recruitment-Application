@@ -3,12 +3,11 @@ import Button from './ui/Button';
 import { useTranslation } from 'react-i18next';
 
 interface Application {
-    application_id: number;
-    first_name: string;
-    last_name: string;
+    applicationId: number;
+    firstName: string;
+    lastName: string;
     status: string;
-    competence_profile: any[];
-    created_at: string;
+    createdAt: string;
 }
 
 interface ApplicationListProps {
@@ -34,14 +33,7 @@ const ApplicationList = ({ applications, onViewDetails }: ApplicationListProps) 
         );
     };
 
-    const getCompetenceName = (id: number) => {
-        const map: Record<number, string> = {
-            1: t('common.competences.ticket_sales'),
-            2: t('common.competences.lotteries'),
-            3: t('common.competences.roller_coaster')
-        };
-        return map[id] || t('common.competences.unknown');
-    };
+
 
     return (
         <Card>
@@ -54,7 +46,7 @@ const ApplicationList = ({ applications, onViewDetails }: ApplicationListProps) 
                         <thead className="bg-gray-50 border-b">
                             <tr>
                                 <th className="px-4 py-3 font-medium">{t('applicationList.fullName')}</th>
-                                <th className="px-4 py-3 font-medium">{t('applicationList.competence')}</th>
+                                <th className="px-4 py-3 font-medium">{t('applicationList.dateApplied') || 'Date Applied'}</th>
                                 <th className="px-4 py-3 font-medium">{t('common.status')}</th>
                                 <th className="px-4 py-3 text-right">{t('applicationList.action')}</th>
                             </tr>
@@ -62,20 +54,14 @@ const ApplicationList = ({ applications, onViewDetails }: ApplicationListProps) 
                         <tbody className="divide-y">
                             {applications.length > 0 ? (
                                 applications.map((app) => (
-                                    <tr key={app.application_id}>
-                                        <td className="px-4 py-3">{app.first_name} {app.last_name}</td>
-                                        <td className="px-4 py-3">
-                                            {app.competence_profile?.map((c: any) => (
-                                                <div key={c.competence_id} className="text-xs text-gray-600">
-                                                    {getCompetenceName(c.competence_id)}
-                                                </div>
-                                            )) || <span className="text-gray-400">-</span>}
-                                        </td>
+                                    <tr key={app.applicationId}>
+                                        <td className="px-4 py-3">{app.firstName} {app.lastName}</td>
+                                        <td className="px-4 py-3 text-gray-600 text-sm">{app.createdAt ? new Date(app.createdAt).toLocaleDateString() : '-'}</td>
                                         <td className="px-4 py-3">
                                             {getStatusBadge(app.status)}
                                         </td>
                                         <td className="px-4 py-3 text-right">
-                                            <Button size="sm" variant="outline" onClick={() => onViewDetails(app.application_id)}>
+                                            <Button size="sm" variant="outline" onClick={() => onViewDetails(app.applicationId)}>
                                                 {t('applicationList.viewDetails')}
                                             </Button>
                                         </td>
