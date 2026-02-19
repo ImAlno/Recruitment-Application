@@ -170,7 +170,7 @@
         "reset": "Reset Filters"
     },
     "applicationList": {
-        "title": "Recent Applications",
+        "title": "Applications",
         "fullName": "Applicant Full Name",
         "dateApplied": "Date Applied",
         "competence": "Competence",
