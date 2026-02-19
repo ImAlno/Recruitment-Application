@@ -33,7 +33,7 @@ export class ApplicationService {
      */
     async getApplications(): Promise<any> {
         try {
-            return await apiClient.get<any>('/application');
+            return await apiClient.get<any>('/admin/applications');
         } catch (error) {
             throw new Error(`Failed to fetch applications: ${(error as Error).message}`);
         }
@@ -44,7 +44,7 @@ export class ApplicationService {
      */
     async getApplicationById(id: number): Promise<any> {
         try {
-            return await apiClient.get<any>(`/application/${id}`);
+            return await apiClient.get<any>(`/admin/applications/${id}`);
         } catch (error) {
             throw error;
         }
@@ -55,7 +55,7 @@ export class ApplicationService {
          */
     async getAllApplications(): Promise<any> {
         try {
-            return await apiClient.get<any>('/application');
+            return await apiClient.get<any>('/admin/applications');
         } catch (error) {
             throw new Error(`Failed to fetch applications: ${(error as Error).message}`);
         }

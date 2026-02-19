@@ -30,8 +30,8 @@ export const API_ENDPOINTS = {
 
     // Application endpoints
     SUBMIT_APPLICATION: '/application/submit',
-    GET_APPLICATIONS: '/application',
-    GET_APPLICATION: (id: number) => `/application/${id}`,
+    GET_APPLICATIONS: '/admin/applications',
+    GET_APPLICATION: (id: number) => `/admin/applications/${id}`,
     UPDATE_APPLICATION_STATUS: (id: number) => `/application/${id}/status`,
 };
 
