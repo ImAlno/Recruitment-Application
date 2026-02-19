@@ -54,11 +54,11 @@ class ApplicationApi extends RequestHandler {
                 .isISO8601()
                 .withMessage("Date must have ISO8601 format"),
 
-/*               body("userId")
+              body("userId")
                 .exists({ checkFalsy: true })
                 .isInt({ min: 1 })
                 .toInt()
-                .withMessage("userId must be a positive integer"), */
+                .withMessage("userId must be a positive integer"), 
             ],
             async (req: Request, res: Response, next: NextFunction) => {
                 try {

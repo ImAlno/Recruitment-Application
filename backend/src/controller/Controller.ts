@@ -91,7 +91,6 @@ export class Controller {
       );
   }
 
-  // TODO: code in Authorization.ts needs to be updated to only expect a "good" user or an error
   async isLoggedIn(username: string): Promise<Pick<PersonDTO, 'id' | 'username' | 'role'>> {
     return this.database.transaction(async (transactionObj) => {
         const user = await this.dao.findUser(username, transactionObj);
