@@ -1,6 +1,7 @@
 import { Request, Response, NextFunction } from "express";
 import RequestHandler from "./RequestHandler";
 import { param, validationResult } from "express-validator";
+import { Authorization } from "./Authorization";
 
 class AdminApplicationApi extends RequestHandler {
   constructor() {
@@ -18,15 +19,18 @@ class AdminApplicationApi extends RequestHandler {
   async registerHandler(): Promise<void> {
     try {
       await this.retrieveController();
-      
+
       this.router.get(
-        "/", 
+        "/",
+        Authorization.requireAuth(this.controller!),
+        Authorization.requireRole("recruiter"),
         async (req: Request, res: Response, next: NextFunction) => {
           try {
             const applications = await this.controller?.getAllApplications();
 
             if (applications?.length === 0) {
-              this.sendHttpResponse(res, 404, "No applicaitons found");
+              this.sendHttpResponse(res, 404, "No applications found");
+              return;
             }
             this.sendHttpResponse(res, 200, applications);
           } catch (error) {
@@ -39,6 +43,8 @@ class AdminApplicationApi extends RequestHandler {
 
       this.router.get(
         "/:id",
+        Authorization.requireAuth(this.controller!),
+        Authorization.requireRole("recruiter"),
         [
           param("id")
             .isNumeric()

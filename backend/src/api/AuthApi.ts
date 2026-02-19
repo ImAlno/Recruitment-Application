@@ -33,7 +33,7 @@ class AuthApi extends RequestHandler {
                 User account registration. When user creates their account in the web service a request will be sent here.
             */
             this.router.post(
-                "/register", 
+                "/register",
                 [
                     body("firstName")
                       .isString()
@@ -79,7 +79,7 @@ class AuthApi extends RequestHandler {
                 Check if username or email is available.
             */
             this.router.get(
-                "/availability", 
+                "/availability",
                 [
                     query("username")
                       .optional()   // Optional means this validation is not required, //? should we split it up?
@@ -156,7 +156,25 @@ class AuthApi extends RequestHandler {
                 }
             );
 
-            // TODO add /me or /:id route
+            this.router.get(
+                "/me",
+                async (request: Request, response: Response, next: NextFunction) => {
+                    try {
+                        const isAuth = await Authorization.checkLogin(
+                            this.controller!,
+                            request,
+                            response,
+                            (res, code, msg) => this.sendHttpResponse(res, code, msg)
+                        );
+                        if (isAuth) {
+                            const currentUser = (request as any).user;
+                            this.sendHttpResponse(response, 200, currentUser);
+                        }
+                    } catch (error) {
+                        next(error);
+                    }
+                }
+            );
 
         } catch (error) {
             this.logger.logError(error);
