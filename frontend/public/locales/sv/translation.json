@@ -226,7 +226,8 @@
         "saveStatus": "Spara status",
         "realtimeNotice": "* Vyn uppdateras i realtid.",
         "notFound": "Ansökan hittades inte",
-        "notFoundDesc": "Ansökan du letar efter finns inte eller har tagits bort."
+        "notFoundDesc": "Ansökan du letar efter finns inte eller har tagits bort.",
+        "loading": "Laddar..."
     },
     "confirmation": {
         "title": "Ansökan inskickad!",

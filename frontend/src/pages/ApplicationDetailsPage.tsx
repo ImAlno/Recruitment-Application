@@ -84,7 +84,7 @@ const ApplicationDetailsPage = () => {
                                 <ul className="text-sm space-y-2">
                                     {application.competences && application.competences.length > 0 ? (
                                         application.competences.map((c: any, index: number) => (
-                                            <li key={c.competenceId ?? index} className="flex justify-between border-b pb-2 last:border-0 hover:bg-gray-50 rounded px-1 transition-colors">
+                                            <li key={`${c.competenceId}-${index}`} className="flex justify-between border-b pb-2 last:border-0 hover:bg-gray-50 rounded px-1 transition-colors">
                                                 <span>{c.competenceName ?? t(`common.competences.unknown`)}</span>
                                                 <span className="font-medium text-blue-700">{c.yearsOfExperience} {t('apply.yearsAbbr')}</span>
                                             </li>
