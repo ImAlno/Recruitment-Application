@@ -29,7 +29,8 @@ class AdminApplicationApi extends RequestHandler {
             const applications = await this.controller?.getAllApplications();
 
             if (applications?.length === 0) {
-              this.sendHttpResponse(res, 404, "No applicaitons found");
+              this.sendHttpResponse(res, 404, "No applications found");
+              return;
             }
             this.sendHttpResponse(res, 200, applications);
           } catch (error) {

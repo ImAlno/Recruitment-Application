@@ -1,5 +1,6 @@
 import DAO from "../integration/DAO";
 import PersonDTO from "../model/PersonDTO";
+import bcrypt from 'bcrypt';
 import { Database } from "../db";
 import { RegisterRequest, AvailabilityResponse } from "../model/types/authApi";
 import { ApplicationSubmissionRequest } from "../model/types/applicationApi";
@@ -34,7 +35,13 @@ export class Controller {
 
   async register(userBody: RegisterRequest): Promise<PersonDTO> {
     return this.database.transaction(async (transactionObj) => {
-      return await this.dao.registerUser(userBody, transactionObj);
+      const saltRounds = 10;
+      const hashedPassword = await bcrypt.hash(userBody.password, saltRounds);
+      const secureUserBody = {
+          ...userBody,
+          password: hashedPassword
+      };
+      return await this.dao.registerUser(secureUserBody, transactionObj);
     });
   }
 
@@ -50,8 +57,8 @@ export class Controller {
   async login(username: string, password: string): Promise<PersonDTO | null> {
     return this.database.transaction(async (transactionObj) => {
       const user = await this.dao.findUser(username, transactionObj);
-      if (user.password !== password) {
-        return null;  // If we were to throw an error, how do we differentiate db thrown errors from controller thrown errors? custom made error classes? // TODO <=
+      if (!await bcrypt.compare(password, user.password || "")) {
+        return null;
       }
 
       return new PersonDTO(
@@ -81,7 +88,7 @@ export class Controller {
         async (transactionObj) => {
           return await this.dao.findById(transactionObj, applicationId);
         },
-      ); 
+      );
   }
 
   // TODO: code in Authorization.ts needs to be updated to only expect a "good" user or an error
