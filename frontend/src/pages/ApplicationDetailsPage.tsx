@@ -1,6 +1,6 @@
 import { useNavigate, useParams } from 'react-router-dom';
 import Layout from '../components/Layout';
-import Card, { CardHeader, CardTitle, CardContent, CardFooter } from '../components/ui/Card';
+import Card, { CardHeader, CardTitle, CardContent } from '../components/ui/Card';
 import Button from '../components/ui/Button';
 import Select from '../components/ui/Select';
 import { useApplicationDetails } from '../hooks/useApplicationDetails';
@@ -93,11 +93,7 @@ const ApplicationDetailsPage = () => {
                                         <li className="text-gray-500 italic">{t('applicationDetails.noCompetenceProvided')}</li>
                                     )}
                                 </ul>
-                                {errorMessage && (
-                                    <div className="mb-6 p-4 text-sm text-red-700 bg-red-100 rounded-lg border border-red-200">
-                                        {errorMessage.includes('.') ? t(errorMessage) : errorMessage}
-                                    </div>
-                                )}</CardContent>
+                            </CardContent>
                         </Card>
                     </AnimatedItem>
 
@@ -128,26 +124,28 @@ const ApplicationDetailsPage = () => {
                             <CardHeader>
                                 <CardTitle className="text-blue-900">{t('applicationDetails.statusManagement')}</CardTitle>
                             </CardHeader>
-                            <CardContent className="flex flex-col md:flex-row items-end gap-4">
-                                <Select
-                                    label={t('applicationDetails.updateStatus')}
-                                    value={status}
-                                    onChange={handleStatusChange}
-                                    options={[
-                                        { label: t('common.statuses.unhandled'), value: "unhandled" },
-                                        { label: t('common.statuses.accepted'), value: "accepted" },
-                                        { label: t('common.statuses.rejected'), value: "rejected" }
-                                    ]}
-                                />
-                                <Button onClick={handleSaveStatus} disabled={isSaving}>
-                                    {isSaving ? t('applicationDetails.saving') : t('applicationDetails.saveStatus')}
-                                </Button>
+                            <CardContent className="flex flex-col gap-4">
+                                {errorMessage && (
+                                    <div className="p-3 text-sm text-red-700 bg-red-100 rounded-lg border border-red-200">
+                                        {errorMessage.includes('.') ? t(errorMessage) : errorMessage}
+                                    </div>
+                                )}
+                                <div className="flex flex-col md:flex-row items-end gap-4">
+                                    <Select
+                                        label={t('applicationDetails.updateStatus')}
+                                        value={status}
+                                        onChange={handleStatusChange}
+                                        options={[
+                                            { label: t('common.statuses.unhandled'), value: "unhandled" },
+                                            { label: t('common.statuses.accepted'), value: "accepted" },
+                                            { label: t('common.statuses.rejected'), value: "rejected" }
+                                        ]}
+                                    />
+                                    <Button onClick={handleSaveStatus} disabled={isSaving}>
+                                        {isSaving ? t('applicationDetails.saving') : t('applicationDetails.saveStatus')}
+                                    </Button>
+                                </div>
                             </CardContent>
-                            <CardFooter>
-                                <p className="text-xs text-blue-600 font-medium italic">
-                                    {t('applicationDetails.realtimeNotice')}
-                                </p>
-                            </CardFooter>
                         </Card>
                     </AnimatedItem>
                 </AnimatedList>
