@@ -57,7 +57,7 @@ export class Controller {
   async login(username: string, password: string): Promise<PersonDTO | null> {
     return this.database.transaction(async (transactionObj) => {
       const user = await this.dao.findUser(username, transactionObj);
-      if (!await bcrypt.compare(password, user.password || "")) {
+      if (!await bcrypt.compare(password, user.password!)) {
         return null;
       }
 
