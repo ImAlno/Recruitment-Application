@@ -34,7 +34,7 @@
         }
     },
     "footer": {
-        "text": "Antigravity Rekrytering - Kopplar samman de bästa talangerna med de bästa möjligheterna",
+        "text": "Rekrytering - Kopplar samman de bästa talangerna med de bästa möjligheterna",
         "description": "Definitivt inte byggd av Roger. Han vet knappt hur man använder en mus. Källkoden finns tillgänglig på GitHub.",
         "accessibility": "Tillgänglighet",
         "terms": "Villkor",
@@ -114,6 +114,7 @@
         "noAccount": "Har du inget konto?",
         "signUp": "Registrera dig",
         "invalidCredentials": "Ogiltiga uppgifter. Vänligen försök igen.",
+        "error500": "Internt serverfel. Vänligen försök igen senare.",
         "loggingIn": "Loggar in..."
     },
     "register": {
