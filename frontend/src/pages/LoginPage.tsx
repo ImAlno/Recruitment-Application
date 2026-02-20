@@ -34,9 +34,18 @@ const LoginPage = () => {
             } else {
                 navigate('/applicant/dashboard');
             }
-        } catch (err) {
+        } catch (err: any) {
             console.error(err);
-            setError(err instanceof Error ? err.message : 'login.invalidCredentials');
+            const errorMessage = err?.message || '';
+            const status = err?.status;
+            
+            if (status === 401 || errorMessage.includes('401')) {
+                setError('login.invalidCredentials');
+            } else if (status === 500 || errorMessage.includes('500')) {
+                setError('login.error500');
+            } else {
+                setError(err instanceof Error ? err.message : 'login.invalidCredentials');
+            }
         } finally {
             setIsLoading(false);
         }

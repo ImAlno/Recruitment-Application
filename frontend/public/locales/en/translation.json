@@ -34,7 +34,7 @@
         }
     },
     "footer": {
-        "text": "Antigravity Recruitment - Connecting the best talent with the best opportunities",
+        "text": "Recruitment - Connecting the best talent with the best opportunities",
         "description": "Definitely not built by Roger. He barely knows how to use a mouse. The source code is available on GitHub.",
         "accessibility": "Accessibility",
         "terms": "Terms",
@@ -113,6 +113,8 @@
         "signIn": "Sign In",
         "noAccount": "Don't have an account?",
         "signUp": "Sign up",
+        "invalidCredentials": "Invalid credentials. Please try again.",
+        "error500": "Internal server error. Please try again later.",
         "loggingIn": "Logging in..."
     },
     "register": {

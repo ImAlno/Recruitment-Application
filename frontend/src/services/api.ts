@@ -63,10 +63,14 @@ class ApiClient {
             // Server responded with error status
             const { status, data } = error.response;
             const message = data?.error || data?.message || i18n.t('common.error');
-            throw new Error(i18n.t('errors.serverError', { status, message }));
+            const err: any = new Error(i18n.t('errors.serverError', { status, message }));
+            err.status = status;
+            throw err;
         } else if (error.request) {
             // Request was made but no response received
-            throw new Error(i18n.t('errors.networkError'));
+            const err: any = new Error(i18n.t('errors.networkError'));
+            err.status = 0;
+            throw err;
         } else {
             // Something else happened
             throw new Error(i18n.t('errors.requestError', { message: error.message }));
