@@ -1,55 +1,23 @@
-import React, { useState } from 'react';
-import { useNavigate, Link } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import Layout from '../components/Layout';
 import Card, { CardHeader, CardTitle, CardDescription, CardContent, CardFooter } from '../components/ui/Card';
 import Input from '../components/ui/Input';
 import Button from '../components/ui/Button';
-import { useAuth } from '../contexts/AuthContext';
-import { authService } from '../services/authService';
 import AnimatedPage from '../components/layout/AnimatedPage';
 import { useTranslation } from 'react-i18next';
+import { useLoginForm } from '../hooks';
 
 const LoginPage = () => {
     const { t } = useTranslation();
-    const [username, setUsername] = useState('');
-    const [password, setPassword] = useState('');
-    const [error, setError] = useState('');
-    const [isLoading, setIsLoading] = useState(false);
-
-    const { login } = useAuth();
-    const navigate = useNavigate();
-
-    const handleSubmit = async (e: React.FormEvent) => {
-        e.preventDefault();
-        setError('');
-        setIsLoading(true);
-
-        try {
-            const user = await authService.login(username, password);
-
-            login(user);
-
-            if (user.role === 'recruiter') {
-                navigate('/recruiter/dashboard');
-            } else {
-                navigate('/applicant/dashboard');
-            }
-        } catch (err: any) {
-            console.error(err);
-            const errorMessage = err?.message || '';
-            const status = err?.status;
-            
-            if (status === 401 || errorMessage.includes('401')) {
-                setError('login.invalidCredentials');
-            } else if (status === 500 || errorMessage.includes('500')) {
-                setError('login.error500');
-            } else {
-                setError(err instanceof Error ? err.message : 'login.invalidCredentials');
-            }
-        } finally {
-            setIsLoading(false);
-        }
-    };
+    const {
+        username,
+        setUsername,
+        password,
+        setPassword,
+        error,
+        isLoading,
+        handleSubmit
+    } = useLoginForm();
 
     return (
         <Layout>
