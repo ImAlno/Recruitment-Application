@@ -62,7 +62,7 @@ const RecruiterDashboard = () => {
                     {loading ? (
                         <div className="text-center py-8">{t('common.loadingApplications')}</div>
                     ) : error ? (
-                        <div className="text-center py-8 text-red-500">{t(error)}</div>
+                        <div className="text-center py-8 text-red-500">{error.includes('.') ? t(error) : error}</div>
                     ) : (
                         <ApplicationList
                             applications={filteredApplications}

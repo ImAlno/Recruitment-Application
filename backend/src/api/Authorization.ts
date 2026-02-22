@@ -1,8 +1,10 @@
 import jwt from 'jsonwebtoken';
-import { Request, Response } from 'express';
+import { Request, Response, NextFunction} from 'express';
 import { Controller } from '../controller/Controller';
+import Logger from '../util/Logger';
 
 export class Authorization {
+    private static logger = new Logger();
 
     /** Name of the authentication cookie. */
     static get AUTH_COOKIE_NAME() {
@@ -16,21 +18,47 @@ export class Authorization {
             return false;
         }
         try {
-            const userJWTPayload: any = jwt.verify(authCookie, process.env.JWT_SECRET || "temporary_secret_key");
-            const loggedInUser = await contr.isLoggedIn(userJWTPayload.username);
-            if (!loggedInUser) {
-                res.clearCookie(this.AUTH_COOKIE_NAME);
-                errorHandler(res, 401, 'Invalid or missing authorization token');
-                return false;
+            const jwtSecret = process.env.JWT_SECRET;
+            if (!jwtSecret) {
+                throw new Error("Missing or invalid environment variable JWT_SECRET");
             }
+            const userJWTPayload: any = jwt.verify(authCookie, jwtSecret);
+            const loggedInUser = await contr.isLoggedIn(userJWTPayload.username);
 
             (req as any).user = loggedInUser;
             return true;
         } catch (err) {
             res.clearCookie(this.AUTH_COOKIE_NAME);
             errorHandler(res, 401, 'Invalid or missing authorization token');
+            Authorization.logger.logError(err);
             return false;
         }
+    }
+
+    static requireAuth(contr: Controller) {
+        return async (req: Request, res: Response, next: NextFunction) => {
+            const isAuth = await this.checkLogin(
+                contr,
+                req,
+                res,
+                (res, code, msg) => res.status(code).json({ error: msg })
+            );
+
+            if (isAuth) {
+                next();
+            }
+        };
+    }
+
+    static requireRole(requiredRole: string) {
+        return (req: Request, res: Response, next: NextFunction) => {
+            const user = (req as any).user;
+            if (user && user.role === requiredRole) {
+                next();
+            } else {
+                res.status(403).json({ error: `Forbidden: Requires ${requiredRole} privileges.` });
+            }
+        };
     }
 
     static sendAuthCookie(user: any, res: Response) {

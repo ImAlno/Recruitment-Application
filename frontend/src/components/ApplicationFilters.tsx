@@ -7,7 +7,6 @@ import { useTranslation } from 'react-i18next';
 interface ApplicationFiltersProps {
     filters: {
         name: string;
-        competence: string;
         status: {
             unhandled: boolean;
             accepted: boolean;
@@ -46,18 +45,6 @@ const ApplicationFilters = ({ filters, onFilterChange, onReset }: ApplicationFil
                         onChange={(e) => onFilterChange('name', e.target.value)}
                     />
                 </div>
-
-                <Select
-                    label={t('filters.competence')}
-                    value={filters.competence}
-                    onChange={(e) => onFilterChange('competence', e.target.value)}
-                    options={[
-                        { label: t('filters.allCompetences'), value: "" },
-                        { label: t('common.competences.ticket_sales'), value: "ticket_sales" },
-                        { label: t('common.competences.lotteries'), value: "lotteries" },
-                        { label: t('common.competences.roller_coaster'), value: "roller_coaster" },
-                    ]}
-                />
 
                 <div className="space-y-2">
                     <label className="text-sm font-medium leading-none">{t('filters.status')}</label>
@@ -108,8 +95,8 @@ const ApplicationFilters = ({ filters, onFilterChange, onReset }: ApplicationFil
                     value={filters.sortOrder}
                     onChange={(e) => onFilterChange('sortOrder', e.target.value)}
                     options={[
-                        { label: "A-Z", value: "asc" },
-                        { label: "Z-A", value: "desc" },
+                        { label: t('filters.orderAsc'), value: "asc" },
+                        { label: t('filters.orderDesc'), value: "desc" },
                     ]}
                 />
 

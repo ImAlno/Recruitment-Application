@@ -1,6 +1,7 @@
 import { NextFunction, Request, Response } from "express";
 import RequestHandler from "./RequestHandler";
-import { body, matchedData, validationResult } from "express-validator";
+import { body, validationResult } from "express-validator";
+import { Authorization } from "./Authorization";
 
 class ApplicationApi extends RequestHandler {
     /**
@@ -26,6 +27,8 @@ class ApplicationApi extends RequestHandler {
 
         this.router.post(
             "/submit",
+            Authorization.requireAuth(this.controller!),
+            Authorization.requireRole("applicant"),
             [
               body("competences")
                 .isArray({ min: 1 })
@@ -55,30 +58,31 @@ class ApplicationApi extends RequestHandler {
                 .exists({ checkFalsy: true })
                 .isInt({ min: 1 })
                 .toInt()
-                .withMessage("userId must be a positive integer"),
+                .withMessage("userId must be a positive integer"), 
             ],
             async (req: Request, res: Response, next: NextFunction) => {
                 try {
                     const errors = validationResult(req);
                     if (!errors.isEmpty()) {
                         this.sendHttpResponse(res, 400, errors.array());
+                        return;
                     }
 
-                    const applicationId = await this.controller?.createApplication(req.body);
-                    if (applicationId === null){
-                        this.sendHttpResponse(res, 401, "Application submission failed");
-                    } else {
-                        this.sendHttpResponse(res, 201, "Application submitted successfully");
-                    } 
+                    const loggedInUserId = (req as any).user.id;
+                    const submissionData = {
+                        ...req.body,
+                        userId: loggedInUserId
+                    };
+
+                    const applicationId = await this.controller?.createApplication(submissionData); // might use applicationId in the future
+                    this.sendHttpResponse(res, 201, "Application submitted successfully");
                 } catch (error) {
-                    // next(error); //? is there a implementation of next() or how does it work
-                    console.error("Application submission error:", error);
-                    this.sendHttpResponse(res, 500, "Internal Server Error");
+                    next(error);
                 }
             }
         );
       } catch (error) {
-          console.error("Something went wrong in application api", error)
+          this.logger.logError(error);
       }
     }
 }
