@@ -61,22 +61,25 @@ export const handlers = [
     // Handles POST /api/application/submit
     http.post(`${baseURL}/application/submit`, async ({ request }) => {
         const data = (await request.json()) as any;
-        return HttpResponse.json({ success: { id: 101, ...data } }, { status: 201 });
+        return HttpResponse.json({ success: { applicationId: 101, ...data } }, { status: 201 });
     }),
 
-    http.get(`${baseURL}/application`, () => {
+    http.get(`${baseURL}/admin/applications`, () => {
         return HttpResponse.json({
             success: [
-                { id: 1, status: 'unhandled', firstName: 'Test', lastName: 'User' },
-                { id: 2, status: 'accepted', firstName: 'Jane', lastName: 'Doe' }
+                { applicationId: 1, status: 'unhandled', firstName: 'Test', lastName: 'User' },
+                { applicationId: 2, status: 'accepted', firstName: 'Jane', lastName: 'Doe' }
             ]
         });
     }),
 
-    http.get(`${baseURL}/application/:id`, ({ params }) => {
+    http.get(`${baseURL}/admin/applications/:id`, ({ params }) => {
         const { id } = params;
+        if (id === '999') {
+            return new HttpResponse(null, { status: 404 });
+        }
         return HttpResponse.json({
-            success: { id: Number(id), status: 'unhandled', firstName: 'Test', lastName: 'User' }
+            success: { applicationId: Number(id), status: 'unhandled', firstName: 'Test', lastName: 'User' }
         });
     }),
 
@@ -84,7 +87,7 @@ export const handlers = [
         const { id } = params;
         const { status } = (await request.json()) as any;
         return HttpResponse.json({
-            success: { id: Number(id), status }
+            success: { applicationId: Number(id), status }
         });
     }),
 ];

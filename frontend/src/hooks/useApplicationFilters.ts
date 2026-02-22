@@ -9,7 +9,8 @@ export const useApplicationFilters = (applications: any[]) => {
             rejected: true
         },
         sortBy: 'date',
-        sortOrder: 'asc'
+        sortOrder: 'asc',
+        competence: ''
     });
 
     const handleFilterChange = (key: string, value: any) => {
@@ -28,7 +29,8 @@ export const useApplicationFilters = (applications: any[]) => {
                 rejected: true
             },
             sortBy: 'date',
-            sortOrder: 'asc'
+            sortOrder: 'asc',
+            competence: ''
         });
     };
 
@@ -52,6 +54,20 @@ export const useApplicationFilters = (applications: any[]) => {
             (app.status === 'accepted' && filters.status.accepted) ||
             (app.status === 'rejected' && filters.status.rejected)
         );
+
+        // 3. Filter by Competence
+        if (filters.competence) {
+            result = result.filter(app => {
+                const search = filters.competence;
+                return app.competenceProfile?.some((cp: any) =>
+                    cp.competenceId === Number(search) ||
+                    cp.name === search ||
+                    (search === 'ticket_sales' && cp.competenceId === 1) ||
+                    (search === 'lotteries' && cp.competenceId === 2) ||
+                    (search === 'roller_coaster' && cp.competenceId === 3)
+                );
+            });
+        }
 
         // 3. Sorting
         result.sort((a, b) => {

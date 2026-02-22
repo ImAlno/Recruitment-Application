@@ -4,28 +4,28 @@ import { describe, it, expect } from 'vitest';
 
 const mockApplications = [
     {
-        application_id: 1,
-        first_name: 'Alice',
-        last_name: 'Smith',
+        applicationId: 1,
+        firstName: 'Alice',
+        lastName: 'Smith',
         status: 'unhandled',
-        created_at: '2023-01-01T10:00:00Z',
-        competence_profile: [{ competence_id: 1 }] // ticket_sales
+        createdAt: '2023-01-01T10:00:00Z',
+        competenceProfile: [{ competenceId: 1 }] // ticket_sales
     },
     {
-        application_id: 2,
-        first_name: 'Bob',
-        last_name: 'Jones',
+        applicationId: 2,
+        firstName: 'Bob',
+        lastName: 'Jones',
         status: 'accepted',
-        created_at: '2023-01-02T10:00:00Z',
-        competence_profile: [{ competence_id: 2 }] // lotteries
+        createdAt: '2023-01-02T10:00:00Z',
+        competenceProfile: [{ competenceId: 2 }] // lotteries
     },
     {
-        application_id: 3,
-        first_name: 'Charlie',
-        last_name: 'Brown',
+        applicationId: 3,
+        firstName: 'Charlie',
+        lastName: 'Brown',
         status: 'rejected',
-        created_at: '2023-01-03T10:00:00Z',
-        competence_profile: [{ competence_id: 3 }] // roller_coaster
+        createdAt: '2023-01-03T10:00:00Z',
+        competenceProfile: [{ competenceId: 3 }] // roller_coaster
     }
 ];
 
@@ -43,7 +43,7 @@ describe('useApplicationFilters', () => {
         });
 
         expect(result.current.filteredApplications).toHaveLength(1);
-        expect(result.current.filteredApplications[0].first_name).toBe('Alice');
+        expect(result.current.filteredApplications[0].firstName).toBe('Alice');
     });
 
     it('should filter by status', () => {
@@ -69,7 +69,7 @@ describe('useApplicationFilters', () => {
         });
 
         expect(result.current.filteredApplications).toHaveLength(1);
-        expect(result.current.filteredApplications[0].competence_profile[0].competence_id).toBe(1);
+        expect(result.current.filteredApplications[0].competenceProfile[0].competenceId).toBe(1);
     });
 
     it('should sort by date asc', () => {
@@ -80,8 +80,8 @@ describe('useApplicationFilters', () => {
             result.current.handleFilterChange('sortOrder', 'asc');
         });
 
-        expect(result.current.filteredApplications[0].application_id).toBe(1);
-        expect(result.current.filteredApplications[2].application_id).toBe(3);
+        expect(result.current.filteredApplications[0].applicationId).toBe(1);
+        expect(result.current.filteredApplications[2].applicationId).toBe(3);
     });
 
     it('should sort by date desc', () => {
@@ -92,8 +92,8 @@ describe('useApplicationFilters', () => {
             result.current.handleFilterChange('sortOrder', 'desc');
         });
 
-        expect(result.current.filteredApplications[0].application_id).toBe(3);
-        expect(result.current.filteredApplications[2].application_id).toBe(1);
+        expect(result.current.filteredApplications[0].applicationId).toBe(3);
+        expect(result.current.filteredApplications[2].applicationId).toBe(1);
     });
 
     it('should calculate stats correctly', () => {

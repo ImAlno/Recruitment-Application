@@ -61,3 +61,13 @@ vi.mock('i18next', () => {
         ...i18nMock,
     };
 });
+
+/**
+ * Mocking ResizeObserver
+ * Required for components that use ResizeObserver (like framer-motion)
+ */
+globalThis.ResizeObserver = vi.fn().mockImplementation(() => ({
+    observe: vi.fn(),
+    unobserve: vi.fn(),
+    disconnect: vi.fn(),
+}));

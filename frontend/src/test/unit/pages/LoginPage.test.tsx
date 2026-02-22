@@ -10,12 +10,6 @@ import { MemoryRouter, Routes, Route } from 'react-router-dom';
 import { AuthProvider } from '../../../contexts/AuthContext';
 
 // Mock matchMedia for framer-motion if needed, but usually not required for basic rendering
-// Mock resizeObserver
-global.ResizeObserver = vi.fn().mockImplementation(() => ({
-    observe: vi.fn(),
-    unobserve: vi.fn(),
-    disconnect: vi.fn(),
-}));
 
 const renderLoginPage = () => {
     return render(
@@ -58,7 +52,7 @@ describe('LoginPage', () => {
             // ApiClient throws an error which is handled in LoginPage
             // handlers.ts returns 401 for wrong credentials
             // ApiClient translates it to errors.serverError (mocked as errors.serverError)
-            expect(screen.getByText('errors.serverError')).toBeInTheDocument();
+            expect(screen.getByText('login.invalidCredentials')).toBeInTheDocument();
         });
     });
 
