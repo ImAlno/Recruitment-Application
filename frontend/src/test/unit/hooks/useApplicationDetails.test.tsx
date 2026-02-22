@@ -4,15 +4,18 @@ import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { applicationService } from '../../../services/applicationService';
 
 // Mock the useApplications hook since useApplicationDetails depends on it
-vi.mock('../../../hooks/useApplications', () => ({
-    useApplications: vi.fn(() => ({
-        applications: [
-            { application_id: 1, status: 'unhandled', first_name: 'Test', last_name: 'User' },
-            { application_id: 2, status: 'accepted', first_name: 'Jane', last_name: 'Doe' }
-        ],
-        loading: false
-    }))
-}));
+vi.mock('../../../hooks/useApplications', () => {
+    const mockApplications = [
+        { application_id: 1, status: 'unhandled', first_name: 'Test', last_name: 'User' },
+        { application_id: 2, status: 'accepted', first_name: 'Jane', last_name: 'Doe' }
+    ];
+    return {
+        useApplications: vi.fn(() => ({
+            applications: mockApplications,
+            loading: false
+        }))
+    };
+});
 
 describe('useApplicationDetails', () => {
     beforeEach(() => {
