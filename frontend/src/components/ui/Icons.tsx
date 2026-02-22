@@ -1,9 +1,19 @@
 import type { SVGProps } from 'react';
 
+/**
+ * Base props for SVG icon components.
+ */
 export interface IconProps extends SVGProps<SVGSVGElement> {
+    /** The size of the icon (width and height). Defaults to component-specific value. */
     size?: number | string;
 }
 
+/**
+ * Eye icon component.
+ * 
+ * @param {IconProps} props - Icon props.
+ * @returns {JSX.Element} The rendered SVG.
+ */
 export const Eye = ({ size = 20, ...props }: IconProps) => (
     <svg
         xmlns="http://www.w3.org/2000/svg"
@@ -22,6 +32,12 @@ export const Eye = ({ size = 20, ...props }: IconProps) => (
     </svg>
 );
 
+/**
+ * Eye-off (slashed eye) icon component.
+ * 
+ * @param {IconProps} props - Icon props.
+ * @returns {JSX.Element} The rendered SVG.
+ */
 export const EyeOff = ({ size = 20, ...props }: IconProps) => (
     <svg
         xmlns="http://www.w3.org/2000/svg"
@@ -42,6 +58,12 @@ export const EyeOff = ({ size = 20, ...props }: IconProps) => (
     </svg>
 );
 
+/**
+ * Close/X icon component.
+ * 
+ * @param {IconProps} props - Icon props.
+ * @returns {JSX.Element} The rendered SVG.
+ */
 export const X = ({ size = 20, ...props }: IconProps) => (
     <svg
         xmlns="http://www.w3.org/2000/svg"

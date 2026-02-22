@@ -2,7 +2,11 @@ import { useState, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 
 /**
- * Custom hook to get a random goofy subheader for Roger's recruitapp
+ * Custom hook to get a random goofy subheader for the landing page.
+ * Loads the array of subheaders from translations and selects one at random.
+ * Re-randomizes if the language changes.
+ * 
+ * @returns {string} A random subheader string.
  */
 export const useRandomSubheader = () => {
     const { t, i18n } = useTranslation();

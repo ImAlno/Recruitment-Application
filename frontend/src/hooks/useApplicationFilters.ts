@@ -1,5 +1,19 @@
 import { useState, useMemo } from 'react';
 
+/**
+ * Custom hook for filtering and sorting a list of applications.
+ * Manages filter state (name, status checkboxes, competence, sorting) and 
+ * provides the resulting filtered list and status statistics.
+ * 
+ * @param {any[]} applications - The raw list of applications to filter.
+ * @returns {Object} An object containing filter state, handlers, and processed data.
+ * @property {Object} filters - The current filter and sort settings.
+ * @property {Function} setFilters - State setter for the filters object.
+ * @property {Function} handleFilterChange - Helper to update a specific filter key.
+ * @property {Function} handleReset - Resets all filters to their default values.
+ * @property {any[]} filteredApplications - The memoized list of applications after applying filters and sorting.
+ * @property {Object} stats - Memoized counts of applications by status (unhandled, accepted, rejected).
+ */
 export const useApplicationFilters = (applications: any[]) => {
     const [filters, setFilters] = useState({
         name: '',

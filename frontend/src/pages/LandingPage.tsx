@@ -9,6 +9,13 @@ import { motion } from 'framer-motion';
 import rogerImage from '../assets/roger.png';
 import { useTranslation } from 'react-i18next';
 
+/**
+ * Public landing page for the application.
+ * Features a hero section with animated headings, a randomized subheader, 
+ * and call-to-action buttons for registration or login.
+ * 
+ * @returns {JSX.Element} The rendered landing page.
+ */
 const LandingPage = () => {
     const { t } = useTranslation();
     const navigate = useNavigate();

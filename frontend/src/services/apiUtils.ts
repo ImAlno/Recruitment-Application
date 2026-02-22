@@ -9,6 +9,12 @@ export class ApiError extends Error {
     public status?: number;
     public code?: string;
 
+    /**
+     * Creates an instance of ApiError.
+     * @param {string} message - The error message.
+     * @param {number} [status] - Optional HTTP status code.
+     * @param {string} [code] - Optional error code.
+     */
     constructor(message: string, status?: number, code?: string) {
         super(message);
         this.name = 'ApiError';
@@ -18,7 +24,11 @@ export class ApiError extends Error {
 }
 
 /**
- * Parse and handle API errors consistently
+ * Parses an unknown error into a standardized ApiError object.
+ * Handles Axios error responses and network errors.
+ * 
+ * @param {any} error - The error to parse.
+ * @returns {ApiError} A standardized ApiError object.
  */
 export function parseApiError(error: any): ApiError {
     if (error instanceof ApiError) {
@@ -57,28 +67,40 @@ export function parseApiError(error: any): ApiError {
 }
 
 /**
- * Check if error is authentication related
+ * Checks if the given ApiError is related to authentication.
+ * 
+ * @param {ApiError} error - The error to check.
+ * @returns {boolean} True if it is an authentication error.
  */
 export function isAuthError(error: ApiError): boolean {
     return error.status === 401 || error.code === 'AUTH_ERROR';
 }
 
 /**
- * Check if error is validation related
+ * Checks if the given ApiError is related to validation.
+ * 
+ * @param {ApiError} error - The error to check.
+ * @returns {boolean} True if it is a validation error.
  */
 export function isValidationError(error: ApiError): boolean {
     return error.status === 400 || error.code === 'VALIDATION_ERROR';
 }
 
 /**
- * Check if error is network related
+ * Checks if the given ApiError is related to network connectivity.
+ * 
+ * @param {ApiError} error - The error to check.
+ * @returns {boolean} True if it is a network error.
  */
 export function isNetworkError(error: ApiError): boolean {
     return error.status === 0 || error.code === 'NETWORK_ERROR';
 }
 
 /**
- * Format error message for user display
+ * Formats an ApiError into a user-friendly display message.
+ * 
+ * @param {ApiError} error - The error to format.
+ * @returns {string} A user-friendly error message.
  */
 export function formatErrorMessage(error: ApiError): string {
     if (isNetworkError(error)) {
@@ -99,9 +121,15 @@ export function formatErrorMessage(error: ApiError): string {
 /**
  * Retry configuration for API calls
  */
+/**
+ * Configuration options for retrying failed API calls.
+ */
 export interface RetryConfig {
+    /** Maximum number of retry attempts. */
     maxRetries: number;
+    /** Initial delay before retrying (in milliseconds). */
     retryDelay: number;
+    /** Optional predicate to determine if a retry should be attempted based on the error. */
     retryCondition?: (error: ApiError) => boolean;
 }
 
@@ -115,7 +143,14 @@ export const DEFAULT_RETRY_CONFIG: RetryConfig = {
 };
 
 /**
- * Execute function with retry logic
+ * Executes a function that returns a promise with retry logic.
+ * Uses exponential backoff for retries.
+ * 
+ * @template T
+ * @param {() => Promise<T>} fn - The function to execute.
+ * @param {RetryConfig} [config=DEFAULT_RETRY_CONFIG] - Retry configuration.
+ * @returns {Promise<T>} A promise resolving to the function's result.
+ * @throws {ApiError} The last encountered error if all retries fail.
  */
 export async function executeWithRetry<T>(
     fn: () => Promise<T>,
@@ -146,7 +181,12 @@ export async function executeWithRetry<T>(
 }
 
 /**
- * Debounce function for API calls
+ * Creates a debounced version of a function.
+ * 
+ * @template T
+ * @param {T} func - The function to debounce.
+ * @param {number} wait - The delay in milliseconds.
+ * @returns {(...args: Parameters<T>) => void} A new debounced function.
  */
 export function debounce<T extends (...args: any[]) => any>(
     func: T,

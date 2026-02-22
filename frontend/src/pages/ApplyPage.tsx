@@ -22,6 +22,14 @@ const STEPS = {
 
 type Step = typeof STEPS[keyof typeof STEPS];
 
+/**
+ * Multi-step application page for job seekers.
+ * Guides the user through documenting their competence profile and availability periods 
+ * before a final review and submission.
+ * Uses framer-motion for smooth transitions between steps.
+ * 
+ * @returns {JSX.Element} The rendered multi-step application form.
+ */
 const ApplyPage = () => {
     const { t } = useTranslation();
     const navigate = useNavigate();

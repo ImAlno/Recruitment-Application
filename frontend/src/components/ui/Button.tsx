@@ -2,12 +2,25 @@ import React from 'react';
 import { motion } from 'framer-motion';
 import type { HTMLMotionProps } from 'framer-motion';
 
+/**
+ * Props for the Button component.
+ */
 interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
+    /** Visual style variant of the button. Defaults to 'primary'. */
     variant?: 'primary' | 'secondary' | 'outline' | 'danger';
+    /** Size of the button. Defaults to 'md'. */
     size?: 'sm' | 'md' | 'lg';
+    /** If true, the button will take up the full width of its container. */
     fullWidth?: boolean;
 }
 
+/**
+ * A versatile, animated Button component using framer-motion.
+ * Supports multiple variants, sizes, and a full-width mode.
+ * 
+ * @param {ButtonProps} props - The component props.
+ * @returns {JSX.Element} The rendered button.
+ */
 const Button = ({
     children,
     variant = 'primary',
