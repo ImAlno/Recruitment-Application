@@ -25,3 +25,6 @@ dist-ssr
 *.sw?
 .DS_Store
 .DS_Store
+
+# Testing
+coverage/
