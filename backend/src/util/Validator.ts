@@ -133,6 +133,18 @@ export class Validator {
     }
 
     /**
+     * Checks if a competence object is valid.
+     * @param {any} comp The competence object to validate.
+     * @returns {boolean} True if valid, false otherwise.
+     */
+    static isValidCompetence(comp: any): boolean {
+        if (!comp) return false;
+        if (!Validator.isInt(comp.competence_id, 1)) return false;
+        if (!Validator.isYearsOfExperience(comp.years_of_experience)) return false;
+        return true;
+    }
+
+    /**
      * Validates an entire register request body.
      * @param {RegisterRequest} body The registration request body.
      * @throws {Error} If any of the parameters in the body are invalid.
@@ -159,9 +171,8 @@ export class Validator {
 
         if (!Array.isArray(body.competences)) throw new Error("competences must be an array");
         for (const comp of body.competences) {
-            if (!Validator.isInt(comp.competence_id, 1)) throw new Error("Invalid competence_id");
-            if (!Validator.isYearsOfExperience(comp.years_of_experience)) {
-                throw new Error("Invalid years_of_experience format. Expected precision 4, scale 2.");
+            if (!Validator.isValidCompetence(comp)) {
+                throw new Error("Invalid competence format");
             }
         }
 
@@ -181,6 +192,17 @@ export class Validator {
     static validateUsernameParam(username: string): void {
         if (!Validator.isUsername(username)) {
             throw new Error("Invalid username parameter format");
+        }
+    }
+
+    /**
+     * Validates an email parameter.
+     * @param {string} email The email string.
+     * @throws {Error} If the email string is not valid.
+     */
+    static validateEmailParam(email: string): void {
+        if (!Validator.isEmail(email)) {
+            throw new Error("Invalid email parameter format");
         }
     }
 
