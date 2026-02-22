@@ -5,7 +5,7 @@
  */
 import { renderHook, waitFor } from '@testing-library/react';
 import { useApplications } from '../../../hooks/useApplications';
-import { describe, it, expect } from 'vitest';
+import { describe, it, expect, vi } from 'vitest';
 
 describe('useApplications', () => {
     it('should fetch applications on mount', async () => {
@@ -22,11 +22,22 @@ describe('useApplications', () => {
     });
 
     it('should handle fetch errors', async () => {
-        // We can use MSW to temporarily overwrite a handler for this test
-        // or just let the default handlers work if we had a failing one.
-        // But here we rely on the implementation of useApplications catch block.
-        // Let's assume the service throws.
+        // Mock the service to throw an error
+        // We need to use vi.spyOn to mock the service method for this specific test
+        const { applicationService } = await import('../../../services/applicationService');
+        const getSpy = vi.spyOn(applicationService, 'getApplications').mockRejectedValue(new Error('Network error'));
 
-        // In this case, I'll just test the success case first.
+        const { result } = renderHook(() => useApplications());
+
+        expect(result.current.loading).toBe(true);
+
+        await waitFor(() => {
+            expect(result.current.loading).toBe(false);
+        });
+
+        expect(result.current.error).toBe('errors.loadApplicationsFailed');
+        expect(result.current.applications).toEqual([]);
+
+        getSpy.mockRestore();
     });
 });
