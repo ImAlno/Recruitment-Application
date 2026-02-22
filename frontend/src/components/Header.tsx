@@ -3,6 +3,13 @@ import { useAuth } from '../contexts/AuthContext';
 import UserDropdown from './UserDropdown';
 import { useTranslation } from 'react-i18next';
 
+/**
+ * Common Header component for the application.
+ * Displays the logo, main navigation links (conditional on auth/role), 
+ * language switcher, and user dropdown or login link.
+ * 
+ * @returns {JSX.Element} The rendered header.
+ */
 const Header = () => {
     const { user, isAuthenticated } = useAuth();
     const { t, i18n } = useTranslation();

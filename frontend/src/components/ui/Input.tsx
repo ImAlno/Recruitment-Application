@@ -1,13 +1,27 @@
 import React from 'react';
 import { useTranslation } from 'react-i18next';
 
+/**
+ * Props for the Input component.
+ */
 interface InputProps extends React.InputHTMLAttributes<HTMLInputElement> {
+    /** Optional label text to display above the input. */
     label?: string;
+    /** Error message or translation key. If prefixed with 'PASSWORD_ERROR:', it parses complex requirements. */
     error?: string;
+    /** If true, the input container takes up the full width. Defaults to true. */
     fullWidth?: boolean;
+    /** Optional element to render inside the input on the right (e.g., a toggle button). */
     rightElement?: React.ReactNode;
 }
 
+/**
+ * Standardized Input component with optional label, error messaging, and right-aligned element.
+ * Automatically translates error keys and handles special password validation display.
+ * 
+ * @param {InputProps} props - The component props.
+ * @returns {JSX.Element} The rendered input container.
+ */
 const Input = ({
     label,
     error,

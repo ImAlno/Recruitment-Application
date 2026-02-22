@@ -7,6 +7,13 @@ import AnimatedPage from '../components/layout/AnimatedPage';
 import { useTranslation } from 'react-i18next';
 import { useLoginForm } from '../hooks';
 
+/**
+ * Login page component.
+ * Handles user authentication through the useLoginForm hook.
+ * Includes username and password inputs and displays authentication errors.
+ * 
+ * @returns {JSX.Element} The rendered login page.
+ */
 const LoginPage = () => {
     const { t } = useTranslation();
     const {

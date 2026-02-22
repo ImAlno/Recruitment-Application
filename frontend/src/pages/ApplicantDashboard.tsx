@@ -6,6 +6,12 @@ import { useAuth } from '../contexts/AuthContext';
 import AnimatedPage from '../components/layout/AnimatedPage';
 import { useTranslation } from 'react-i18next';
 
+/**
+ * Dashboard page for applicants.
+ * Provides a welcome message and a quick link to start or continue a job application.
+ * 
+ * @returns {JSX.Element} The rendered applicant dashboard.
+ */
 const ApplicantDashboard = () => {
     const { t } = useTranslation();
     const navigate = useNavigate();

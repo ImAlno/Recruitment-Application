@@ -9,6 +9,13 @@ import AnimatedPage from '../components/layout/AnimatedPage';
 import { AnimatedList, AnimatedItem } from '../components/common/AnimatedList';
 import { useTranslation } from 'react-i18next';
 
+/**
+ * Dashboard page for recruiters.
+ * Displays application statistics and a filterable list of all job applications.
+ * Allows recruiters to navigate to individual application details.
+ * 
+ * @returns {JSX.Element} The rendered recruiter dashboard.
+ */
 const RecruiterDashboard = () => {
     const { t } = useTranslation();
     const navigate = useNavigate();

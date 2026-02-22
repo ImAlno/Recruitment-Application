@@ -1,5 +1,11 @@
 import { useTranslation } from 'react-i18next';
 
+/**
+ * Common Footer component for the application.
+ * Displays copyright/description and links to accessibility, terms, and privacy.
+ * 
+ * @returns {JSX.Element} The rendered footer.
+ */
 const Footer = () => {
     const { t } = useTranslation();
 

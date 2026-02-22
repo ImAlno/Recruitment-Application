@@ -4,6 +4,12 @@ import Layout from '../components/Layout';
 import Card, { CardHeader, CardTitle, CardContent } from '../components/ui/Card';
 import { useTranslation } from 'react-i18next';
 
+/**
+ * Profile page component displaying the currently authenticated user's information.
+ * Shows personal details such as name, email, and person number.
+ * 
+ * @returns {JSX.Element | null} The rendered profile page or null if no user is authenticated.
+ */
 const ProfilePage: React.FC = () => {
     const { t } = useTranslation();
     const { user } = useAuth();

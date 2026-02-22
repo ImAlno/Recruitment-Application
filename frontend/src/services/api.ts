@@ -10,6 +10,9 @@ import i18n from '../i18n';
 class ApiClient {
     private axiosInstance: AxiosInstance;
 
+    /**
+     * Initializes the Axios instance with base configuration.
+     */
     constructor() {
         this.axiosInstance = axios.create({
             baseURL: DEFAULT_API_CONFIG.baseURL,
@@ -24,7 +27,8 @@ class ApiClient {
     }
 
     /**
-     * Setup axios interceptors for error handling
+     * Sets up Axios interceptors for handling requests and responses globally.
+     * Includes a response interceptor to handle 401 Unauthorized errors by clearing local session.
      */
     private setupInterceptors(): void {
         // Request interceptor
@@ -56,7 +60,11 @@ class ApiClient {
     }
 
     /**
-     * Handle API errors consistently
+     * Handles API errors by translating them into user-friendly error messages using i18next.
+     * 
+     * @param {any} error - The error object from Axios.
+     * @returns {never} Always throws an error.
+     * @throws {Error} An error object containing the translated message and status code.
      */
     private handleApiError(error: any): never {
         if (error.response) {
@@ -78,7 +86,12 @@ class ApiClient {
     }
 
     /**
-     * Extract success data from API response
+     * Extracts the success data from a standard API response envelope.
+     * 
+     * @template T
+     * @param {AxiosResponse<ApiResponse<T>>} response - The Axios response object.
+     * @returns {T} The unwrapped data from the response.
+     * @throws {Error} If the response does not indicate success.
      */
     private extractSuccessData<T>(response: AxiosResponse<ApiResponse<T>>): T {
         if (response.data && 'success' in response.data && response.data.success) {
@@ -88,7 +101,13 @@ class ApiClient {
     }
 
     /**
-     * GET request
+     * Performs a GET request to the specified URL.
+     * 
+     * @template T
+     * @param {string} url - The endpoint URL.
+     * @param {any} [params] - Optional query parameters.
+     * @returns {Promise<T>} A promise resolving to the response data.
+     * @throws {Error} If the request fails.
      */
     async get<T>(url: string, params?: any): Promise<T> {
         try {
@@ -100,7 +119,13 @@ class ApiClient {
     }
 
     /**
-     * POST request
+     * Performs a POST request to the specified URL.
+     * 
+     * @template T
+     * @param {string} url - The endpoint URL.
+     * @param {any} [data] - The request body data.
+     * @returns {Promise<T>} A promise resolving to the response data.
+     * @throws {Error} If the request fails.
      */
     async post<T>(url: string, data?: any): Promise<T> {
         try {
@@ -112,7 +137,13 @@ class ApiClient {
     }
 
     /**
-     * PUT request
+     * Performs a PUT request to the specified URL.
+     * 
+     * @template T
+     * @param {string} url - The endpoint URL.
+     * @param {any} [data] - The request body data.
+     * @returns {Promise<T>} A promise resolving to the response data.
+     * @throws {Error} If the request fails.
      */
     async put<T>(url: string, data?: any): Promise<T> {
         try {
@@ -124,7 +155,13 @@ class ApiClient {
     }
 
     /**
-     * PATCH request
+     * Performs a PATCH request to the specified URL.
+     * 
+     * @template T
+     * @param {string} url - The endpoint URL.
+     * @param {any} [data] - The request body data.
+     * @returns {Promise<T>} A promise resolving to the response data.
+     * @throws {Error} If the request fails.
      */
     async patch<T>(url: string, data?: any): Promise<T> {
         try {
@@ -136,7 +173,12 @@ class ApiClient {
     }
 
     /**
-     * DELETE request
+     * Performs a DELETE request to the specified URL.
+     * 
+     * @template T
+     * @param {string} url - The endpoint URL.
+     * @returns {Promise<T>} A promise resolving to the response data.
+     * @throws {Error} If the request fails.
      */
     async delete<T>(url: string): Promise<T> {
         try {
@@ -148,7 +190,9 @@ class ApiClient {
     }
 
     /**
-     * Test API connectivity
+     * Tests the connectivity to the API root.
+     * 
+     * @returns {Promise<string>} A promise resolving to a success message.
      */
     async testConnection(): Promise<string> {
         try {
@@ -160,5 +204,7 @@ class ApiClient {
     }
 }
 
-// Export singleton instance
+/**
+ * Singleton instance of ApiClient.
+ */
 export const apiClient = new ApiClient();

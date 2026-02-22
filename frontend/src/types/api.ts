@@ -1,7 +1,13 @@
 /**
  * API Response wrapper type
  */
+/**
+ * Generic API response wrapper.
+ * 
+ * @template T - The type of the success data.
+ */
 export interface ApiResponse<T> {
+    /** The actual response data from the API. */
     success: T;
 }
 
@@ -21,6 +27,9 @@ export const HttpStatus = {
 /**
  * API Endpoints
  */
+/**
+ * Centralized list of API endpoints used by the application.
+ */
 export const API_ENDPOINTS = {
     // Auth endpoints
     REGISTER: '/auth/register',
@@ -37,6 +46,9 @@ export const API_ENDPOINTS = {
 
 /**
  * Default API configuration
+ */
+/**
+ * Default configuration for Axios API instances.
  */
 export const DEFAULT_API_CONFIG = {
     baseURL: import.meta.env.VITE_API_URL || 'http://localhost:3000/api',

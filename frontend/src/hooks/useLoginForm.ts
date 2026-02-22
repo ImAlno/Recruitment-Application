@@ -4,7 +4,17 @@ import { useAuth } from '../contexts/AuthContext';
 import { authService } from '../services/authService';
 
 /**
- * Hook to manage login form state and logic
+ * Custom hook for managing login form state and submission logic.
+ * Handles input state, loading indicators, error mapping, and navigation after successful login.
+ * 
+ * @returns {Object} An object containing form state and the submit handler.
+ * @property {string} username - The current username input value.
+ * @property {Function} setUsername - State setter for the username.
+ * @property {string} password - The current password input value.
+ * @property {Function} setPassword - State setter for the password.
+ * @property {string} error - Current error message key or raw message.
+ * @property {boolean} isLoading - True if the login request is in progress.
+ * @property {Function} handleSubmit - Form submission handler that performs the login and redirects.
  */
 export const useLoginForm = () => {
     const [username, setUsername] = useState('');

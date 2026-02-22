@@ -5,6 +5,26 @@ import { formatPersonNumber } from '../utils/formatters';
 import { useAvailability } from './useAvailability';
 import { useTranslation } from 'react-i18next';
 
+/**
+ * Custom hook for managing the registration form state, validation, and submission.
+ * Handles complex multi-field state, real-time availability checks (via useAvailability),
+ * formatting (person number), and error mapping.
+ * 
+ * @returns {Object} An object containing form state, validation state, and handlers.
+ * @property {Object} formData - The current values of all registration fields.
+ * @property {Record<string, string>} errors - Map of field names to error message keys or raw messages.
+ * @property {boolean} isSubmitting - True if the registration request is currently in progress.
+ * @property {boolean} isCheckingUsername - True if an asynchronous username availability check is running.
+ * @property {boolean} isCheckingEmail - True if an asynchronous email availability check is running.
+ * @property {Object} checkedValues - Cache of previously checked values to avoid redundant API calls.
+ * @property {Function} handleChange - Event handler for updating form fields with validation and formatting logic.
+ * @property {Function} handleSubmit - Asynchronous handler that validates the entire form and performs registration.
+ * @property {Function} setErrors - Direct state setter for the errors object.
+ * @property {boolean} showPassword - True if the password should be visible in the UI.
+ * @property {Function} setShowPassword - State setter for password visibility.
+ * @property {string | null} success - Success message key or raw message if registration was successful.
+ * @property {Function} clearErrors - Utility to clear a specific error or all errors.
+ */
 export const useRegisterForm = () => {
     const [formData, setFormData] = useState({
         firstName: '',

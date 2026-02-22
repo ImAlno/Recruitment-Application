@@ -4,21 +4,38 @@ import Input from './ui/Input';
 import Select from './ui/Select';
 import { useTranslation } from 'react-i18next';
 
+/**
+ * Props for the ApplicationFilters component.
+ */
 interface ApplicationFiltersProps {
+    /** The current filter and sort settings. */
     filters: {
+        /** Name search string. */
         name: string;
+        /** Boolean flags for which statuses to include. */
         status: {
             unhandled: boolean;
             accepted: boolean;
             rejected: boolean;
         };
+        /** The field to sort by (e.g., 'date', 'name', 'status'). */
         sortBy: string;
+        /** The sort direction ('asc' or 'desc'). */
         sortOrder: string;
     };
+    /** Callback function to handle changes to specific filters. */
     onFilterChange: (key: string, value: any) => void;
+    /** Callback function to reset all filters to their defaults. */
     onReset: () => void;
 }
 
+/**
+ * Component that provides a sidebar with filtering and sorting controls for the application list.
+ * Includes search by name, status checkboxes, and sort field/order selection.
+ * 
+ * @param {ApplicationFiltersProps} props - The component props.
+ * @returns {JSX.Element} The rendered filters component.
+ */
 const ApplicationFilters = ({ filters, onFilterChange, onReset }: ApplicationFiltersProps) => {
     const { t } = useTranslation();
 

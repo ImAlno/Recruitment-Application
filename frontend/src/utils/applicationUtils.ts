@@ -6,14 +6,20 @@ import type { AvailabilityPeriod } from '../types/application';
  */
 
 /**
- * Get the label for a competence ID
+ * Retrieves the human-readable label for a given competence ID.
+ * 
+ * @param {number} id - The ID of the competence.
+ * @returns {string} The label of the competence if found, otherwise 'Unknown'.
  */
 export const getCompetenceLabel = (id: number): string => {
     return AVAILABLE_COMPETENCES.find(c => c.id === id)?.label || 'Unknown';
 };
 
 /**
- * Get the CSS text color class for a given application status
+ * Determines the appropriate CSS text color class based on the application status.
+ * 
+ * @param {string} status - The status of the application (e.g., 'accepted', 'rejected', 'unhandled').
+ * @returns {string} A Tailwind CSS class for text color.
  */
 export const getStatusColor = (status: string): string => {
     switch (status.toLowerCase()) {
@@ -28,7 +34,12 @@ export const getStatusColor = (status: string): string => {
 };
 
 /**
- * Check if a new availability period overlaps with existing periods
+ * Checks if a proposed availability period overlaps with any existing availability periods.
+ * 
+ * @param {string} startDate - The start date of the new period (ISO string or date string).
+ * @param {string} endDate - The end date of the new period (ISO string or date string).
+ * @param {AvailabilityPeriod[]} existingPeriods - An array of already added availability periods.
+ * @returns {boolean} True if there is an overlap, false otherwise.
  */
 export const isOverlapping = (
     startDate: string,
@@ -46,7 +57,11 @@ export const isOverlapping = (
 };
 
 /**
- * Validate if an end date is after the start date
+ * Validates that the end date occurs after the start date.
+ * 
+ * @param {string} startDate - The start date string.
+ * @param {string} endDate - The end date string.
+ * @returns {boolean} True if both dates exist and end date is after start date.
  */
 export const isValidDateRange = (startDate: string, endDate: string): boolean => {
     if (!startDate || !endDate) return false;

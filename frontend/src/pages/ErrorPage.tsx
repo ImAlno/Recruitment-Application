@@ -1,4 +1,3 @@
-import React from 'react';
 import { useNavigate, useRouteError } from 'react-router-dom';
 import Layout from '../components/Layout';
 import Card, { CardTitle, CardContent, CardFooter } from '../components/ui/Card';
@@ -6,6 +5,12 @@ import Button from '../components/ui/Button';
 import AnimatedPage from '../components/layout/AnimatedPage';
 import { useTranslation } from 'react-i18next';
 
+/**
+ * Generic error boundary page for catching and displaying routing or system errors.
+ * Provides error details (if available) and options to go back or retry.
+ * 
+ * @returns {JSX.Element} The rendered error page.
+ */
 const ErrorPage = () => {
     const { t } = useTranslation();
     const error = useRouteError() as any;

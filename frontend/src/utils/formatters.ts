@@ -1,3 +1,10 @@
+/**
+ * Formats a raw string into a Swedish personal identity number format (YYYYMMDD-XXXX).
+ * Filters out non-digits and caps the length to 12 digits.
+ * 
+ * @param {string} value - The raw input value.
+ * @returns {string} The formatted personal number.
+ */
 export const formatPersonNumber = (value: string): string => {
     // Remove all non-digits
     const raw = value.replace(/\D/g, '');
