@@ -38,6 +38,12 @@ class DAO {
     return this.database;
   }
 
+  /**
+   * Registers a new user into the database.
+   * @param {RegisterRequest} userBody The user details for registration.
+   * @param {Transaction} transactionObj The active database transaction.
+   * @returns {Promise<PersonDTO>} A promise that resolves to the newly created person data transfer object.
+   */
   async registerUser(userBody: RegisterRequest, transactionObj: Transaction): Promise<PersonDTO> {
     try {
       Validator.validateRegisterRequest(userBody);
@@ -61,6 +67,13 @@ class DAO {
     }
   }
 
+  /**
+   * Checks whether a given username or email already exists in the database.
+   * @param {Transaction} transactionObj The active database transaction.
+   * @param {string} [username] Optional username to check.
+   * @param {string} [email] Optional email to check.
+   * @returns {Promise<AvailabilityResponse>} A promise resolving to an object indicating if the username or email are taken.
+   */
   async checkUserExistence(
     transactionObj: Transaction,
     username?: string,
@@ -95,6 +108,12 @@ class DAO {
     }
   }
 
+  /**
+   * Finds a user by their username.
+   * @param {string} username The precise username to search for.
+   * @param {Transaction} transactionObj The active database transaction.
+   * @returns {Promise<PersonDTO>} A promise that resolves to the person data transfer object.
+   */
   async findUser(username: string, transactionObj: Transaction): Promise<PersonDTO> {
     try {
       Validator.validateUsernameParam(username);
@@ -111,7 +130,13 @@ class DAO {
     }
   }
 
-  // Transaction gets rolled back automatically if an error is thrown
+  /**
+   * Submits a full application including competences and availability periods.
+   * Transaction gets rolled back automatically if an error is thrown.
+   * @param {ApplicationSubmissionRequest} submissionBody The full application submission payload.
+   * @param {Transaction} transactionObj The active database transaction.
+   * @returns {Promise<number>} A promise resolving to the ID of the created application.
+   */
   async createApplication(
     submissionBody: ApplicationSubmissionRequest,
     transactionObj: Transaction,
@@ -138,6 +163,7 @@ class DAO {
     return row.applicationId;
   }
 
+  // Helper to insert competence profile mappings into the database.
   private async addCompetence(
     competences: Competence[],
     userId: number,
@@ -156,6 +182,7 @@ class DAO {
     }
   }
 
+  // Helper to insert availability periods into the database.
   private async addAvailability(
     availability: AvailabilityPeriod[],
     userId: number,
@@ -174,6 +201,7 @@ class DAO {
     }
   }
 
+  // Helper to initially insert the application record and set its status to unhandled.
   private async addApplication(userId: number, transactionObj: Transaction) {
     try {
       return transactionObj
@@ -189,6 +217,11 @@ class DAO {
     }
   }
 
+  /**
+   * Retrieves all applications along with their current status and applicant information.
+   * @param {Transaction} transactionObj The active database transaction.
+   * @returns {Promise<AdminApplicatinResponse[]>} A promise resolving to a list of all applications overview details.
+   */
   async findAll(
     transactionObj: Transaction,
   ): Promise<AdminApplicatinResponse[]> {
@@ -216,6 +249,13 @@ class DAO {
     }
   }
 
+  /**
+   * Fetches the full details of a specific application by its ID.
+   * Includes applicant information, competences, and availability.
+   * @param {Transaction} transactionObj The active database transaction.
+   * @param {number} applicationId The ID of the application.
+   * @returns {Promise<ApplicationDetailsDTO>} A promise resolving to the detailed breakdown of the application.
+   */
   async findById(transactionObj: Transaction, applicationId: number): Promise<ApplicationDetailsDTO> {
     Validator.validateApplicationIdParam(applicationId);
     const applicationInfo = await this.getApplicationInfo(
@@ -244,6 +284,7 @@ class DAO {
     };
   }
 
+  // Helper retrieving availability periods associated with a particular person.
   private async getAvailability(transactionObj: Transaction, personId: number) {
     try {
       const result = await transactionObj
@@ -263,6 +304,7 @@ class DAO {
     }
   }
 
+  // Helper retrieving competence profiles linked with a given person id.
   private async getCompetence(transactionObj: Transaction, personId: number) {
     try {
       const result = await transactionObj
@@ -287,6 +329,7 @@ class DAO {
     }
   }
 
+  // Internal helper that fetches the core generic info regarding an application (status, applicant details)
   private async getApplicationInfo(
     transactionObj: Transaction,
     applicationId: number,
@@ -323,6 +366,7 @@ class DAO {
     }
   }
 
+  // Helper to construct a Person Data Transfer Object explicitly mapping database fields.
   private createPersonDTO(
     personTableDBrow: InferSelectModel<typeof personTable>,
   ): PersonDTO {
