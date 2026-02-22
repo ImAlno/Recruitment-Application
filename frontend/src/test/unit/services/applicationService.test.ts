@@ -18,7 +18,7 @@ describe('ApplicationService', () => {
             };
             const response = await applicationService.submitApplication(data);
             expect(response).toBeDefined();
-            expect(response.id).toBe(101);
+            expect(response.applicationId).toBe(101);
         });
     });
 
@@ -36,7 +36,7 @@ describe('ApplicationService', () => {
         it('should fetch a specific application', async () => {
             const response = await applicationService.getApplicationById(1);
             expect(response).toBeDefined();
-            expect(response.id).toBe(1);
+            expect(response.applicationId).toBe(1);
         });
     });
 

@@ -1,47 +1,45 @@
-import { renderHook, waitFor, act } from '@testing-library/react';
+import { renderHook, act } from '@testing-library/react';
 import { useApplicationDetails } from '../../../hooks/useApplicationDetails';
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { applicationService } from '../../../services/applicationService';
-
-// Mock the useApplications hook since useApplicationDetails depends on it
-vi.mock('../../../hooks/useApplications', () => {
-    const mockApplications = [
-        { application_id: 1, status: 'unhandled', first_name: 'Test', last_name: 'User' },
-        { application_id: 2, status: 'accepted', first_name: 'Jane', last_name: 'Doe' }
-    ];
-    return {
-        useApplications: vi.fn(() => ({
-            applications: mockApplications,
-            loading: false
-        }))
-    };
-});
 
 describe('useApplicationDetails', () => {
     beforeEach(() => {
         vi.clearAllMocks();
     });
 
-    it('should find and return application details by id', () => {
+    it('should find and return application details by id', async () => {
         const { result } = renderHook(() => useApplicationDetails('1'));
 
+        await act(async () => {
+            // Wait for useEffect to finish
+        });
+
         expect(result.current.application).toEqual({
-            application_id: 1,
+            applicationId: 1,
             status: 'unhandled',
-            first_name: 'Test',
-            last_name: 'User'
+            firstName: 'Test',
+            lastName: 'User'
         });
         expect(result.current.status).toBe('unhandled');
     });
 
-    it('should handle non-existent application id', () => {
+    it('should handle non-existent application id', async () => {
         const { result } = renderHook(() => useApplicationDetails('999'));
+
+        await act(async () => {
+            // Wait for useEffect to finish
+        });
 
         expect(result.current.application).toBeNull();
     });
 
-    it('should update status state when handleStatusChange is called', () => {
+    it('should update status state when handleStatusChange is called', async () => {
         const { result } = renderHook(() => useApplicationDetails('1'));
+
+        await act(async () => {
+            // Wait for load
+        });
 
         act(() => {
             result.current.handleStatusChange({ target: { value: 'accepted' } } as any);
@@ -55,6 +53,10 @@ describe('useApplicationDetails', () => {
     it('should call service and update application on save', async () => {
         const updateSpy = vi.spyOn(applicationService, 'updateApplicationStatus').mockResolvedValue({} as any);
         const { result } = renderHook(() => useApplicationDetails('1'));
+
+        await act(async () => {
+            // Wait for load
+        });
 
         // Change status first
         act(() => {
@@ -75,6 +77,10 @@ describe('useApplicationDetails', () => {
     it('should handle save error', async () => {
         const updateSpy = vi.spyOn(applicationService, 'updateApplicationStatus').mockRejectedValue(new Error('Update failed'));
         const { result } = renderHook(() => useApplicationDetails('1'));
+
+        await act(async () => {
+            // Wait for load
+        });
 
         act(() => {
             result.current.handleStatusChange({ target: { value: 'rejected' } } as any);
