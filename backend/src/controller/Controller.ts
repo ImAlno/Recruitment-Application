@@ -122,13 +122,6 @@ export class Controller {
   async isLoggedIn(username: string): Promise<Pick<PersonDTO, 'id' | 'username' | 'role'>> {
     return this.database.transaction(async (transactionObj) => {
       const user = await this.dao.findUser(username, transactionObj);
-
-      Controller.logger.logEvent('USER_IS_LOGGED_IN', {
-        userId: user.id,
-        username: user.username,
-        role: user.role,
-      });
-
       return {
         id: user.id,
         username: user.username,

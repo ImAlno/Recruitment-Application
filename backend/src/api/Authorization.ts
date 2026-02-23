@@ -1,5 +1,5 @@
 import jwt from 'jsonwebtoken';
-import { Request, Response, NextFunction} from 'express';
+import { Request, Response, NextFunction } from 'express';
 import { Controller } from '../controller/Controller';
 import Logger from '../util/Logger';
 
@@ -15,6 +15,7 @@ export class Authorization {
         const authCookie = req.cookies[this.AUTH_COOKIE_NAME];
         if (!authCookie) {
             errorHandler(res, 401, 'Invalid or missing authorization token');
+            Authorization.logger.logEvent('ATTEMPTED_UNAUTHORIZED_REQUEST', { message: 'Invalid or missing authorization token' }); // TODO: add possible user data
             return false;
         }
         try {
@@ -29,7 +30,7 @@ export class Authorization {
             return true;
         } catch (err) {
             res.clearCookie(this.AUTH_COOKIE_NAME);
-            errorHandler(res, 401, 'Invalid or missing authorization token');
+            errorHandler(res, 500, 'Internal server error');
             Authorization.logger.logError(err);
             return false;
         }
@@ -57,13 +58,14 @@ export class Authorization {
                 next();
             } else {
                 res.status(403).json({ error: `Forbidden: Requires ${requiredRole} privileges.` });
+                Authorization.logger.logEvent('ATTEMPTED_UNAUTHORIZED_REQUEST', { message: `Forbidden: Requires ${requiredRole} privileges.` }); // TODO: add possible user data
             }
         };
     }
 
     static sendAuthCookie(user: any, res: Response) {
         const jwtToken = jwt.sign(
-            {id: user.id, username: user.username, role: user.role},
+            { id: user.id, username: user.username, role: user.role },
             process.env.JWT_SECRET || "temporary_secret_key",
             {
                 expiresIn: '1h'
