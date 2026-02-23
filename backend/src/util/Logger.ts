@@ -3,6 +3,27 @@
  */
 class Logger {
   /**
+   * Logs a general application event with optional data.
+   *
+   * @param eventName - The name or type of the event (e.g., 'USER_LOGIN', 'APPLICATION_SUBMITTED').
+   * @param data - Optional data associated with the event. For example:
+   * {
+   *   userId: 1,
+   *   username: 'testuser',
+   * }
+   */
+  logEvent(eventName: string, data?: Record<string, unknown>): void {
+    const logEntry = {
+      timestamp: new Date().toISOString(),
+      event: eventName,
+      ...(data && { data }),
+    };
+
+    // Outputs the event as a structured JSON string
+    console.log(JSON.stringify(logEntry));
+  }
+
+  /**
   * Logs an error to the console, including its full cause chain if present.
   *
   * Accepts unknown values safely. If the provided value is an instance of
@@ -17,29 +38,33 @@ class Logger {
       return;
     }
     this.printError(error);
+    console.log(JSON.stringify(error));
   }
 
+  /**
+  * Recursively prints an error and its cause chain to the console.
+  */
   private printError(error: Error, depth = 0): void {
     console.error(`Name: ${error.name}`);
     console.error(`Message: ${error.message}`);
 
     if (error.stack) {
-        console.error(`Stack:`);
+      console.error(`Stack:`);
 
-        const stackLines = error.stack.split("\n");
-        for (const line of stackLines) {
+      const stackLines = error.stack.split("\n");
+      for (const line of stackLines) {
         console.error(`  ${line}`);
-        }
+      }
     }
 
     if (error.cause) {
-        console.error(`Caused by:`);
+      console.error(`Caused by:`);
 
-        if (error.cause instanceof Error) {
+      if (error.cause instanceof Error) {
         this.printError(error.cause, depth + 1);
-        } else {
+      } else {
         console.error(`  Non-Error cause: ${error.cause}`);
-        }
+      }
     }
   }
 }
