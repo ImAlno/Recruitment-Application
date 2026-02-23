@@ -21,6 +21,8 @@ class Logger {
 
     // Outputs the event as a structured JSON string
     console.log(JSON.stringify(logEntry));
+
+    // TODO: add file logging
   }
 
   /**
@@ -38,7 +40,8 @@ class Logger {
       return;
     }
     this.printError(error);
-    console.log(JSON.stringify(error));
+
+    // TODO: add file logging
   }
 
   /**
@@ -46,6 +49,7 @@ class Logger {
   */
   private printError(error: Error, depth = 0): void {
     console.error(`Name: ${error.name}`);
+    console.error(`Timestamp: ${new Date().toISOString()}`);
     console.error(`Message: ${error.message}`);
 
     if (error.stack) {
