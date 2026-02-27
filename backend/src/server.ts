@@ -17,7 +17,7 @@ const app = express();
 // Middleware
 app.use(cookieParser());
 app.use(cors({
-  origin: "http://localhost:5173", // Standard Vite port, or use true to allow all
+  origin: ["http://localhost:5173", "https://frontendfrontend-e3d5dhgjdzeugpes.swedencentral-01.azurewebsites.net"], // Allow local and prod ports
   credentials: true
 }));
 app.use(express.json());
@@ -34,7 +34,7 @@ const startServer = async () => {
 
   // Mount all handlers under the /api prefix to match frontend config
   app.use("/api", apiRouter);
-// Serve frontend build folder
+  // Serve frontend build folder
   app.use(express.static(path.join(__dirname, "../../frontend/build")));
   app.get("*", (req, res) => {
     res.sendFile(path.join(__dirname, "../../frontend/build", "index.html"));

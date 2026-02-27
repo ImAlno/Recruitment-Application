@@ -3,7 +3,7 @@
  */
 /**
  * Generic API response wrapper.
- * 
+ *
  * @template T - The type of the success data.
  */
 export interface ApiResponse<T> {
@@ -51,7 +51,7 @@ export const API_ENDPOINTS = {
  * Default configuration for Axios API instances.
  */
 export const DEFAULT_API_CONFIG = {
-    baseURL: import.meta.env.VITE_API_URL || 'http://localhost:3000/api',
+    baseURL: import.meta.env.VITE_API_URL || 'https://frontendroger-d3fmc4a3g4c9gday.swedencentral-01.azurewebsites.net/api',
     timeout: 10000,
     withCredentials: true,
 };
