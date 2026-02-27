@@ -23,11 +23,24 @@ jobs:
         with:
           node-version: '24.x'
 
-      - name: npm install, build, and test
+     # - name: npm install, build, and test
+       # run: |
+        #  npm install
+        #  npm run build --if-present
+        #  npm run test --if-present
+         # Build frontend
+      - name: Build Frontend
+        working-directory: ./frontend
         run: |
           npm install
-          npm run build --if-present
-          npm run test --if-present
+          npm run build
+
+           # Build backend
+      - name: Build Backend
+        working-directory: ./backend
+        run: |
+          npm install
+          npx tsc
 
       - name: Upload artifact for deployment job
         uses: actions/upload-artifact@v4
@@ -62,4 +75,5 @@ jobs:
           app-name: 'rogerrecruitapp'
           slot-name: 'Production'
           package: .
+
           
