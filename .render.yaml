@@ -1,0 +1,25 @@
+services:
+  - type: web
+    name: recruitment-backend
+    env: node
+    rootDir: backend
+    buildCommand: npm ci && npm run build
+    startCommand: npm start
+    envVars:
+      - key: DATABASE_URL
+        fromService:
+          name: recruitment-db
+          type: postgres
+  - type: static
+    name: recruitment-frontend
+    env: node
+    rootDir: frontend
+    buildCommand: npm ci && npm run build
+    publishPath: dist
+    envVars:
+      - key: VITE_API_URL
+        value: https://<backend-service>.onrender.com
+databases:
+  - name: recruitment-db
+    type: postgres
+    plan: free
