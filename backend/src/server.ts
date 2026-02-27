@@ -3,6 +3,7 @@ import cors from "cors";
 import loader from "./api/index";
 import dotenv from "dotenv";
 import cookieParser from "cookie-parser";
+import { clearLine } from "node:readline";
 
 // Load environment variables immediately
 dotenv.config();
@@ -11,10 +12,14 @@ const app = express();
 
 // Middleware
 app.use(cookieParser());
-app.use(cors({
-  origin: "http://localhost:5173", // Standard Vite port, or use true to allow all
-  credentials: true
-}));
+
+app.use(
+  cors({
+    origin: process.env.CLIENT_URL,
+    //allowedHeaders: ["Content-Type", "Authorization"], // Headers to allow
+    credentials: true,
+  }),
+);
 app.use(express.json());
 
 /**
@@ -36,7 +41,7 @@ const startServer = async () => {
   });
 };
 
-startServer().catch(err => {
+startServer().catch((err) => {
   console.error("Failed to start server:", err);
 });
 
