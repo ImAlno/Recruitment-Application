@@ -3,6 +3,7 @@ import cors from "cors";
 import loader from "./api/index";
 import dotenv from "dotenv";
 import cookieParser from "cookie-parser";
+import { clearLine } from "node:readline";
 import path from "path"
 
 // Load environment variables immediately
@@ -16,6 +17,14 @@ const app = express();
 
 // Middleware
 app.use(cookieParser());
+
+app.use(
+  cors({
+    origin: process.env.CLIENT_URL,
+    //allowedHeaders: ["Content-Type", "Authorization"], // Headers to allow
+    credentials: true,
+  }),
+);
 app.use(cors({
   origin: ["http://localhost:5173", "https://frontendfrontend-e3d5dhgjdzeugpes.swedencentral-01.azurewebsites.net"], // Allow local and prod ports
   credentials: true
@@ -45,7 +54,7 @@ const startServer = async () => {
   });
 };
 
-startServer().catch(err => {
+startServer().catch((err) => {
   console.error("Failed to start server:", err);
 });
 
