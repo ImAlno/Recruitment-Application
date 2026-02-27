@@ -4,7 +4,7 @@
  * subheaders array, falls back gracefully when no array is returned,
  * and re-picks when the i18n language changes.
  */
-import { renderHook, act } from '@testing-library/react';
+import { renderHook } from '@testing-library/react';
 import { useRandomSubheader } from '../../../hooks/useRandomSubheader';
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 

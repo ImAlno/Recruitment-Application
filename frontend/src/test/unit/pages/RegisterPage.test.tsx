@@ -10,6 +10,7 @@ import { MemoryRouter } from 'react-router-dom';
 import { AuthProvider } from '../../../contexts/AuthContext';
 
 // Mock ResizeObserver
+declare const global: any;
 global.ResizeObserver = vi.fn().mockImplementation(() => ({
     observe: vi.fn(),
     unobserve: vi.fn(),

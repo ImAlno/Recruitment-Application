@@ -3,7 +3,7 @@
  * Tests the registration form logic: field management, validation, password visibility,
  * availability checking integration, and final submission.
  */
-import { renderHook, act, waitFor } from '@testing-library/react';
+import { renderHook, act } from '@testing-library/react';
 import { useRegisterForm } from '../../../hooks/useRegisterForm';
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import * as authService from '../../../services/authService';
