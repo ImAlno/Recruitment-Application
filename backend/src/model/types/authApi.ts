@@ -1,3 +1,6 @@
+/**
+ * Represents the request payload for user registration.
+ */
 export interface RegisterRequest {
     firstName: string;
     lastName: string;
@@ -7,7 +10,10 @@ export interface RegisterRequest {
     password: string;
 }
 
+/**
+ * Represents the response indicating if a selected username or email is already taken.
+ */
 export interface AvailabilityResponse {
-    usernameTaken: boolean, 
+    usernameTaken: boolean,
     emailTaken: boolean,
 }

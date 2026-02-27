@@ -1,10 +1,14 @@
 import db from "./index";
 import { roleTable, competenceTable, statusTable, applicationTable } from "./schema";
 
-/** // TODO: This is a temporary function, a better solution should be implemented.
- * The database requires that the role table and compentence table has entries for both 1. applicant and recruiter and 2. ticket sales, lotteries and roller coaster operation. 
- * This function seeds the database with these entries if they don't already exist.
- * You can run this function once to seed the database with npm run db:seed (see package.json for more info). 
+/**
+ * Seeds the database with necessary initial configuration entries.
+ * The database requires that the role table and compentence table has entries for both:
+ * 1. applicant and recruiter
+ * 2. competences (ticket sales, lotteries and roller coaster operation).
+ * Statuses such as accepted, rejected, and unhandled are also inserted if they do not exist.
+ *
+ * TODO: This is a temporary function, a better solution should be implemented.
  */
 async function seed() {
     console.log("Seeding database...");
@@ -16,8 +20,8 @@ async function seed() {
             console.log("Roles already exist, skipping seed.");
         } else {
             await db.insert(roleTable).values([
-            { name: "recruiter" },
-            { name: "applicant" },
+                { name: "recruiter" },
+                { name: "applicant" },
             ]);
         }
 
@@ -28,7 +32,7 @@ async function seed() {
             await db.insert(competenceTable).values([
                 { name: "ticket sales" },
                 { name: "lotteries" },
-                { name: "roller coaster operation" }, 
+                { name: "roller coaster operation" },
             ]);
         }
 
@@ -40,7 +44,7 @@ async function seed() {
             await db.insert(statusTable).values([
                 { name: "accepted" },
                 { name: "rejected" },
-                { name: "unhandled" }, 
+                { name: "unhandled" },
             ]);
         }
 
@@ -52,8 +56,8 @@ async function seed() {
         } else {
             await db.insert(applicationTable).values([
                 {
-                    personId: 1,        
-                    statusId: 1,        
+                    personId: 1,
+                    statusId: 1,
                     createdAt: new Date().toISOString().split("T")[0], // converts to 'YYYY-MM-DD'
                 },
             ]);

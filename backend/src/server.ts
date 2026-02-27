@@ -7,6 +7,10 @@ import cookieParser from "cookie-parser";
 // Load environment variables immediately
 dotenv.config();
 
+/**
+ * Main application entry point for the Express server.
+ * Defines middleware, attaches API handlers, and starts listening on the configured port.
+ */
 const app = express();
 
 // Middleware
@@ -18,9 +22,9 @@ app.use(cors({
 app.use(express.json());
 
 /**
- * Initialize and load all API handlers.
- * We wrap this in an async function to ensure routes are loaded
- * before the server starts listening.
+ * Initializes and loads all API handlers.
+ * Extracted into an async function to ensure routes are fully mounted
+ * before the HTTP server starts listening for connections.
  */
 const startServer = async () => {
   const apiRouter = express.Router();

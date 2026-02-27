@@ -4,6 +4,9 @@ import { Authorization } from './Authorization';
 import { body, query, validationResult } from "express-validator";
 import { Validator } from '../util/Validator';
 
+/**
+ * API handler for user authentication, registration, and session management.
+ */
 class AuthApi extends RequestHandler {
     /**
     * Constructs a new instance.
@@ -26,6 +29,9 @@ class AuthApi extends RequestHandler {
         return '/auth';
     }
 
+    /**
+     * Registers route handlers for user registration, login, logout, and checking username/email availability.
+     */
     async registerHandler(): Promise<void> {
         try {
             await this.retrieveController();
