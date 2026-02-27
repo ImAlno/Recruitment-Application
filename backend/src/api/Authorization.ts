@@ -77,9 +77,13 @@ export class Authorization {
      * Creates and sends an authorization cookie containing the user's JWT token.
      */
     static sendAuthCookie(user: any, res: Response) {
+        const jwtSecret = process.env.JWT_SECRET;
+        if (!jwtSecret) {
+            throw new Error("Missing or invalid environment variable JWT_SECRET");
+        }
         const jwtToken = jwt.sign(
             { id: user.id, username: user.username, role: user.role },
-            process.env.JWT_SECRET || "temporary_secret_key",
+            jwtSecret,
             {
                 expiresIn: '1h'
             }
