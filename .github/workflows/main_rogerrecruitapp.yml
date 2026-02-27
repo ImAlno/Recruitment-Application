@@ -62,5 +62,6 @@ jobs:
         with:
           app-name: 'rogerrecruitapp'
           slot-name: 'Production'
-          package: .
+          package: ./backend
           
+
