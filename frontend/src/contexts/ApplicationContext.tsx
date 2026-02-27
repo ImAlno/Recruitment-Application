@@ -4,20 +4,39 @@ import type { Competence, AvailabilityPeriod, ApplicationSubmission } from '../t
 import { applicationService } from '../services';
 import { useAuth } from './AuthContext';
 
+/**
+ * Type definition for the Application Context state and actions.
+ */
 interface ApplicationContextType {
+    /** The list of added competence profiles. */
     competences: Competence[];
+    /** The list of added availability periods. */
     availability: AvailabilityPeriod[];
+    /** Adds a new competence profile to the state. */
     addCompetence: (competence: Competence) => void;
+    /** Removes a competence profile by its index in the list. */
     removeCompetence: (index: number) => void;
+    /** Adds a new availability period to the state. */
     addAvailability: (period: AvailabilityPeriod) => void;
+    /** Removes an availability period by its index in the list. */
     removeAvailability: (index: number) => void;
+    /** Performs the asynchronous submission of the complete application to the backend. Returns success status. */
     submitApplication: () => Promise<boolean>;
+    /** Resets the application state and clears local storage. */
     clearApplication: () => void;
+    /** True if an application submission is currently in progress. */
     isSubmitting: boolean;
 }
 
 const ApplicationContext = createContext<ApplicationContextType | undefined>(undefined);
 
+/**
+ * Custom hook to access the Application Context.
+ * Must be used within an ApplicationProvider.
+ * 
+ * @returns {ApplicationContextType} The state and actions of the application context.
+ * @throws {Error} If called outside of an ApplicationProvider.
+ */
 export const useApplication = () => {
     const context = useContext(ApplicationContext);
     if (!context) {
@@ -30,6 +49,13 @@ interface ApplicationProviderProps {
     children: ReactNode;
 }
 
+/**
+ * Context Provider component that manages the state of a job application.
+ * Persists data to localStorage to avoid loss on page refreshes.
+ * 
+ * @param {ApplicationProviderProps} props - The component props.
+ * @returns {JSX.Element} The rendered provider.
+ */
 export const ApplicationProvider: React.FC<ApplicationProviderProps> = ({ children }) => {
     const [competences, setCompetences] = useState<Competence[]>(() => {
         const saved = localStorage.getItem('application_competences');

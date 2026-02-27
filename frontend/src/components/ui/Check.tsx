@@ -1,5 +1,11 @@
 import type { IconProps } from './Icons';
 
+/**
+ * Check icon component.
+ * 
+ * @param {IconProps & { className?: string }} props - Icon size and optional styling.
+ * @returns {JSX.Element} The rendered SVG icon.
+ */
 export const Check = ({ size = 24, className = "", ...props }: IconProps & { className?: string }) => (
     <svg
         xmlns="http://www.w3.org/2000/svg"

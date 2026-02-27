@@ -2,19 +2,39 @@ import Card, { CardHeader, CardTitle, CardContent } from './ui/Card';
 import Button from './ui/Button';
 import { useTranslation } from 'react-i18next';
 
+/**
+ * Represents a simplified application object for display in the list.
+ */
 interface Application {
+    /** Unique identifier for the application. */
     applicationId: number;
+    /** Applicant's first name. */
     firstName: string;
+    /** Applicant's last name. */
     lastName: string;
+    /** Current status of the application. */
     status: string;
+    /** ISO date string representing when the application was submitted. */
     createdAt: string;
 }
 
+/**
+ * Props for the ApplicationList component.
+ */
 interface ApplicationListProps {
+    /** The list of applications to display. */
     applications: Application[];
+    /** Callback triggered when the "View Details" button is clicked. */
     onViewDetails: (id: number) => void;
 }
 
+/**
+ * Component that displays a table of job applications.
+ * Features a formatted list with status badges and action buttons.
+ * 
+ * @param {ApplicationListProps} props - The component props.
+ * @returns {JSX.Element} The rendered table.
+ */
 const ApplicationList = ({ applications, onViewDetails }: ApplicationListProps) => {
     const { t } = useTranslation();
 

@@ -1,12 +1,25 @@
 import React from 'react';
 
+/**
+ * Props for the Select component.
+ */
 interface SelectProps extends React.SelectHTMLAttributes<HTMLSelectElement> {
+    /** Optional label text to display above the select dropdown. */
     label?: string;
+    /** Array of option objects with labels and values. */
     options: { label: string; value: string }[];
+    /** Optional error message to display below the select. */
     error?: string;
+    /** If true, the select container takes up the full width. Defaults to true. */
     fullWidth?: boolean;
 }
 
+/**
+ * Standardized Select (dropdown) component with optional label and error messaging.
+ * 
+ * @param {SelectProps} props - The component props.
+ * @returns {JSX.Element} The rendered select container.
+ */
 const Select = ({
     label,
     options,

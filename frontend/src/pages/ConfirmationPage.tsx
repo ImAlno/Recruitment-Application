@@ -6,6 +6,12 @@ import { motion } from 'framer-motion';
 import AnimatedPage from '../components/layout/AnimatedPage';
 import { useTranslation } from 'react-i18next';
 
+/**
+ * Simple confirmation page displayed after a successful application submission.
+ * Includes a success animation and a link back to the dashboard.
+ * 
+ * @returns {JSX.Element} The rendered confirmation page.
+ */
 const ConfirmationPage = () => {
     const { t } = useTranslation();
     const navigate = useNavigate();

@@ -18,6 +18,7 @@ import {
 } from "../model/types/applicationApi";
 import { AdminApplicatinResponse } from "../model/types/adminApplicationApi";
 import { ApplicationDetailsDTO } from "../model/types/applicationDetails";
+import { Validator } from "../util/Validator";
 /**
  * This class is responsible for all calls to the database. There shall not be any database-related code outside this class.
  */
@@ -37,10 +38,15 @@ class DAO {
     return this.database;
   }
 
-  // TODO: fix proper error handling
- 
+  /**
+   * Registers a new user into the database.
+   * @param {RegisterRequest} userBody The user details for registration.
+   * @param {Transaction} transactionObj The active database transaction.
+   * @returns {Promise<PersonDTO>} A promise that resolves to the newly created person data transfer object.
+   */
   async registerUser(userBody: RegisterRequest, transactionObj: Transaction): Promise<PersonDTO> {
     try {
+      Validator.validateRegisterRequest(userBody);
       const [person] = await transactionObj.insert(personTable)
         .values({
           name: userBody.firstName,
@@ -48,7 +54,7 @@ class DAO {
           pnr: userBody.personNumber,
           email: userBody.email,
           password: userBody.password,
-          roleId: 2, // All new registered people are applicants          
+          roleId: 2, // All new registered people are applicants
           username: userBody.username,
         })
         .returning();
@@ -57,10 +63,17 @@ class DAO {
       }
       return this.createPersonDTO(person);
     } catch (error) {
-      throw new Error("Failed inserting person", {cause: error});
+      throw new Error("Failed inserting person", { cause: error });
     }
   }
 
+  /**
+   * Checks whether a given username or email already exists in the database.
+   * @param {Transaction} transactionObj The active database transaction.
+   * @param {string} [username] Optional username to check.
+   * @param {string} [email] Optional email to check.
+   * @returns {Promise<AvailabilityResponse>} A promise resolving to an object indicating if the username or email are taken.
+   */
   async checkUserExistence(
     transactionObj: Transaction,
     username?: string,
@@ -68,8 +81,14 @@ class DAO {
   ): Promise<AvailabilityResponse> {
     try {
       const conditions = [];
-      if (username) conditions.push(eq(personTable.username, username)); // creates condition: username = 'provided username'
-      if (email) conditions.push(eq(personTable.email, email)); // creates condition: email = 'provided email'
+      if (username) {
+        Validator.validateUsernameParam(username);
+        conditions.push(eq(personTable.username, username)); // creates condition: username = 'provided username'
+      }
+      if (email) {
+        Validator.validateEmailParam(email);
+        conditions.push(eq(personTable.email, email)); // creates condition: email = 'provided email'
+      }
 
       if (conditions.length === 0) {
         return { usernameTaken: false, emailTaken: false };
@@ -89,26 +108,40 @@ class DAO {
     }
   }
 
+  /**
+   * Finds a user by their username.
+   * @param {string} username The precise username to search for.
+   * @param {Transaction} transactionObj The active database transaction.
+   * @returns {Promise<PersonDTO>} A promise that resolves to the person data transfer object.
+   */
   async findUser(username: string, transactionObj: Transaction): Promise<PersonDTO> {
     try {
-        const [user] = await transactionObj.select()
-            .from(personTable)
-            .where(eq(personTable.username, username));
+      Validator.validateUsernameParam(username);
+      const [user] = await transactionObj.select()
+        .from(personTable)
+        .where(eq(personTable.username, username));
 
-        if (!user) {
-          throw new Error("Person selection returned empty row => username matches no person in db or possible db error (unlikely)");
-        }
-        return this.createPersonDTO(user);
+      if (!user) {
+        throw new Error("Person selection returned empty row => username matches no person in db or possible db error (unlikely)");
+      }
+      return this.createPersonDTO(user);
     } catch (error) {
       throw new Error("Failed finding user", { cause: error });
     }
   }
 
-  // Transaction gets rolled back automatically if an error is thrown
+  /**
+   * Submits a full application including competences and availability periods.
+   * Transaction gets rolled back automatically if an error is thrown.
+   * @param {ApplicationSubmissionRequest} submissionBody The full application submission payload.
+   * @param {Transaction} transactionObj The active database transaction.
+   * @returns {Promise<number>} A promise resolving to the ID of the created application.
+   */
   async createApplication(
     submissionBody: ApplicationSubmissionRequest,
     transactionObj: Transaction,
   ): Promise<number> {
+    Validator.validateApplicationSubmission(submissionBody);
     await this.addCompetence(
       submissionBody.competences,
       submissionBody.userId,
@@ -130,6 +163,12 @@ class DAO {
     return row.applicationId;
   }
 
+  /**
+   * Helper to insert competence profile mappings into the database.
+   * @param competences The list of competences
+   * @param userId The ID of the person applying
+   * @param transactionObj The active transaction
+   */
   private async addCompetence(
     competences: Competence[],
     userId: number,
@@ -148,6 +187,12 @@ class DAO {
     }
   }
 
+  /**
+   * Helper to insert availability periods into the database.
+   * @param availability The list of availability periods
+   * @param userId The ID of the person applying
+   * @param transactionObj The active transaction
+   */
   private async addAvailability(
     availability: AvailabilityPeriod[],
     userId: number,
@@ -166,6 +211,12 @@ class DAO {
     }
   }
 
+  /**
+   * Helper to initially insert the application record and set its status to unhandled.
+   * @param userId The ID of the inserting user
+   * @param transactionObj The active transaction
+   * @returns The inserted application record
+   */
   private async addApplication(userId: number, transactionObj: Transaction) {
     try {
       return transactionObj
@@ -181,6 +232,11 @@ class DAO {
     }
   }
 
+  /**
+   * Retrieves all applications along with their current status and applicant information.
+   * @param {Transaction} transactionObj The active database transaction.
+   * @returns {Promise<AdminApplicatinResponse[]>} A promise resolving to a list of all applications overview details.
+   */
   async findAll(
     transactionObj: Transaction,
   ): Promise<AdminApplicatinResponse[]> {
@@ -208,7 +264,15 @@ class DAO {
     }
   }
 
+  /**
+   * Fetches the full details of a specific application by its ID.
+   * Includes applicant information, competences, and availability.
+   * @param {Transaction} transactionObj The active database transaction.
+   * @param {number} applicationId The ID of the application.
+   * @returns {Promise<ApplicationDetailsDTO>} A promise resolving to the detailed breakdown of the application.
+   */
   async findById(transactionObj: Transaction, applicationId: number): Promise<ApplicationDetailsDTO> {
+    Validator.validateApplicationIdParam(applicationId);
     const applicationInfo = await this.getApplicationInfo(
       transactionObj,
       applicationId,
@@ -235,85 +299,108 @@ class DAO {
     };
   }
 
+  /**
+   * Helper retrieving availability periods associated with a particular person.
+   * @param transactionObj The active transaction
+   * @param personId The ID of the applicant
+   * @returns A list of availability windows
+   */
   private async getAvailability(transactionObj: Transaction, personId: number) {
     try {
       const result = await transactionObj
-      .select({
-        fromDate: availabilityTable.fromDate,
-        toDate: availabilityTable.toDate,
-      })
-      .from(availabilityTable)
-      .where(eq(availabilityTable.personId, personId));
+        .select({
+          fromDate: availabilityTable.fromDate,
+          toDate: availabilityTable.toDate,
+        })
+        .from(availabilityTable)
+        .where(eq(availabilityTable.personId, personId));
 
       if (result.length === 0) {
         throw new Error("No availabilies found");
       }
       return result;
     } catch (error) {
-      throw new Error("Failed getting availablities", {cause: error});
+      throw new Error("Failed getting availablities", { cause: error });
     }
   }
 
+  /**
+   * Helper retrieving competence profiles linked with a given person id.
+   * @param transactionObj The active transaction
+   * @param personId The ID of the applicant
+   * @returns A list of competences linked to the applicant
+   */
   private async getCompetence(transactionObj: Transaction, personId: number) {
     try {
       const result = await transactionObj
-      .select({
-        competenceId: competenceTable.competenceId,
-        competenceName: competenceTable.name,
-        yearsOfExperience: competenceProfileTable.yearsOfExperience,
-      })
-      .from(competenceProfileTable)
-      .innerJoin(
-        competenceTable,
-        eq(competenceProfileTable.competenceId, competenceTable.competenceId),
-      )
-      .where(eq(competenceProfileTable.personId, personId));
+        .select({
+          competenceId: competenceTable.competenceId,
+          competenceName: competenceTable.name,
+          yearsOfExperience: competenceProfileTable.yearsOfExperience,
+        })
+        .from(competenceProfileTable)
+        .innerJoin(
+          competenceTable,
+          eq(competenceProfileTable.competenceId, competenceTable.competenceId),
+        )
+        .where(eq(competenceProfileTable.personId, personId));
 
       if (result.length === 0) {
         throw new Error("No competences found");
       }
       return result;
     } catch (error) {
-      throw new Error("Failed getting competences", {cause: error});
+      throw new Error("Failed getting competences", { cause: error });
     }
   }
 
+  /**
+   * Internal helper that fetches the core generic info regarding an application (status, applicant details).
+   * @param transactionObj The active transaction
+   * @param applicationId The ID of the application
+   * @returns Core application information row
+   */
   private async getApplicationInfo(
     transactionObj: Transaction,
     applicationId: number,
   ) {
     try {
       const [result] = await transactionObj
-      .select({
-        applicationId: applicationTable.applicationId,
-        personId: personTable.personId,
-        firstName: personTable.name,
-        lastName: personTable.surname,
-        email: personTable.email,
-        status: statusTable.name,
-        createdAt: applicationTable.createdAt,
-      })
-      .from(applicationTable)
-      .innerJoin(
-        personTable,
-        eq(applicationTable.personId, personTable.personId),
-      )
-      .innerJoin(
-        statusTable,
-        eq(applicationTable.statusId, statusTable.statusId),
-      )
-      .where(eq(applicationTable.applicationId, applicationId))
-      .limit(1);
+        .select({
+          applicationId: applicationTable.applicationId,
+          personId: personTable.personId,
+          firstName: personTable.name,
+          lastName: personTable.surname,
+          email: personTable.email,
+          status: statusTable.name,
+          createdAt: applicationTable.createdAt,
+        })
+        .from(applicationTable)
+        .innerJoin(
+          personTable,
+          eq(applicationTable.personId, personTable.personId),
+        )
+        .innerJoin(
+          statusTable,
+          eq(applicationTable.statusId, statusTable.statusId),
+        )
+        .where(eq(applicationTable.applicationId, applicationId))
+        .limit(1);
 
       if (!result) {
         throw new Error(`Application with id ${applicationId} does not exist`); // Should be 404 but whatever... you can't win them all :)
       }
       return result;
     } catch (error) {
-      throw new Error(`Failed fetching application: ${applicationId}`, {cause: error});
+      throw new Error(`Failed fetching application: ${applicationId}`, { cause: error });
     }
   }
 
+  /**
+   * Helper to construct a Person Data Transfer Object explicitly mapping database fields.
+   * @param personTableDBrow The raw row from the person table
+   * @returns A mapped PersonDTO
+   */
   private createPersonDTO(
     personTableDBrow: InferSelectModel<typeof personTable>,
   ): PersonDTO {

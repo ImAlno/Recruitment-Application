@@ -1,5 +1,19 @@
 import { useState, useMemo } from 'react';
 
+/**
+ * Custom hook for filtering and sorting a list of applications.
+ * Manages filter state (name, status checkboxes, competence, sorting) and 
+ * provides the resulting filtered list and status statistics.
+ * 
+ * @param {any[]} applications - The raw list of applications to filter.
+ * @returns {Object} An object containing filter state, handlers, and processed data.
+ * @property {Object} filters - The current filter and sort settings.
+ * @property {Function} setFilters - State setter for the filters object.
+ * @property {Function} handleFilterChange - Helper to update a specific filter key.
+ * @property {Function} handleReset - Resets all filters to their default values.
+ * @property {any[]} filteredApplications - The memoized list of applications after applying filters and sorting.
+ * @property {Object} stats - Memoized counts of applications by status (unhandled, accepted, rejected).
+ */
 export const useApplicationFilters = (applications: any[]) => {
     const [filters, setFilters] = useState({
         name: '',
@@ -9,7 +23,8 @@ export const useApplicationFilters = (applications: any[]) => {
             rejected: true
         },
         sortBy: 'date',
-        sortOrder: 'asc'
+        sortOrder: 'asc',
+        competence: ''
     });
 
     const handleFilterChange = (key: string, value: any) => {
@@ -28,7 +43,8 @@ export const useApplicationFilters = (applications: any[]) => {
                 rejected: true
             },
             sortBy: 'date',
-            sortOrder: 'asc'
+            sortOrder: 'asc',
+            competence: ''
         });
     };
 
@@ -52,6 +68,20 @@ export const useApplicationFilters = (applications: any[]) => {
             (app.status === 'accepted' && filters.status.accepted) ||
             (app.status === 'rejected' && filters.status.rejected)
         );
+
+        // 3. Filter by Competence
+        if (filters.competence) {
+            result = result.filter(app => {
+                const search = filters.competence;
+                return app.competenceProfile?.some((cp: any) =>
+                    cp.competenceId === Number(search) ||
+                    cp.name === search ||
+                    (search === 'ticket_sales' && cp.competenceId === 1) ||
+                    (search === 'lotteries' && cp.competenceId === 2) ||
+                    (search === 'roller_coaster' && cp.competenceId === 3)
+                );
+            });
+        }
 
         // 3. Sorting
         result.sort((a, b) => {

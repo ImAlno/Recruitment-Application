@@ -1,8 +1,11 @@
 import jwt from 'jsonwebtoken';
-import { Request, Response, NextFunction} from 'express';
+import { Request, Response, NextFunction } from 'express';
 import { Controller } from '../controller/Controller';
 import Logger from '../util/Logger';
 
+/**
+ * Utility class handling authorization, roles, and JSON Web Tokens (JWT).
+ */
 export class Authorization {
     private static logger = new Logger();
 
@@ -11,6 +14,9 @@ export class Authorization {
         return 'Authorization';
     }
 
+    /**
+     * Checks if the user is currently logged in by verifying the authorization cookie.
+     */
     static async checkLogin(contr: Controller, req: Request, res: Response, errorHandler: (res: Response, code: number, msg: string) => void): Promise<boolean> {
         const authCookie = req.cookies[this.AUTH_COOKIE_NAME];
         if (!authCookie) {
@@ -35,6 +41,9 @@ export class Authorization {
         }
     }
 
+    /**
+     * Express middleware to require an authenticated user for a route.
+     */
     static requireAuth(contr: Controller) {
         return async (req: Request, res: Response, next: NextFunction) => {
             const isAuth = await this.checkLogin(
@@ -50,6 +59,9 @@ export class Authorization {
         };
     }
 
+    /**
+     * Express middleware to restrict a route to a specific user role.
+     */
     static requireRole(requiredRole: string) {
         return (req: Request, res: Response, next: NextFunction) => {
             const user = (req as any).user;
@@ -61,10 +73,17 @@ export class Authorization {
         };
     }
 
+    /**
+     * Creates and sends an authorization cookie containing the user's JWT token.
+     */
     static sendAuthCookie(user: any, res: Response) {
+        const jwtSecret = process.env.JWT_SECRET;
+        if (!jwtSecret) {
+            throw new Error("Missing or invalid environment variable JWT_SECRET");
+        }
         const jwtToken = jwt.sign(
-            {id: user.id, username: user.username, role: user.role},
-            process.env.JWT_SECRET || "temporary_secret_key",
+            { id: user.id, username: user.username, role: user.role },
+            jwtSecret,
             {
                 expiresIn: '1h'
             }
@@ -78,6 +97,9 @@ export class Authorization {
         });
     }
 
+    /**
+     * Clears the authorization cookie, logging the user out.
+     */
     static logout(res: Response) {
         res.clearCookie(this.AUTH_COOKIE_NAME);
     }

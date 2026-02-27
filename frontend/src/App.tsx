@@ -16,6 +16,12 @@ import ApplicationDetailsPage from './pages/ApplicationDetailsPage';
 import ErrorPage from './pages/ErrorPage';
 import NotFoundRedirect from './components/NotFoundRedirect';
 
+/**
+ * Component that defines the application's routes with entry/exit animations.
+ * Uses framer-motion's AnimatePresence to handle transitions between pages.
+ * 
+ * @returns {JSX.Element} The rendered animated routes.
+ */
 function AnimatedRoutes() {
   const location = useLocation();
 
@@ -89,6 +95,12 @@ function AnimatedRoutes() {
   );
 }
 
+/**
+ * Main application component.
+ * Sets up global context providers (Auth, Application) and the router.
+ * 
+ * @returns {JSX.Element} The rendered root application component.
+ */
 function App() {
   return (
     <AuthProvider>

@@ -1,13 +1,27 @@
 import React, { useEffect } from 'react';
 import { X } from './Icons';
 
+/**
+ * Props for the Toast notification component.
+ */
 export interface ToastProps {
+    /** The message to display in the toast. */
     message: string;
+    /** The type of toast, affecting its background color. Defaults to 'info'. */
     type?: 'success' | 'error' | 'info';
+    /** Callback function to close the toast. */
     onClose: () => void;
+    /** Duration in milliseconds before the toast automatically closes. Set to 0 to disable. Defaults to 5000. */
     duration?: number;
 }
 
+/**
+ * Animated Toast notification component that appears at the top right of the screen.
+ * Automatically closes after a specified duration.
+ * 
+ * @param {ToastProps} props - The component props.
+ * @returns {JSX.Element} The rendered toast.
+ */
 const Toast: React.FC<ToastProps> = ({
     message,
     type = 'info',

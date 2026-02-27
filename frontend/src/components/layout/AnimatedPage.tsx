@@ -1,8 +1,13 @@
 import { motion, type Variants } from 'framer-motion';
 import type { ReactNode } from 'react';
 
+/**
+ * Props for the AnimatedPage component.
+ */
 interface AnimatedPageProps {
+    /** The page content to be animated. */
     children: ReactNode;
+    /** Optional additional CSS classes for the container. */
     className?: string;
 }
 

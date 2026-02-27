@@ -2,7 +2,21 @@ import { useState } from 'react';
 import { useApplication } from '../contexts/ApplicationContext';
 
 /**
- * Hook for managing the competence profile form
+ * Custom hook for managing the competence profile form state and logic.
+ * Integrates with ApplicationContext to add and remove competence entries.
+ * 
+ * @returns {Object} An object containing form state, validation error, and handlers.
+ * @property {number} selectedCompetenceId - The ID of the currently selected competence.
+ * @property {Function} setSelectedCompetenceId - State setter for the competence ID.
+ * @property {string} years - The number of years of experience entered (as a string).
+ * @property {Function} setYears - State setter for the years of experience.
+ * @property {string} error - Current validation error message key.
+ * @property {Function} setError - State setter for the error message.
+ * @property {Competence[]} competences - The list of currently added competence profiles.
+ * @property {Function} handleAddCompetence - Validates and adds a new competence profile. Returns true if successful.
+ * @property {Function} removeCompetence - Removes an existing competence profile by ID.
+ * @property {Function} clearApplication - Clears all application data from context.
+ * @property {Function} clearError - Resets the validation error state.
  */
 export const useCompetenceForm = () => {
     const { competences, addCompetence, removeCompetence, clearApplication } = useApplication();

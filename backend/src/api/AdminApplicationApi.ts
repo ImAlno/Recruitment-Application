@@ -2,20 +2,36 @@ import { Request, Response, NextFunction } from "express";
 import RequestHandler from "./RequestHandler";
 import { param, validationResult } from "express-validator";
 import { Authorization } from "./Authorization";
+import { Validator } from "../util/Validator";
 
+/**
+ * API handler for administrative tasks relating to job applications.
+ */
 class AdminApplicationApi extends RequestHandler {
+  /**
+   * Initializes the API handler.
+   */
   constructor() {
     super();
   }
 
+  /**
+   * Gets the base path for this API route.
+   */
   get path(): string {
     return AdminApplicationApi.API_PATH;
   }
 
+  /**
+   * The static base path string for the API.
+   */
   static get API_PATH(): string {
     return "/admin/applications";
   }
 
+  /**
+   * Registers the route handlers for fetching all applications or a single application by id.
+   */
   async registerHandler(): Promise<void> {
     try {
       await this.retrieveController();
@@ -47,15 +63,16 @@ class AdminApplicationApi extends RequestHandler {
         Authorization.requireRole("recruiter"),
         [
           param("id")
-            .isNumeric()
-            .withMessage("Field: id (numeric) required")
+            .toInt()
+            .custom((value) => Validator.isInt(value, 1))
+            .withMessage("Field: id (positive integer) required"),
         ],
         async (req: Request, res: Response, next: NextFunction) => {
           try {
             const errors = validationResult(req);
             if (!errors.isEmpty()) {
-                this.sendHttpResponse(res, 400, errors.array());
-                return;
+              this.sendHttpResponse(res, 400, errors.array());
+              return;
             }
             const { id } = req.params;
             const application = await this.controller?.getApplicationById(Number(id));

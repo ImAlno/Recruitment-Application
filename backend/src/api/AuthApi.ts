@@ -2,7 +2,11 @@ import { Request, Response, NextFunction } from 'express';
 import RequestHandler from "./RequestHandler";
 import { Authorization } from './Authorization';
 import { body, query, validationResult } from "express-validator";
+import { Validator } from '../util/Validator';
 
+/**
+ * API handler for user authentication, registration, and session management.
+ */
 class AuthApi extends RequestHandler {
     /**
     * Constructs a new instance.
@@ -25,6 +29,9 @@ class AuthApi extends RequestHandler {
         return '/auth';
     }
 
+    /**
+     * Registers route handlers for user registration, login, logout, and checking username/email availability.
+     */
     async registerHandler(): Promise<void> {
         try {
             await this.retrieveController();
@@ -36,28 +43,28 @@ class AuthApi extends RequestHandler {
                 "/register",
                 [
                     body("firstName")
-                      .isString()
-                      .withMessage("Field: firstName (string) required"),
+                        .custom((value) => Validator.isString(value, 1))
+                        .withMessage("Field: firstName (string) required"),
 
                     body("lastName")
-                      .isString()
-                      .withMessage("Field: lastName (string) required"),
+                        .custom((value) => Validator.isString(value, 1))
+                        .withMessage("Field: lastName (string) required"),
 
                     body("email")
-                      .isString()
-                      .withMessage("Field: email (string) required"),
+                        .custom((value) => Validator.isEmail(value))
+                        .withMessage("Field: email (string) required"),
 
                     body("personNumber")
-                      .isString()
-                      .withMessage("Field: personNumber (string) required"),
+                        .custom((value) => Validator.isPnr(value))
+                        .withMessage("Field: personNumber (string) required"),
 
                     body("username")
-                      .isString()
-                      .withMessage("Field: username (string) required"),
+                        .custom((value) => Validator.isUsername(value))
+                        .withMessage("Field: username (string) required"),
 
                     body("password")
-                      .isString()
-                      .withMessage("Field: password (string) required"),
+                        .custom((value) => Validator.isPassword(value))
+                        .withMessage("Field: password (string) required"),
                 ],
                 async (request: Request, response: Response, next: NextFunction) => {
                     try {
@@ -82,14 +89,14 @@ class AuthApi extends RequestHandler {
                 "/availability",
                 [
                     query("username")
-                      .optional()   // Optional means this validation is not required, //? should we split it up?
-                      .isString()
-                      .withMessage("Field: username (string) required"),
+                        .optional()   // Optional means this validation is not required, //? should we split it up?
+                        .custom((value) => Validator.isUsername(value))
+                        .withMessage("Field: username (string) required"),
 
                     query("email")
-                      .optional()
-                      .isString()
-                      .withMessage("Field: email (string) required"),
+                        .optional()
+                        .custom((value) => Validator.isEmail(value))
+                        .withMessage("Field: email (string) required"),
                 ],
                 async (request: Request, response: Response, next: NextFunction) => {
                     try {
@@ -115,12 +122,12 @@ class AuthApi extends RequestHandler {
                 "/login",
                 [
                     body("username")
-                      .isString()
-                      .withMessage("Field: username (string) required"),
+                        .custom((value) => Validator.isUsername(value))
+                        .withMessage("Field: username (string) required"),
 
                     body("password")
-                      .isString()
-                      .withMessage("Field: password (string) required"),
+                        .custom((value) => Validator.isPassword(value))
+                        .withMessage("Field: password (string) required"),
                 ],
                 async (request: Request, response: Response, next: NextFunction) => {
                     try {

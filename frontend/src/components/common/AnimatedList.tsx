@@ -1,14 +1,25 @@
 import { motion, type Variants } from 'framer-motion';
 import type { ReactNode } from 'react';
 
+/**
+ * Props for the AnimatedList component.
+ */
 interface AnimatedListProps {
+    /** The content items to be animated as children. */
     children: ReactNode;
+    /** Optional additional CSS classes for the container. */
     className?: string;
+    /** Delay in seconds between each child's entry animation. Defaults to 0.05. */
     staggerDelay?: number;
 }
 
+/**
+ * Props for the AnimatedItem component.
+ */
 interface AnimatedItemProps {
+    /** The content to be animated. */
     children: ReactNode;
+    /** Optional additional CSS classes. */
     className?: string;
 }
 
@@ -27,6 +38,13 @@ const itemVariants: Variants = {
     },
 };
 
+/**
+ * Component that wraps a list of items and applies a staggered entry animation to its children.
+ * Works in conjunction with AnimatedItem.
+ * 
+ * @param {AnimatedListProps} props - The component props.
+ * @returns {JSX.Element} The rendered animated container.
+ */
 export const AnimatedList = ({ children, className = '', staggerDelay = 0.05 }: AnimatedListProps) => {
     return (
         <motion.div
@@ -46,6 +64,13 @@ export const AnimatedList = ({ children, className = '', staggerDelay = 0.05 }: 
     );
 };
 
+/**
+ * Component that wraps an individual list item and defines its entry animation.
+ * Should be used as a child of AnimatedList.
+ * 
+ * @param {AnimatedItemProps} props - The component props.
+ * @returns {JSX.Element} The rendered animated item.
+ */
 export const AnimatedItem = ({ children, className = '' }: AnimatedItemProps) => {
     return (
         <motion.div

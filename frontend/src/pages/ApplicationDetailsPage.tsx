@@ -9,6 +9,13 @@ import { AnimatedList, AnimatedItem } from '../components/common/AnimatedList';
 import { useTranslation } from 'react-i18next';
 import Toast from '../components/ui/Toast';
 
+/**
+ * Page component for recruiters to view and manage the details of a specific job application.
+ * Displays applicant info, competence profile, and availability periods.
+ * Includes a status management section for updating the application state.
+ * 
+ * @returns {JSX.Element} The rendered application details page.
+ */
 const ApplicationDetailsPage = () => {
     const { t } = useTranslation();
     const navigate = useNavigate();

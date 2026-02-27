@@ -1,21 +1,19 @@
 /**
-* DTO for a applicant of the recruitment platform
-*/
+ * Data Transfer Object (DTO) for a user or applicant of the recruitment platform.
+ * Represents an immutable snapshot of person data.
+ */
 class PersonDTO {
     /**
-    * Creates a new instance.
-    * @param {number} personId The database id PK
-    * @param {string} name Persons first name
-    * @param {string} surname Persons last name
-    * @param {string} pnr Persons personal registration number
-    * @param {string} email Persons email
-    * @param {string} password Persons password
-    * @param {number} roleId Persons role id representing if they are a recruiter or applicant
-    * @param {string} username Persons username
-    * @param {string} role The role of the person is either recruiter or applicant
-
-    * This is a dto = immutable object = use readonly
-    */
+     * Initializes a new PersonDTO instance.
+     * @param id The database primary key ID.
+     * @param firstName The person's first name.
+     * @param lastName The person's last name.
+     * @param username The person's chosen username.
+     * @param email The person's email address.
+     * @param personNumber The person's personal identity number.
+     * @param role The role of the person (recruiter or applicant).
+     * @param password The person's hashed password (optional).
+     */
     constructor(
         public readonly id: number,
         public readonly firstName: string,

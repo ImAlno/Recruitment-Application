@@ -3,7 +3,21 @@ import { useApplication } from '../contexts/ApplicationContext';
 import { isOverlapping, isValidDateRange } from '../utils/applicationUtils';
 
 /**
- * Hook for managing the availability form state
+ * Custom hook for managing the availability form state and logic.
+ * Integrates with ApplicationContext to add and remove availability periods.
+ * 
+ * @returns {Object} An object containing form state, validation error, and handlers.
+ * @property {string} startDate - The selected start date for the availability period.
+ * @property {Function} setStartDate - State setter for the start date.
+ * @property {string} endDate - The selected end date for the availability period.
+ * @property {Function} setEndDate - State setter for the end date.
+ * @property {string} error - Current validation error message key.
+ * @property {Function} setError - State setter for the error message.
+ * @property {Availability[]} availability - The list of currently added availability periods.
+ * @property {Function} handleAddAvailability - Validates and adds a new availability period. Returns true if successful.
+ * @property {Function} removeAvailability - Removes an existing availability period by index.
+ * @property {Function} clearApplication - Clears all application data (from context).
+ * @property {Function} clearError - Resets the validation error state.
  */
 export const useAvailabilityForm = () => {
     const { availability, addAvailability, removeAvailability, clearApplication } = useApplication();

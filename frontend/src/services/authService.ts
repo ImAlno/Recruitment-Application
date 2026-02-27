@@ -8,7 +8,11 @@ import { validateUsername } from '../utils/validation';
  */
 export class AuthService {
     /**
-     * Check if username or email is already taken
+     * Check if a username or email is already taken.
+     * 
+     * @param {AvailabilityCheckRequest} params - Object containing username or email to check.
+     * @returns {Promise<AvailabilityStatus>} A promise resolving to the availability status.
+     * @throws {Error} If the request fails.
      */
     async checkAvailability(params: AvailabilityCheckRequest): Promise<AvailabilityStatus> {
         try {
@@ -19,7 +23,11 @@ export class AuthService {
     }
 
     /**
-     * Register a new applicant
+     * Register a new applicant.
+     * 
+     * @param {RegisterData} data - The registration data for the new applicant.
+     * @returns {Promise<void>} A promise that resolves when registration is successful.
+     * @throws {Error} If validation or the registration request fails.
      */
     async register(data: RegisterData): Promise<void> {
         // Validate username before sending to backend
@@ -36,7 +44,12 @@ export class AuthService {
     }
 
     /**
-     * Login user
+     * Authenticate a user with username and password.
+     * 
+     * @param {string} username - The user's username.
+     * @param {string} password - The user's password.
+     * @returns {Promise<LoginResponse>} A promise resolving to the login response data (e.g., user info, token).
+     * @throws {Error} If credentials are missing or the login request fails.
      */
     async login(username: string, password: string): Promise<LoginResponse> {
         // Validate credentials
@@ -53,7 +66,9 @@ export class AuthService {
     }
 
     /**
-     * Logout user
+     * Log out the current user and clear any authentication state.
+     * 
+     * @returns {Promise<void>} A promise that resolves when logout is complete.
      */
     async logout(): Promise<void> {
         try {
@@ -65,9 +80,21 @@ export class AuthService {
     }
 }
 
-// Export singleton instance
+/**
+ * Singleton instance of AuthService.
+ */
 export const authService = new AuthService();
 
-// Also export the named functions for backward compatibility
+/**
+ * Convenience wrapper for checking availability of username or email.
+ * @param {AvailabilityCheckRequest} req - Availability check request.
+ * @returns {Promise<AvailabilityStatus>}
+ */
 export const checkAvailability = (req: AvailabilityCheckRequest) => authService.checkAvailability(req);
+
+/**
+ * Convenience wrapper for registering a new applicant.
+ * @param {RegisterData} data - Registration data.
+ * @returns {Promise<void>}
+ */
 export const registerApplicant = (data: RegisterData) => authService.register(data);

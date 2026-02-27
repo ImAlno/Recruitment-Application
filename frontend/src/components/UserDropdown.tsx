@@ -3,6 +3,13 @@ import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
 import { useTranslation } from 'react-i18next';
 
+/**
+ * Component that displays a dropdown menu for the authenticated user.
+ * Provides links to the user's profile and a logout action.
+ * Handles closing when clicking outside the dropdown.
+ * 
+ * @returns {JSX.Element | null} The rendered dropdown or null if no user is authenticated.
+ */
 const UserDropdown: React.FC = () => {
     const { t } = useTranslation();
     const { user, logout } = useAuth();
