@@ -1,5 +1,7 @@
 import db from "./index";
-import { roleTable, competenceTable, statusTable, applicationTable } from "./schema";
+import { roleTable, competenceTable, statusTable, applicationTable, personTable } from "./schema";
+import { eq } from "drizzle-orm";
+import bcrypt from "bcrypt";
 
 /**
  * Seeds the database with necessary initial configuration entries.
@@ -48,20 +50,23 @@ async function seed() {
             ]);
         }
 
-        /* // ? Temporary
-        const existingApplications = await db.select().from(applicationTable);
-        if (existingApplications.length > 0) {
-            console.log("Application entries already exist, skipping seed.");
-            return;
+        // Check if an admin user exists (roleId 1)
+        const existingAdmin = await db.select().from(personTable).where(eq(personTable.roleId, 1));
+        if (existingAdmin.length === 0) {
+            console.log("No admin user found, inserting default admin.");
+            const hashedPassword = await bcrypt.hash("Password123!", 10);
+            await db.insert(personTable).values({
+                name: "Admin",
+                surname: "User",
+                pnr: "00000000-0000",
+                email: "admin.test.user@example.com",
+                password: hashedPassword,
+                roleId: 1,
+                username: "adminUser",
+            });
         } else {
-            await db.insert(applicationTable).values([
-                {
-                    personId: 1,
-                    statusId: 1,
-                    createdAt: new Date().toISOString().split("T")[0], // converts to 'YYYY-MM-DD'
-                },
-            ]);
-        } */
+            console.log("Admin user already exists.");
+        }
 
         console.log("Seeding completed successfully!");
     } catch (error) {
