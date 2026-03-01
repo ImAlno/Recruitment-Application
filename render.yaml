@@ -5,8 +5,7 @@ services:
     rootDir: backend
     plan: free
     region: frankfurt
-    buildCommand: npm ci && npm run build
-    preDeployCommand: npm run db:migrate && npm run db:seed
+    buildCommand: npm ci && npm run build && npm run db:migrate && npm run db:seed
     startCommand: npm start
     envVars:
       - key: DATABASE_URL
@@ -23,7 +22,6 @@ services:
     name: recruitment-frontend
     runtime: static
     plan: free  
-    region: frankfurt
     rootDir: frontend
     buildCommand: npm ci && npm run build
     staticPublishPath: dist
