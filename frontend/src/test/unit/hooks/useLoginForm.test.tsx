@@ -3,7 +3,7 @@
  * Tests login form logic: field management, successful login with redirection,
  * and error handling for various failure scenarios.
  */
-import { renderHook, act, waitFor } from '@testing-library/react';
+import { renderHook, act } from '@testing-library/react';
 import { useLoginForm } from '../../../hooks/useLoginForm';
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import * as authServiceModule from '../../../services/authService';
