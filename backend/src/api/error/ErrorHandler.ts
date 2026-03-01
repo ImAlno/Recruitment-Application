@@ -1,13 +1,12 @@
 import Logger from "../../util/Logger";
 
 /**
- * Superclass for all error handlers.
+ * Superclass for all error handlers. Subclasses register middleware that run when errors are passed to next().
  */
 abstract class ErrorHandler {
     /**
-    * Constructs a new instance, and also creates a logger
-    * for use by subclasses.
-    */
+     * Logger instance for subclasses to use.
+     */
     protected logger: Logger;
     constructor() {
         this.logger = new Logger();

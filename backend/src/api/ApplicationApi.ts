@@ -4,6 +4,9 @@ import { body, validationResult } from "express-validator";
 import { Authorization } from "./Authorization";
 import { Validator } from "../util/Validator";
 
+/**
+ * API handler for applicant operations, such as submitting job applications.
+ */
 class ApplicationApi extends RequestHandler {
   /**
   * Constructs a new instance.
@@ -12,16 +15,23 @@ class ApplicationApi extends RequestHandler {
     super();
   }
 
-  // TODO: JSdoc comment
+  /**
+   * Gets the base path for this API route.
+   */
   get path(): string {
     return ApplicationApi.API_PATH;
   }
 
-  // TODO: JSdoc comment
+  /**
+   * The static base path string for the API.
+   */
   static get API_PATH(): string {
     return "/application";
   }
 
+  /**
+   * Registers route handlers for submitting job applications.
+   */
   async registerHandler(): Promise<void> {
     try {
       await this.retrieveController();

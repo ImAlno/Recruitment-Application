@@ -4,19 +4,34 @@ import { param, validationResult } from "express-validator";
 import { Authorization } from "./Authorization";
 import { Validator } from "../util/Validator";
 
+/**
+ * API handler for administrative tasks relating to job applications.
+ */
 class AdminApplicationApi extends RequestHandler {
+  /**
+   * Initializes the API handler.
+   */
   constructor() {
     super();
   }
 
+  /**
+   * Gets the base path for this API route.
+   */
   get path(): string {
     return AdminApplicationApi.API_PATH;
   }
 
+  /**
+   * The static base path string for the API.
+   */
   static get API_PATH(): string {
     return "/admin/applications";
   }
 
+  /**
+   * Registers the route handlers for fetching all applications or a single application by id.
+   */
   async registerHandler(): Promise<void> {
     try {
       await this.retrieveController();

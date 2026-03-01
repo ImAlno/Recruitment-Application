@@ -54,7 +54,7 @@ class DAO {
           pnr: userBody.personNumber,
           email: userBody.email,
           password: userBody.password,
-          roleId: 2, // All new registered people are applicants          
+          roleId: 2, // All new registered people are applicants
           username: userBody.username,
         })
         .returning();
@@ -163,7 +163,12 @@ class DAO {
     return row.applicationId;
   }
 
-  // Helper to insert competence profile mappings into the database.
+  /**
+   * Helper to insert competence profile mappings into the database.
+   * @param competences The list of competences
+   * @param userId The ID of the person applying
+   * @param transactionObj The active transaction
+   */
   private async addCompetence(
     competences: Competence[],
     userId: number,
@@ -182,7 +187,12 @@ class DAO {
     }
   }
 
-  // Helper to insert availability periods into the database.
+  /**
+   * Helper to insert availability periods into the database.
+   * @param availability The list of availability periods
+   * @param userId The ID of the person applying
+   * @param transactionObj The active transaction
+   */
   private async addAvailability(
     availability: AvailabilityPeriod[],
     userId: number,
@@ -201,7 +211,12 @@ class DAO {
     }
   }
 
-  // Helper to initially insert the application record and set its status to unhandled.
+  /**
+   * Helper to initially insert the application record and set its status to unhandled.
+   * @param userId The ID of the inserting user
+   * @param transactionObj The active transaction
+   * @returns The inserted application record
+   */
   private async addApplication(userId: number, transactionObj: Transaction) {
     try {
       return transactionObj
@@ -284,7 +299,12 @@ class DAO {
     };
   }
 
-  // Helper retrieving availability periods associated with a particular person.
+  /**
+   * Helper retrieving availability periods associated with a particular person.
+   * @param transactionObj The active transaction
+   * @param personId The ID of the applicant
+   * @returns A list of availability windows
+   */
   private async getAvailability(transactionObj: Transaction, personId: number) {
     try {
       const result = await transactionObj
@@ -304,7 +324,12 @@ class DAO {
     }
   }
 
-  // Helper retrieving competence profiles linked with a given person id.
+  /**
+   * Helper retrieving competence profiles linked with a given person id.
+   * @param transactionObj The active transaction
+   * @param personId The ID of the applicant
+   * @returns A list of competences linked to the applicant
+   */
   private async getCompetence(transactionObj: Transaction, personId: number) {
     try {
       const result = await transactionObj
@@ -329,7 +354,12 @@ class DAO {
     }
   }
 
-  // Internal helper that fetches the core generic info regarding an application (status, applicant details)
+  /**
+   * Internal helper that fetches the core generic info regarding an application (status, applicant details).
+   * @param transactionObj The active transaction
+   * @param applicationId The ID of the application
+   * @returns Core application information row
+   */
   private async getApplicationInfo(
     transactionObj: Transaction,
     applicationId: number,
@@ -366,7 +396,11 @@ class DAO {
     }
   }
 
-  // Helper to construct a Person Data Transfer Object explicitly mapping database fields.
+  /**
+   * Helper to construct a Person Data Transfer Object explicitly mapping database fields.
+   * @param personTableDBrow The raw row from the person table
+   * @returns A mapped PersonDTO
+   */
   private createPersonDTO(
     personTableDBrow: InferSelectModel<typeof personTable>,
   ): PersonDTO {

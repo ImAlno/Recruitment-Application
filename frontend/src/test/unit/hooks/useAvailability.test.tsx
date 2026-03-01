@@ -27,7 +27,7 @@ describe('useAvailability', () => {
         const formData = { username: 'validuser', email: '' };
         const setErrors = vi.fn();
 
-        const { result } = renderHook(() => useAvailability({ formData, setErrors }));
+        renderHook(() => useAvailability({ formData, setErrors }));
 
         // Fast-forward timer to trigger the check
         act(() => {
@@ -50,7 +50,7 @@ describe('useAvailability', () => {
         const formData = { username: 'takenuser', email: '' };
         const setErrors = vi.fn();
 
-        const { result } = renderHook(() => useAvailability({ formData, setErrors }));
+        renderHook(() => useAvailability({ formData, setErrors }));
 
         act(() => {
             vi.advanceTimersByTime(600);
@@ -62,7 +62,7 @@ describe('useAvailability', () => {
 
         // Verify setErrors was called to update errors
         expect(setErrors).toHaveBeenCalled();
-        // Since setErrors uses a functional update related to previous state, 
+        // Since setErrors uses a functional update related to previous state,
         // we can verify it was called with a function.
         expect(setErrors).toHaveBeenCalledWith(expect.any(Function));
     });
@@ -71,7 +71,7 @@ describe('useAvailability', () => {
         const formData = { username: '', email: 'test@example.com' };
         const setErrors = vi.fn();
 
-        const { result } = renderHook(() => useAvailability({ formData, setErrors }));
+        renderHook(() => useAvailability({ formData, setErrors }));
 
         act(() => {
             vi.advanceTimersByTime(600);

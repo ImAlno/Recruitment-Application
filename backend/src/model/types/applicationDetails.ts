@@ -1,7 +1,10 @@
+/**
+ * Comprehensive Data Transfer Object containing a full breakdown of a single job application.
+ */
 export type ApplicationDetailsDTO = {
   applicationId: number;
-  status: string | null; 
-  createdAt: string |null; 
+  status: string | null;
+  createdAt: string | null;
   competences: {
     competenceId: number;
     competenceName: string | null;

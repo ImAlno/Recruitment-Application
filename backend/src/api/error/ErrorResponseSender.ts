@@ -7,8 +7,8 @@ import { NextFunction, Request, Response } from "express";
  */
 class ErrorResponseSender extends ErrorHandler {
   /**
-  * Constructs a new instance.
-  */
+   * Initializes the error response sender instance.
+   */
   constructor() {
     super();
   }
@@ -20,13 +20,12 @@ class ErrorResponseSender extends ErrorHandler {
     return '/';
   }
 
-  /** // TODO: why are we using any as the app type?
+  /**
    * Registers the request handling function, which sends a response describing
    * the error, with HTTP status code 500. Request handling ends after
    * executing this method, since it does not call next().
    *
-   * @param {Application} app The express application hosting the
-   *                          error handler.
+   * @param {any} app The express application hosting the error handler.
    */
   registerHandler(app: any): void {
     /**
@@ -36,7 +35,7 @@ class ErrorResponseSender extends ErrorHandler {
       if (response.headersSent) { // if the response has started sending already we pass the error to the Express default handler
         return next(error);
       }
-      response.status(500).json({error: "Internal server error"});
+      response.status(500).json({ error: "Internal server error" });
     });
   }
 }
