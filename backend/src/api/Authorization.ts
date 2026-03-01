@@ -15,6 +15,18 @@ export class Authorization {
     }
 
     /**
+     * Helper to get consistent cookie options for setting and clearing cookies.
+     */
+    private static getCookieOptions() {
+        const isProduction = process.env.IS_PRODUCTION === 'true';
+        return {
+            httpOnly: true,
+            secure: isProduction,
+            sameSite: (isProduction ? 'none' : 'lax') as 'none' | 'lax',
+        };
+    }
+
+    /**
      * Checks if the user is currently logged in by verifying the authorization cookie.
      */
     static async checkLogin(contr: Controller, req: Request, res: Response, errorHandler: (res: Response, code: number, msg: string) => void): Promise<boolean> {
@@ -34,7 +46,7 @@ export class Authorization {
             (req as any).user = loggedInUser;
             return true;
         } catch (err) {
-            res.clearCookie(this.AUTH_COOKIE_NAME);
+            res.clearCookie(this.AUTH_COOKIE_NAME, this.getCookieOptions());
             errorHandler(res, 401, 'Invalid or missing authorization token');
             Authorization.logger.logError(err);
             return false;
@@ -89,12 +101,8 @@ export class Authorization {
             }
         );
 
-        const isProduction = process.env.IS_PRODUCTION === 'true';
-
         res.cookie(this.AUTH_COOKIE_NAME, jwtToken, {
-            httpOnly: true,
-            secure: isProduction,
-            sameSite: isProduction ? 'none' : 'lax',
+            ...this.getCookieOptions(),
             expires: new Date(Date.now() + 3600000)
         });
     }
@@ -103,6 +111,6 @@ export class Authorization {
      * Clears the authorization cookie, logging the user out.
      */
     static logout(res: Response) {
-        res.clearCookie(this.AUTH_COOKIE_NAME);
+        res.clearCookie(this.AUTH_COOKIE_NAME, this.getCookieOptions());
     }
 }
