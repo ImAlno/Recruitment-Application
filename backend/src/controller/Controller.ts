@@ -6,6 +6,7 @@ import { RegisterRequest, AvailabilityResponse } from "../model/types/authApi";
 import { ApplicationSubmissionRequest } from "../model/types/applicationApi";
 import { AdminApplicatinResponse } from "../model/types/adminApplicationApi";
 import { ApplicationDetailsDTO } from "../model/types/applicationDetails";
+import Logger from "../util/Logger";
 // import jwt from 'jsonwebtoken';
 
 /**
@@ -13,6 +14,7 @@ import { ApplicationDetailsDTO } from "../model/types/applicationDetails";
  * integration layer.
  */
 export class Controller {
+  private static logger = new Logger();
   protected dao: DAO;
   protected database: Database;
   /**
@@ -47,7 +49,15 @@ export class Controller {
         ...userBody,
         password: hashedPassword
       };
-      return await this.dao.registerUser(secureUserBody, transactionObj);
+      const result = await this.dao.registerUser(secureUserBody, transactionObj);
+
+      Controller.logger.logEvent('USER_REGISTERED', {
+        userId: result.id,
+        username: result.username,
+        email: result.email,
+      });
+
+      return result;
     });
   }
 
@@ -81,6 +91,12 @@ export class Controller {
         return null;
       }
 
+      Controller.logger.logEvent('USER_LOGGED_IN', {
+        userId: user.id,
+        username: user.username,
+        email: user.email,
+      });
+
       return new PersonDTO(
         user.id,
         user.firstName,
@@ -101,7 +117,12 @@ export class Controller {
   async getAllApplications(): Promise<AdminApplicatinResponse[]> {
     return await this.database.transaction(
       async (transactionObj) => {
-        return await this.dao.findAll(transactionObj);
+        const result = await this.dao.findAll(transactionObj);
+
+        Controller.logger.logEvent('ALL_APPLICATIONS_RETRIEVED', {
+          count: result.length,
+        });
+        return result;
       },
     );
   }
@@ -117,7 +138,14 @@ export class Controller {
   ): Promise<ApplicationDetailsDTO> {
     return await this.database.transaction(
       async (transactionObj) => {
-        return await this.dao.findById(transactionObj, applicationId);
+        const result = await this.dao.findById(transactionObj, applicationId);
+
+        Controller.logger.logEvent('APPLICATION_RETRIEVED', {
+          applicationId: result.applicationId,
+          status: result.status,
+          createdAt: result.createdAt,
+        });
+        return result;
       },
     );
   }
@@ -147,7 +175,14 @@ export class Controller {
    */
   async createApplication(submissionBody: ApplicationSubmissionRequest): Promise<number> {
     return await this.database.transaction(async (transactionObj) => {
-      return await this.dao.createApplication(submissionBody, transactionObj);
+      const result = await this.dao.createApplication(submissionBody, transactionObj);
+
+      Controller.logger.logEvent('APPLICATION_CREATED', {
+        applicationId: result,
+        userId: submissionBody.userId,
+      });
+
+      return result;
     });
   }
   // TODO Add methods like: registerUser, findUser, login etc to handle bussiness logic and make calls to integration layer
