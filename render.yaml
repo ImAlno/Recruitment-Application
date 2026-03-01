@@ -15,7 +15,7 @@ services:
       - key: JWT_SECRET
         generateValue: true
       - key: CORS_ORIGIN
-        value: https://recruitment-frontend.onrender.com
+        value: https://recruitment-frontend-v28f.onrender.com
       - key: PORT
         value: 3000
   - type: web
@@ -24,9 +24,13 @@ services:
     rootDir: frontend
     buildCommand: npm ci && npm run build
     staticPublishPath: dist
+    routes:
+      - type: rewrite
+        source: /*
+        destination: /
     envVars:
       - key: VITE_API_URL
-        value: https://recruitment-backend.onrender.com/api
+        value: https://recruitment-backend-hsn7.onrender.com/api
 databases:
   - name: recruitment-db
     plan: free
