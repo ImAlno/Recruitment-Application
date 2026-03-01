@@ -89,10 +89,12 @@ export class Authorization {
             }
         );
 
+        const isProduction = process.env.IS_PRODUCTION === 'true';
+
         res.cookie(this.AUTH_COOKIE_NAME, jwtToken, {
             httpOnly: true,
-            secure: false,
-            sameSite: 'lax',
+            secure: isProduction,
+            sameSite: isProduction ? 'none' : 'lax',
             expires: new Date(Date.now() + 3600000)
         });
     }

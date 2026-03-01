@@ -18,6 +18,8 @@ services:
         value: https://recruitment-frontend-v28f.onrender.com
       - key: PORT
         value: 3000
+      - key: IS_PRODUCTION
+        value: true
   - type: web
     name: recruitment-frontend
     runtime: static
