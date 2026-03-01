@@ -16,7 +16,7 @@ const app = express();
 // Middleware
 app.use(cookieParser());
 app.use(cors({
-  origin: "http://localhost:5173", // Standard Vite port, or use true to allow all
+  origin: process.env.CORS_ORIGIN || "http://localhost:5173", // Standard Vite port, or use true to allow all
   credentials: true
 }));
 app.use(express.json());
