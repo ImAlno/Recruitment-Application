@@ -4,7 +4,7 @@ services:
     runtime: node
     rootDir: backend
     buildCommand: npm ci && npm run build
-    preDeployCommand: npm run db:migrate
+    preDeployCommand: npm run db:migrate && npm run db:seed
     startCommand: npm start
     envVars:
       - key: DATABASE_URL
@@ -25,7 +25,7 @@ services:
     staticPublishPath: dist
     envVars:
       - key: VITE_API_URL
-        value: https://recruitment-backend.onrender.com
+        value: https://recruitment-backend.onrender.com/api
 databases:
   - name: recruitment-db
     plan: free
