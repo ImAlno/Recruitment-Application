@@ -185,6 +185,23 @@ export class Controller {
       return result;
     });
   }
+
+    async updateApplicationStatus(applicationId: number, status: string, version: number): Promise<AdminApplicatinResponse | null>{
+    return await this.database.transaction(async (transactionObj) => {
+      const existingApplication = await this.dao.findById(transactionObj, applicationId);
+     if(!existingApplication)
+        return null;
+      const statusEntity = await this.dao.findStatusByName(transactionObj, status);
+      if(!statusEntity)
+        return null
+      const newStatusId = statusEntity.statusId;
+      const updateApplication = await this.dao.updateStatus(
+        transactionObj, applicationId, newStatusId, version
+      );
+      return updateApplication;
+    });
+  }
+  
   // TODO Add methods like: registerUser, findUser, login etc to handle bussiness logic and make calls to integration layer
 }
 export default Controller;

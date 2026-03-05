@@ -10,7 +10,7 @@ import {
   statusTable,
 } from "../db/schema";
 import { RegisterRequest, AvailabilityResponse } from "../model/types/authApi";
-import { InferSelectModel, eq, ne, or } from "drizzle-orm";
+import { InferSelectModel, eq, ne, or, and, sql } from "drizzle-orm";
 import {
   ApplicationSubmissionRequest,
   Competence,
@@ -248,6 +248,7 @@ class DAO {
           lastName: personTable.surname,
           status: statusTable.name,
           createdAt: applicationTable.createdAt,
+          version: applicationTable.version
         })
         .from(applicationTable)
         .innerJoin(
@@ -395,6 +396,79 @@ class DAO {
       throw new Error(`Failed fetching application: ${applicationId}`, { cause: error });
     }
   }
+
+
+
+
+  async updateStatus(
+    transactionObj: Transaction,
+    applicationId: number,
+    newStatusId: number,
+    version: number,
+  ): Promise<AdminApplicatinResponse | null> {
+    try {
+      
+      Validator.validateApplicationIdParam(applicationId);
+      const result = await transactionObj
+        .update(applicationTable)
+        .set({
+          statusId: newStatusId,
+          version: sql`${applicationTable.version} + 1`,
+        })
+        .where(
+          and(
+            eq(applicationTable.applicationId, applicationId),
+            eq(applicationTable.version, version),
+          ),
+        )
+        .returning();
+  
+      if (result.length === 0) {
+        return null;
+      }
+      const [updateRow] = await transactionObj
+        .select({
+          applicationId: applicationTable.applicationId,
+          firstName: personTable.name,
+          lastName: personTable.surname,
+          status: statusTable.name,
+          createdAt: applicationTable.createdAt,
+          version: applicationTable.version,
+        })
+        .from(applicationTable)
+        .innerJoin(
+          personTable,
+          eq(applicationTable.personId, personTable.personId),
+        )
+        .innerJoin(
+          statusTable,
+          eq(applicationTable.statusId, statusTable.statusId),
+        )
+        .where(eq(applicationTable.applicationId, applicationId))
+        .limit(1);
+      return updateRow ?? null;
+    } catch (error) {
+      throw new Error(`Failed updating application status for id ${applicationId}`, { cause: error });
+    }
+  }
+  async findStatusByName(transaction: Transaction, name: string) {
+    try {
+      
+      const [status] = await transaction
+        .select({
+          statusId: statusTable.statusId,
+          name: statusTable.name,
+        })
+        .from(statusTable)
+        .where(eq(statusTable.name, name))
+        .limit(1);
+      return status || null;
+    } catch (error) {
+      throw new Error(`Failed fetching status with name '${name}'`, { cause: error });
+    }
+  }
+
+
 
   /**
    * Helper to construct a Person Data Transfer Object explicitly mapping database fields.

@@ -1,6 +1,6 @@
 import { Request, Response, NextFunction } from "express";
 import RequestHandler from "./RequestHandler";
-import { param, validationResult } from "express-validator";
+import { param, body, validationResult } from "express-validator";
 import { Authorization } from "./Authorization";
 import { Validator } from "../util/Validator";
 
@@ -77,6 +77,53 @@ class AdminApplicationApi extends RequestHandler {
             const { id } = req.params;
             const application = await this.controller?.getApplicationById(Number(id));
             this.sendHttpResponse(res, 200, application);
+          } catch (error) {
+            next(error);
+          }
+        },
+      );
+
+       this.router.patch(
+        "/:id/status",
+        Authorization.requireAuth(this.controller!),
+        Authorization.requireRole("recruiter"),
+        [
+          param("id")
+            .toInt()
+            .custom((value) => Validator.isInt(value, 1))
+            .withMessage("Field: id (positive integer) required"),
+          body("status")
+            .isIn(["unhandled", "accepted", "rejected"])
+            .withMessage(
+              "Field: status must be unhandled, accepted or rejected",
+            ),
+          body("version")
+            .toInt()
+            .isInt({ min: 0 })
+            .withMessage("Field: version (non-negative integer) required"),
+        ],
+        async (req: Request, res: Response, next: NextFunction) => {
+          try {
+            console.log(req.params)
+            const errors = validationResult(req);
+            if (!errors.isEmpty()) {
+              return this.sendHttpResponse(res, 400, errors.array());
+            }
+            const applicationId = Number(req.params.id);
+            const updateApplication =
+              await this.controller?.updateApplicationStatus(
+                applicationId,
+                req.body.status,
+                req.body.version,
+              );
+            if (!updateApplication) {
+              return this.sendHttpResponse(
+                res,
+                409,
+                "Application was already updated by another recruiter",
+              );
+            }
+            this.sendHttpResponse(res, 200, updateApplication);
           } catch (error) {
             next(error);
           }
