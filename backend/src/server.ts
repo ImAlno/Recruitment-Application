@@ -15,10 +15,16 @@ const app = express();
 
 // Middleware
 app.use(cookieParser());
+
+// Read allowed origins from env file and split into an array
+
 app.use(cors({
-  origin: process.env.CORS_ORIGIN || "http://localhost:5173", // Standard Vite port, or use true to allow all
-  credentials: true
+  origin: process.env.CORS_ORIGIN,
+  credentials: true,
+  methods: ["GET", "POST", "PATCH"],
+  allowedHeaders: ["Content-Type", "Authorization"],
 }));
+
 app.use(express.json());
 
 /**
