@@ -49,6 +49,11 @@ async function migrateData() {
     const order = ['person', 'availability', 'competence_profile'];
 
     await db.transaction(async (tx) => {
+        console.log("Clearing existing data...");
+        await tx.execute(
+            sql`TRUNCATE TABLE application, competence_profile, availability, person RESTART IDENTITY CASCADE`
+        );
+
         for (const tableName of order) {
             const data = tablesData[tableName];
             const { table, map, seqCol } = tableMap[tableName];
