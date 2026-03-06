@@ -68,7 +68,7 @@ describe('useApplicationDetails', () => {
             await result.current.handleSaveStatus();
         });
 
-        expect(updateSpy).toHaveBeenCalledWith(1, 'accepted');
+        expect(updateSpy).toHaveBeenCalledWith(1, 'accepted', 0);
         expect(result.current.application.status).toBe('accepted');
         expect(result.current.successMessage).toContain('accepted');
         expect(result.current.isSaving).toBe(false);
