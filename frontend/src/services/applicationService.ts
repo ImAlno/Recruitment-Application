@@ -22,16 +22,18 @@ export class ApplicationService {
 
     /**
      * Update the status of an application.
+     * Uses optimistic concurrency: the current `version` of the application must be provided.
+     * The backend returns 409 if another recruiter has already updated the application.
      * 
      * @param {number} id - The unique identifier of the application.
-     * @param {string} status - The new status to set (e.g., 'accepted', 'rejected', 'unhandled').
+     * @param {string} status - The new status to set ('unhandled', 'accepted', or 'rejected').
+     * @param {number} version - The current version of the application (for optimistic locking).
      * @returns {Promise<any>} A promise that resolves with the updated application data.
-     * @throws {Error} If the update fails.
+     * @throws {Error} If the update fails or a 409 conflict occurs.
      */
-    async updateApplicationStatus(id: number, status: string): Promise<any> {
+    async updateApplicationStatus(id: number, status: string, version: number): Promise<any> {
         try {
-            // Note: Adjust payload structure based on backend requirements
-            return await apiClient.put<any>(`/application/${id}`, { status });
+            return await apiClient.patch<any>(`/admin/applications/${id}/status`, { status, version });
         } catch (error) {
             throw error;
         }
@@ -103,6 +105,7 @@ export const getApplications = () => applicationService.getApplications();
  * Convenience wrapper for updating application status.
  * @param {number} id - Application ID.
  * @param {string} status - New status.
+ * @param {number} version - Current version of the application (optimistic locking).
  * @returns {Promise<any>}
  */
-export const updateApplicationStatus = (id: number, status: string) => applicationService.updateApplicationStatus(id, status);
+export const updateApplicationStatus = (id: number, status: string, version: number) => applicationService.updateApplicationStatus(id, status, version);

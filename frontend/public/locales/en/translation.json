@@ -91,7 +91,8 @@
         "serverError": "Server error ({{status}}): {{message}}",
         "loadApplicationsFailed": "Could not load applications. Please try again later.",
         "statusUpdated": "Status updated to {{status}}",
-        "updateStatusFailed": "Failed to update status. Please try again."
+        "updateStatusFailed": "Failed to update status. Please try again.",
+        "statusConflict": "This application was already updated by another recruiter. Please refresh to see the latest status."
     },
     "landing": {
         "title": "Welcome to",
