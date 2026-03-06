@@ -83,6 +83,8 @@ class AdminApplicationApi extends RequestHandler {
         },
       );
 
+      /** Update a users status */
+
        this.router.patch(
         "/:id/status",
         Authorization.requireAuth(this.controller!),

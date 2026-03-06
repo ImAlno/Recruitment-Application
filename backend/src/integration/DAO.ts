@@ -399,9 +399,15 @@ class DAO {
     }
   }
 
-
-
-
+  /**
+   * Updates the status of an application
+   * 
+   * @param transactionObj The active transaction
+   * @param applicationId The ID of the application
+   * @param newStatusId The new status ID
+   * @param version The version of the application
+   * @returns The updated application
+   */
   async updateStatus(
     transactionObj: Transaction,
     applicationId: number,
@@ -409,7 +415,7 @@ class DAO {
     version: number,
   ): Promise<AdminApplicatinResponse | null> {
     try {
-      
+
       Validator.validateApplicationIdParam(applicationId);
       Validator.validateVersionParam(version)
       const result = await transactionObj
@@ -425,7 +431,7 @@ class DAO {
           ),
         )
         .returning();
-  
+
       if (result.length === 0) {
         return null;
       }
@@ -454,9 +460,17 @@ class DAO {
       throw new Error(`Failed updating application status for id ${applicationId}`, { cause: error });
     }
   }
+
+  /**
+   * Finds a status by name
+   * 
+   * @param transaction The active transaction
+   * @param name The name of the status
+   * @returns The status
+   */
   async findStatusByName(transaction: Transaction, name: string) {
     try {
-      
+
       const [status] = await transaction
         .select({
           statusId: statusTable.statusId,
@@ -470,8 +484,6 @@ class DAO {
       throw new Error(`Failed fetching status with name '${name}'`, { cause: error });
     }
   }
-
-
 
   /**
    * Helper to construct a Person Data Transfer Object explicitly mapping database fields.

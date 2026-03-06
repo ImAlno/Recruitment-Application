@@ -192,6 +192,14 @@ export class Controller {
     });
   }
 
+  /**
+   * Updates the status of an applicants job application
+   *
+   * @param applicationId The ID of the application to update.
+   * @param status The new status to set.
+   * @param version The version of the application to update.
+   * @returns The updated application.
+   */
   async updateApplicationStatus(
     applicationId: number,
     status: string,
@@ -224,7 +232,5 @@ export class Controller {
       return updateApplication;
     });
   }
-
-  // TODO Add methods like: registerUser, findUser, login etc to handle bussiness logic and make calls to integration layer
 }
 export default Controller;
