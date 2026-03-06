@@ -289,6 +289,7 @@ class DAO {
       applicationId: applicationInfo.applicationId,
       status: applicationInfo.status,
       createdAt: applicationInfo.createdAt,
+      version: applicationInfo.version,
       competences,
       availability,
       applicant: {
@@ -375,6 +376,7 @@ class DAO {
           email: personTable.email,
           status: statusTable.name,
           createdAt: applicationTable.createdAt,
+          version: applicationTable.version
         })
         .from(applicationTable)
         .innerJoin(
@@ -409,6 +411,7 @@ class DAO {
     try {
       
       Validator.validateApplicationIdParam(applicationId);
+      Validator.validateVersionParam(version)
       const result = await transactionObj
         .update(applicationTable)
         .set({

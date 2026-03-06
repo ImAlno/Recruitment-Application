@@ -1,6 +1,6 @@
 import DAO from "../integration/DAO";
 import PersonDTO from "../model/PersonDTO";
-import bcrypt from 'bcrypt';
+import bcrypt from "bcrypt";
 import { Database } from "../db";
 import { RegisterRequest, AvailabilityResponse } from "../model/types/authApi";
 import { ApplicationSubmissionRequest } from "../model/types/applicationApi";
@@ -47,11 +47,14 @@ export class Controller {
       const hashedPassword = await bcrypt.hash(userBody.password, saltRounds);
       const secureUserBody = {
         ...userBody,
-        password: hashedPassword
+        password: hashedPassword,
       };
-      const result = await this.dao.registerUser(secureUserBody, transactionObj);
+      const result = await this.dao.registerUser(
+        secureUserBody,
+        transactionObj,
+      );
 
-      Controller.logger.logEvent('USER_REGISTERED', {
+      Controller.logger.logEvent("USER_REGISTERED", {
         userId: result.id,
         username: result.username,
         email: result.email,
@@ -87,11 +90,11 @@ export class Controller {
   async login(username: string, password: string): Promise<PersonDTO | null> {
     return this.database.transaction(async (transactionObj) => {
       const user = await this.dao.findUser(username, transactionObj);
-      if (!await bcrypt.compare(password, user.password!)) {
+      if (!(await bcrypt.compare(password, user.password!))) {
         return null;
       }
 
-      Controller.logger.logEvent('USER_LOGGED_IN', {
+      Controller.logger.logEvent("USER_LOGGED_IN", {
         userId: user.id,
         username: user.username,
         email: user.email,
@@ -115,16 +118,14 @@ export class Controller {
    * @returns An array containing all applications.
    */
   async getAllApplications(): Promise<AdminApplicatinResponse[]> {
-    return await this.database.transaction(
-      async (transactionObj) => {
-        const result = await this.dao.findAll(transactionObj);
+    return await this.database.transaction(async (transactionObj) => {
+      const result = await this.dao.findAll(transactionObj);
 
-        Controller.logger.logEvent('ALL_APPLICATIONS_RETRIEVED', {
-          count: result.length,
-        });
-        return result;
-      },
-    );
+      Controller.logger.logEvent("ALL_APPLICATIONS_RETRIEVED", {
+        count: result.length,
+      });
+      return result;
+    });
   }
 
   /**
@@ -136,18 +137,16 @@ export class Controller {
   async getApplicationById(
     applicationId: number,
   ): Promise<ApplicationDetailsDTO> {
-    return await this.database.transaction(
-      async (transactionObj) => {
-        const result = await this.dao.findById(transactionObj, applicationId);
+    return await this.database.transaction(async (transactionObj) => {
+      const result = await this.dao.findById(transactionObj, applicationId);
 
-        Controller.logger.logEvent('APPLICATION_RETRIEVED', {
-          applicationId: result.applicationId,
-          status: result.status,
-          createdAt: result.createdAt,
-        });
-        return result;
-      },
-    );
+      Controller.logger.logEvent("APPLICATION_RETRIEVED", {
+        applicationId: result.applicationId,
+        status: result.status,
+        createdAt: result.createdAt,
+      });
+      return result;
+    });
   }
 
   /**
@@ -156,13 +155,15 @@ export class Controller {
    * @param username The username of the user.
    * @returns An object containing the user's id, username, and role.
    */
-  async isLoggedIn(username: string): Promise<Pick<PersonDTO, 'id' | 'username' | 'role'>> {
+  async isLoggedIn(
+    username: string,
+  ): Promise<Pick<PersonDTO, "id" | "username" | "role">> {
     return this.database.transaction(async (transactionObj) => {
       const user = await this.dao.findUser(username, transactionObj);
       return {
         id: user.id,
         username: user.username,
-        role: user.role
+        role: user.role,
       };
     });
   }
@@ -173,11 +174,16 @@ export class Controller {
    * @param submissionBody The data containing the completely filled application submission.
    * @returns The newly created application ID.
    */
-  async createApplication(submissionBody: ApplicationSubmissionRequest): Promise<number> {
+  async createApplication(
+    submissionBody: ApplicationSubmissionRequest,
+  ): Promise<number> {
     return await this.database.transaction(async (transactionObj) => {
-      const result = await this.dao.createApplication(submissionBody, transactionObj);
+      const result = await this.dao.createApplication(
+        submissionBody,
+        transactionObj,
+      );
 
-      Controller.logger.logEvent('APPLICATION_CREATED', {
+      Controller.logger.logEvent("APPLICATION_CREATED", {
         applicationId: result,
         userId: submissionBody.userId,
       });
@@ -186,22 +192,39 @@ export class Controller {
     });
   }
 
-    async updateApplicationStatus(applicationId: number, status: string, version: number): Promise<AdminApplicatinResponse | null>{
+  async updateApplicationStatus(
+    applicationId: number,
+    status: string,
+    version: number,
+  ): Promise<AdminApplicatinResponse | null> {
     return await this.database.transaction(async (transactionObj) => {
-      const existingApplication = await this.dao.findById(transactionObj, applicationId);
-     if(!existingApplication)
-        return null;
-      const statusEntity = await this.dao.findStatusByName(transactionObj, status);
-      if(!statusEntity)
-        return null
+      const existingApplication = await this.dao.findById(
+        transactionObj,
+        applicationId,
+      );
+      if (!existingApplication) return null;
+      const statusEntity = await this.dao.findStatusByName(
+        transactionObj,
+        status,
+      );
+      if (!statusEntity) return null;
       const newStatusId = statusEntity.statusId;
       const updateApplication = await this.dao.updateStatus(
-        transactionObj, applicationId, newStatusId, version
+        transactionObj,
+        applicationId,
+        newStatusId,
+        version,
       );
+      if (updateApplication) {
+        Controller.logger.logEvent("APPLICATION_STATUS_UPDATED", {
+          applicationId,
+          newStatusId: status,
+        });
+      }
       return updateApplication;
     });
   }
-  
+
   // TODO Add methods like: registerUser, findUser, login etc to handle bussiness logic and make calls to integration layer
 }
 export default Controller;
