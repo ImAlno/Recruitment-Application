@@ -91,7 +91,8 @@
         "serverError": "Serverfel ({{status}}): {{message}}",
         "loadApplicationsFailed": "Kunde inte ladda ansökningar. Vänligen försök igen senare.",
         "statusUpdated": "Status uppdaterad till {{status}}",
-        "updateStatusFailed": "Misslyckades att uppdatera status. Vänligen försök igen."
+        "updateStatusFailed": "Misslyckades att uppdatera status. Vänligen försök igen.",
+        "statusConflict": "Denna ansökan har redan uppdaterats av en annan rekryterare. Vänligen ladda om sidan för att se den senaste statusen."
     },
     "landing": {
         "title": "Välkommen till",

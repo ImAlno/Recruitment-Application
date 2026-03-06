@@ -79,6 +79,7 @@ export const applicationTable = pgTable("application", {
     personId: integer("person_id").references(() => personTable.personId),
     statusId: integer("status_id").references(() => statusTable.statusId),
     createdAt: date("created_at"),
+    version: integer("version").notNull().default(0)
 })
 
 /**

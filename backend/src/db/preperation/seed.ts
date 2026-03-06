@@ -1,5 +1,5 @@
-import db from "./index";
-import { roleTable, competenceTable, statusTable, applicationTable, personTable } from "./schema";
+import db from "../index";
+import { roleTable, competenceTable, statusTable, personTable } from "../schema";
 import { eq } from "drizzle-orm";
 import bcrypt from "bcrypt";
 
@@ -48,24 +48,6 @@ async function seed() {
                 { name: "rejected" },
                 { name: "unhandled" },
             ]);
-        }
-
-        // Check if an admin user exists (roleId 1)
-        const existingAdmin = await db.select().from(personTable).where(eq(personTable.roleId, 1));
-        if (existingAdmin.length === 0) {
-            console.log("No admin user found, inserting default admin.");
-            const hashedPassword = await bcrypt.hash("Password123!", 10);
-            await db.insert(personTable).values({
-                name: "Admin",
-                surname: "User",
-                pnr: "00000000-0000",
-                email: "admin.test.user@example.com",
-                password: hashedPassword,
-                roleId: 1,
-                username: "adminUser",
-            });
-        } else {
-            console.log("Admin user already exists.");
         }
 
         console.log("Seeding completed successfully!");

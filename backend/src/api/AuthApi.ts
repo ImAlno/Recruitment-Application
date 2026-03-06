@@ -133,7 +133,7 @@ class AuthApi extends RequestHandler {
                     try {
                         const errors = validationResult(request);
                         if (!errors.isEmpty()) {
-                            this.sendHttpResponse(response, 400, errors.array());
+                            this.sendHttpResponse(response, 401, errors.array());
                             return;
                         }
 

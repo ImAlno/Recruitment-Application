@@ -3,6 +3,7 @@
  */
 export type ApplicationDetailsDTO = {
   applicationId: number;
+  version: number;
   status: string | null;
   createdAt: string | null;
   competences: {

@@ -216,4 +216,15 @@ export class Validator {
             throw new Error("Invalid applicationId parameter format");
         }
     }
+
+    /**
+     * Validates a version parameter used for optimistic locking.
+     * @param {number} version The version number.
+     * @throws {Error} If the version parameter is not valid.
+     */
+    static validateVersionParam(version: number): void {
+        if (!Validator.isInt(version, 0)) {
+            throw new Error("Invalid version parameter format");
+        }
+    }
 }
