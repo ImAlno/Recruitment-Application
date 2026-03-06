@@ -1,0 +1,39 @@
+services:
+  - type: web
+    name: recruitment-backend
+    runtime: node
+    rootDir: backend
+    plan: free
+    region: frankfurt
+    buildCommand: npm ci && npm run build && npm run db:migrate && npm run db:seed && npm run db:old:data && npm run db:seed:admin
+    startCommand: npm start
+    envVars:
+      - key: DATABASE_URL
+        fromDatabase:
+          name: recruitment-db
+          property: connectionString
+      - key: JWT_SECRET
+        generateValue: true
+      - key: CORS_ORIGIN
+        value: https://recruitment-frontend-v28f.onrender.com
+      - key: PORT
+        value: 3000
+      - key: IS_PRODUCTION
+        value: true
+  - type: web
+    name: recruitment-frontend
+    runtime: static
+    rootDir: frontend
+    buildCommand: npm ci && npm run build
+    staticPublishPath: dist
+    routes:
+      - type: rewrite
+        source: /*
+        destination: /
+    envVars:
+      - key: VITE_API_URL
+        value: https://recruitment-backend-hsn7.onrender.com/api
+databases:
+  - name: recruitment-db
+    plan: free
+    region: frankfurt

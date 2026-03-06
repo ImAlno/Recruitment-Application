@@ -7,4 +7,5 @@ export interface AdminApplicatinResponse {
   lastName: string | null;
   status: string | null;
   createdAt: string | null;
+  version: number
 }

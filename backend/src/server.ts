@@ -3,7 +3,6 @@ import cors from "cors";
 import loader from "./api/index";
 import dotenv from "dotenv";
 import cookieParser from "cookie-parser";
-import path from "path"
 
 // Load environment variables immediately
 dotenv.config();
@@ -17,7 +16,7 @@ const app = express();
 // Middleware
 app.use(cookieParser());
 app.use(cors({
-  origin: ["http://localhost:5173", "https://frontendfrontend-e3d5dhgjdzeugpes.swedencentral-01.azurewebsites.net"], // Allow local and prod ports
+  origin: process.env.CORS_ORIGIN || "http://localhost:5173", // Standard Vite port, or use true to allow all
   credentials: true
 }));
 app.use(express.json());
@@ -34,11 +33,7 @@ const startServer = async () => {
 
   // Mount all handlers under the /api prefix to match frontend config
   app.use("/api", apiRouter);
-  // Serve frontend build folder
-  app.use(express.static(path.join(__dirname, "../../frontend/build")));
-  app.get("*", (req, res) => {
-    res.sendFile(path.join(__dirname, "../../frontend/build", "index.html"));
-  });
+
   const PORT = process.env.PORT || 3000;
   app.listen(PORT, () => {
     console.log(`Server running on http://localhost:${PORT}`);

@@ -90,4 +90,12 @@ export const handlers = [
             success: { applicationId: Number(id), status }
         });
     }),
+
+    http.patch(`${baseURL}/admin/applications/:id/status`, async ({ params, request }) => {
+        const { id } = params;
+        const { status, version } = (await request.json()) as any;
+        return HttpResponse.json({
+            success: { applicationId: Number(id), status, version: version + 1 }
+        });
+    }),
 ];

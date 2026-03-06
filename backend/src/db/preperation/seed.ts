@@ -1,5 +1,7 @@
-import db from "./index";
-import { roleTable, competenceTable, statusTable, applicationTable } from "./schema";
+import db from "../index";
+import { roleTable, competenceTable, statusTable, personTable } from "../schema";
+import { eq } from "drizzle-orm";
+import bcrypt from "bcrypt";
 
 /**
  * Seeds the database with necessary initial configuration entries.
@@ -47,21 +49,6 @@ async function seed() {
                 { name: "unhandled" },
             ]);
         }
-
-        /* // ? Temporary
-        const existingApplications = await db.select().from(applicationTable);
-        if (existingApplications.length > 0) {
-            console.log("Application entries already exist, skipping seed.");
-            return;
-        } else {
-            await db.insert(applicationTable).values([
-                {
-                    personId: 1,
-                    statusId: 1,
-                    createdAt: new Date().toISOString().split("T")[0], // converts to 'YYYY-MM-DD'
-                },
-            ]);
-        } */
 
         console.log("Seeding completed successfully!");
     } catch (error) {

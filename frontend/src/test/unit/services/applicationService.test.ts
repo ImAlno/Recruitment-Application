@@ -42,7 +42,7 @@ describe('ApplicationService', () => {
 
     describe('updateApplicationStatus', () => {
         it('should update application status', async () => {
-            const response = await applicationService.updateApplicationStatus(1, 'accepted');
+            const response = await applicationService.updateApplicationStatus(1, 'accepted', 1);
             expect(response).toBeDefined();
             expect(response.status).toBe('accepted');
         });

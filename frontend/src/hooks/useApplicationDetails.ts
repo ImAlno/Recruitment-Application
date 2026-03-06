@@ -50,12 +50,16 @@ export const useApplicationDetails = (id: string | undefined) => {
         setSuccessMessage(null);
         setErrorMessage(null);
         try {
-            await applicationService.updateApplicationStatus(application.applicationId, status);
-            setApplication({ ...application, status });
+            const updated = await applicationService.updateApplicationStatus(application.applicationId, status, application.version ?? 0);
+            setApplication({ ...application, status, version: updated?.version ?? (application.version ?? 0) + 1 });
             setSuccessMessage(`errors.statusUpdated:${status}`);
-        } catch (error) {
+        } catch (error: any) {
             console.error('Failed to update status:', error);
-            setErrorMessage('errors.updateStatusFailed');
+            if (error?.status === 409) {
+                setErrorMessage('errors.statusConflict');
+            } else {
+                setErrorMessage('errors.updateStatusFailed');
+            }
         } finally {
             setIsSaving(false);
         }
