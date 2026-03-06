@@ -1,9 +1,12 @@
-import db from "./index";
-import { personTable, availabilityTable, competenceProfileTable } from "./schema";
+import db from "../index";
+import { personTable, availabilityTable, competenceProfileTable } from "../schema";
 import { sql } from "drizzle-orm";
 import fs from "fs";
 import bcrypt from "bcrypt";
 
+/**
+ * Migrates data from an existing database to the current database schema.
+ */
 async function migrateData() {
     const content = fs.readFileSync("existing-database.sql", 'utf-8');
     const copyRegex = /COPY public\.([a-z_]+) \(([^)]+)\) FROM stdin;\n([\s\S]*?)\\\./g;
