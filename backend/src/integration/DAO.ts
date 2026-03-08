@@ -470,7 +470,7 @@ class DAO {
    */
   async findStatusByName(transaction: Transaction, name: string) {
     try {
-
+      Validator.validateStatusParam(name);
       const [status] = await transaction
         .select({
           statusId: statusTable.statusId,

@@ -227,4 +227,16 @@ export class Validator {
             throw new Error("Invalid version parameter format");
         }
     }
+
+    /**
+     * Validates that a status parameter is a valid status.
+     * @param {string} status The status.
+     * @throws {Error} If the status does not match unhandled, accepted or rejected.
+     */
+    static validateStatusParam(status: string): void {
+        const validStatuses = ["unhandled", "rejected", "accepted"];
+        if (!validStatuses.includes(status)) {
+            throw new Error("Invalid status parameter");
+        }
+    }
 }

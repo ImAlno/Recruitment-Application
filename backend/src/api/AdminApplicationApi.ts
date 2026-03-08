@@ -106,7 +106,6 @@ class AdminApplicationApi extends RequestHandler {
         ],
         async (req: Request, res: Response, next: NextFunction) => {
           try {
-            console.log(req.params)
             const errors = validationResult(req);
             if (!errors.isEmpty()) {
               return this.sendHttpResponse(res, 400, errors.array());
